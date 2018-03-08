@@ -2,10 +2,8 @@
   "name": "react-babel-webpack-boilerplate",
   "version": "1.4.1",
   "description": "A boilerplate for React-Babel-Webpack project",
-  "main": "app/main.jsx",
+  "main": "client/main.jsx",
   "scripts": {
-    "precommit": "npm run lint",
-    "commitmsg": "npm run lint:msg",
     "lint": "eslint --cache --ignore-path .gitignore --ext .jsx,.js --format=node_modules/eslint-formatter-pretty .",
     "lint:msg": "validate-commit-msg",
     "test": "npm run lint",
@@ -14,12 +12,18 @@
     "deploy": "NODE_ENV=production webpack --config webpack.production.config.js",
     "deploy-windows": "SET NODE_ENV=production & webpack --config webpack.production.config.js",
     "validate": "npm ls",
-    "commit": "git cz",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1"
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
+    "server": "nodemon ./server/app.js"
   },
   "dependencies": {
     "babel-runtime": "6.x",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
     "material-ui": "^0.20.0",
+    "morgan": "^1.9.0",
+    "nodemon": "^1.17.1",
+    "passport": "^0.4.0",
+    "passport-custom": "^1.0.5",
     "react": "15.x",
     "react-dom": "15.x"
   },
@@ -49,9 +53,9 @@
     "open-browser-webpack-plugin": "0.0.3",
     "style-loader": "~0.13.1",
     "validate-commit-msg": "2.x",
-    "webpack": "latest",
+    "webpack": "^2.0.10",
     "webpack-cli": "^2.0.10",
-    "webpack-dev-server": "latest"
+    "webpack-dev-server": "^2.0.10"
   },
   "keywords": [
     "es6",
