@@ -56,4 +56,17 @@ app.use(function(err, req, res, next) {
 app.listen(3000);
 console.log('server:3000');
 
+
+const Sequelize = require('sequelize');
+// const sequelize = new Sequelize('postgres://postgres:admin@127.0.0.1:5432/postgres');
+const sequelize = new Sequelize('postgres://test:test@127.0.0.1:5432/postgres');
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('Connection has been established successfully.');
+  })
+  .catch(err => {
+    console.error('Unable to connect to the database:', err);
+  });
+
 module.exports = app;

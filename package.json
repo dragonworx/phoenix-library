@@ -24,8 +24,11 @@
     "nodemon": "^1.17.1",
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
+    "pg": "^7.4.1",
+    "pg-hstore": "^2.3.2",
     "react": "15.x",
-    "react-dom": "15.x"
+    "react-dom": "15.x",
+    "sequelize": "^4.35.2"
   },
   "devDependencies": {
     "babel-core": "6.x",
