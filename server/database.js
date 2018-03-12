@@ -1,28 +1,34 @@
-const SQL = require('sequelize');
-let db = new SQL(process.env.PG, {
-  logging: () => {}
-});
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
-const schemas = require('./database-schemas');
-const config = require('./database-config');
+const PHOENIX_DB = process.env.PHOENIX_DB;
+const PHOENIX_USER = process.env.PHOENIX_USER;
+const PHOENIX_PASSWORD = process.env.PHOENIX_PASSWORD;
 
-let modelSync = [];
-let models = {};
+if (!(PHOENIX_DB && PHOENIX_USER && PHOENIX_PASSWORD)) {
+  console.error('Cannot read environment db variables');
+  process.exit(-1);
+}
 
-Object.keys(schemas).forEach((modelName) => {
-  let model = db.define(modelName, schemas[modelName], {
-    freezeTableName: true
-  });
-  modelSync.push(model.sync({
-    force: config.force
-  }));
-  models[modelName] = model;
-});
+const sql = new Sequelize(
+  PHOENIX_DB,
+  PHOENIX_USER,
+  PHOENIX_PASSWORD,
+  {
+    host: '127.0.0.1',
+    dialect: 'postgres',
+    logging: false,
+    freezeTableName: true,
+    operatorsAliases: {
+      $and: Op.and,
+      $or: Op.or,
+      $eq: Op.eq,
+      $gt: Op.gt,
+      $lt: Op.lt,
+      $lte: Op.lte,
+      $like: Op.like
+    }
+  }
+);
 
-module.exports = new Promise((resolve, reject) => {
-  Promise.all(modelSync).then(() => {
-    resolve(models);
-  }).catch((err) => {
-    reject(err);
-  });
-});
+module.exports = sql;

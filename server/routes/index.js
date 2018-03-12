@@ -1,10 +1,15 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const fs = require('fs');
+const path = require('path');
 
-/* GET home page. */
+const indexPath = path.resolve(__dirname, '../../build/index.html');
+const indexHtml = fs.readFileSync(indexPath).toString();
+
 router.post('/', function(req, res, next) {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify(true));
+  console.log("?")
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(indexHtml);
 });
 
 module.exports = router;

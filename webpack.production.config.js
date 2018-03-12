@@ -1,6 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
+// const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 
@@ -10,7 +10,7 @@ module.exports = {
     path.resolve(__dirname, 'client/main.js')
   ],
   output: {
-    path: path.resolve(__dirname, 'build'),
+    path: path.resolve(__dirname, 'public'),
     publicPath: '/',
     filename: './bundle.js'
   },
@@ -34,9 +34,9 @@ module.exports = {
         NODE_ENV: JSON.stringify('production')
       }
     }),
-    new CopyWebpackPlugin([
-      { from: './client/index.html', to: 'index.html' },
-      { from: './client/main.css', to: 'main.css' }
-    ])
+    // new CopyWebpackPlugin([
+    //   { from: './client/index.html', to: 'index.html' },
+    //   { from: './client/main.css', to: 'main.css' }
+    // ])
   ]
 };

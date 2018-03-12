@@ -35,6 +35,7 @@
     "no-nested-ternary": 0,
     "no-underscore-dangle": 0,
     "no-var": "error",
+    "no-unused-vars": "error",
     "semi": ["error", "always"],
     "promise/param-names": 2,
     "promise/always-return": 2,
