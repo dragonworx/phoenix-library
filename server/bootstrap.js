@@ -4,14 +4,17 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const session = require('express-session');
-// const authentication = require('./authentication');
 const sql = require('./database');
-// const indexRoute = require('./routes/index');
+const clc = require('cli-color');
 
 process.on('unhandledRejection', function(err) {
   console.error(err.stack);
   process.exit(-1);
 });
+
+function log(obj, color = 'blue') {
+  console.log(clc[color].bold(JSON.stringify(obj).replace(/^\{|\}$/g, '')));
+}
 
 const app = express();
 
@@ -27,84 +30,77 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-// const authenticate = authentication(app);
-
-// app.get('/',
-//   function (req, res, next) {
-//     if (!req.user) {
-//       res.redirect('/login.html');
-//     } else {
-//       next();
-//     }
-//   },
-//   authenticate(),
-// );
-
 app.use(express.static(path.resolve(__dirname, '../static')));
 
+app.get('/login', (req, res, next) => {
+  const user = !!req.session.user;
+  if (user) {
+    res.redirect(user.admin ? '/admin' : '/');
+  } else {
+    res.render('login');
+  }
+});
 
+app.post('/login', (req, res, next) => {
+  res.send(JSON.stringify({un: req.body.email, pw: req.body.password})).end();
+});
 
-function checkAuth (req, res, next) {
-	console.log('checkAuth ' + req.url);
+app.use(function authenticate (req, res, next) {  
+  const user = req.session.user;
+  const isAdmin = !!(user && user.admin);
+  const isUnauthorised = (req.url === '/admin' && !isAdmin)
+    || (req.url === '/' && !user);
+  const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
 
-	// don't serve /secure to those not logged in
-	// you should add to this list, for each and every secure url
-	if (req.url === '/admin' && (!req.session || !req.session.authenticated)) {
-		res.render('login', { status: 403 });
-		return;
-	}
-
-	next();
-}
-
-	app.use(checkAuth);
- 
-  app.get('/', function (req, res, next) {
-		res.render('index');
-  });
-  
-  app.get('/login', function (req, res, next) {
-		res.render('login');
-	});
-
-	// app.post('/login', function (req, res, next) {
-
-	// 	// you might like to do a database look-up or something more scalable here
-	// 	if (req.body.username && req.body.username === 'user' && req.body.password && req.body.password === 'pass') {
-	// 		req.session.authenticated = true;
-	// 		res.redirect('/secure');
-	// 	} else {
-	// 		req.flash('error', 'Username and password are incorrect');
-	// 		res.redirect('/login');
-	// 	}
-
-	// });
-
-	// app.get('/logout', function (req, res, next) {
-	// 	delete req.session.authenticated;
-	// 	res.redirect('/');
-	// });
-  
-  // catch 404 and forward to error handler
-  app.use(function(req, res, next) {
-    let err = new Error('404 Not Found: ' + req.url);
-    err.status = 404;
-    next(err);
-    res.render('error', {status: 400});
+  log({
+    authenticate: req.url,
+    user,
+    isAdmin,
+    isUnauthorised,
+    isAssetUrl,
   });
 
-  // app.use(function(err, req, res, next) {
-  //   res.status(err.status || 500);
-  //   if (err.status === 404) {
-  //     res.render('/404');
-  //   } else {
-  //     res.send(err.stack);
-  //   }
-  // });
+  if (isUnauthorised && !isAssetUrl) {
+    return res.redirect('/login');
+  }
+
+  next();
+});
+
+app.get('/', function (req, res, next) {
+  res.render('index');
+});
+
+// app.post('/login', function (req, res, next) {
+
+// 	// you might like to do a database look-up or something more scalable here
+// 	if (req.body.username && req.body.username === 'user' && req.body.password && req.body.password === 'pass') {
+// 		req.session.authenticated = true;
+// 		res.redirect('/secure');
+// 	} else {
+// 		req.flash('error', 'Username and password are incorrect');
+// 		res.redirect('/login');
+// 	}
+
+// });
+
+app.get('/logout', function (req, res, next) {
+	delete req.session.authenticated;
+	res.redirect('/login');
+});
+  
+app.use(function(req, res, next) {
+  const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
+  if (isAssetUrl) {
+    res.status(404).end();
+  } else {
+    res.render('error', {url: req.url, status: 404});
+  }
+});
 
 
 app.listen(3000);
-console.log('server started on port 3000');
+console.log(clc.green.bold('server started on port 3000'));
 
 module.exports = new Promise((resolve, reject) => {
   sql.authenticate()
