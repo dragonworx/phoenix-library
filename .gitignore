@@ -46,3 +46,5 @@ lib
 
 # Editor
 .idea
+
+static/bundle.js
