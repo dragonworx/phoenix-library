@@ -17030,13 +17030,13 @@ var _App = __webpack_require__(201);
 
 var _App2 = _interopRequireDefault(_App);
 
-var _Root = __webpack_require__(202);
+var _root = __webpack_require__(202);
 
-var _Root2 = _interopRequireDefault(_Root);
+var _root2 = _interopRequireDefault(_root);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-_App2.default.render(_Root2.default);
+_App2.default.render(_root2.default);
 
 /***/ }),
 /* 222 */

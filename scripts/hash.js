@@ -1,15 +1,15 @@
 const password = require('../server/password');
-const clc = require('cli-color');
+const log = require('../server/log');
 
 const text = process.argv[2];
-console.log(clc.green.bold('hashing: ' + text));
+log('hashing: ' + text, 'green');
 
 password.hash(text).then(hash => {
   password.verify(text, hash).then(verified => {
     if (verified) {
-      console.log(clc.cyan.bold(hash));
+      log(hash, 'cyan');
     } else {
-      console.log(clc.red.bold('Failed to verify without error?'));
+      log('Failed to verify without error?', 'red');
     }
-  }).catch(err => console.error(clc.red.bold('Failed to verify : ' + err)));
-}).catch(err => console.error(clc.red.bold('Failed to hash: ' + err)));
+  }).catch(err => log('Failed to verify : ' + err, 'red'));
+}).catch(err => log('Failed to hash: ' + err, 'red'));

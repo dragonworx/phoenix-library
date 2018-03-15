@@ -5,6 +5,7 @@ module.exports = envVars => {
     if (!varValue) {
       throw new Error(`Cannot read environment variable: "${varName}"`);
     }
+    vars[varName] = varValue;
   });
   return vars;
 };

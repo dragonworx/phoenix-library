@@ -1,6 +1,13 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const env = require('./environment');
+const log = require('./log');
+
+process.on('unhandledRejection', function (err) {
+  log(err.stack, 'red');
+  process.exit(-1);
+});
+
 const { PHOENIX_DB, PHOENIX_USER, PHOENIX_PASSWORD } = env(['PHOENIX_DB', 'PHOENIX_USER', 'PHOENIX_PASSWORD']);
 
 const sql = new Sequelize(
@@ -24,4 +31,14 @@ const sql = new Sequelize(
   }
 );
 
-module.exports = sql;
+module.exports = new Promise((resolve, reject) => {
+  sql.authenticate()
+  .then(() => {
+    log(`Database connection esablished successfully: ${PHOENIX_USER}@${PHOENIX_DB}`, 'green');
+    resolve(sql);
+  })
+  .catch(err => {
+    log('Database connection failed: ' + err, 'ref');
+    reject(err);
+  });
+});
