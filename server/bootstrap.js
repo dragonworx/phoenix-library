@@ -7,17 +7,18 @@ const session = require('express-session');
 const sql = require('./database');
 const routes = require('./routes');
 const log = require('./log');
+const env = require('env');
+const { PHOENIX_PASSWORD } = env(['PHOENIX_PASSWORD']);
 
 process.on('unhandledRejection', function (err) {
-  console.error(err.stack);
-  process.exit(-1);
+  throw new Error(err.stack);
 });
 
 const app = express();
 
 app.set('view engine', 'ejs');
 app.use(session({
-  secret: 'foobar',
+  secret: PHOENIX_PASSWORD,
   cookie: {},
   resave: false,
   saveUninitialized: false,

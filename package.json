@@ -14,7 +14,8 @@
     "validate": "npm ls",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
     "server": "node ./server",
-    "server-dev": "nodemon ./server"
+    "server-dev": "nodemon ./server",
+    "hash": "node ./scripts/hash.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -31,6 +32,7 @@
     "eslint-plugin-react": "^7.7.0",
     "express": "^4.16.2",
     "express-session": "^1.15.6",
+    "happn-password-hash-and-salt": "^1.1.0",
     "material-ui": "^1.0.0-beta.37",
     "morgan": "^1.9.0",
     "passport-custom": "^1.0.5",

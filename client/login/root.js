@@ -14,8 +14,6 @@ class SimpleMediaCard extends React.Component {
     isValid: false
   };
 
-
-
   onEmailChange = event => {
     const value = event.target.value;
     this.setState({

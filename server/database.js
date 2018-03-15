@@ -1,14 +1,7 @@
 const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
-
-const PHOENIX_DB = process.env.PHOENIX_DB;
-const PHOENIX_USER = process.env.PHOENIX_USER;
-const PHOENIX_PASSWORD = process.env.PHOENIX_PASSWORD;
-
-if (!(PHOENIX_DB && PHOENIX_USER && PHOENIX_PASSWORD)) {
-  console.error('Cannot read environment db variables');
-  process.exit(-1);
-}
+const env = require('./environment');
+const { PHOENIX_DB, PHOENIX_USER, PHOENIX_PASSWORD } = env(['PHOENIX_DB', 'PHOENIX_USER', 'PHOENIX_PASSWORD']);
 
 const sql = new Sequelize(
   PHOENIX_DB,
