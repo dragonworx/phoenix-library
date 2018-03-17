@@ -20,7 +20,7 @@ database.then(() => {
     resave: false,
     saveUninitialized: false,
   }));
-  app.use(favicon(path.join(__dirname, 'favicon.ico')));
+  app.use(favicon(path.resolve(__dirname, '../static/favicon.ico')));
   app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,6 +34,7 @@ database.then(() => {
     if (isAssetUrl) {
       res.status(404).end();
     } else {
+      res.status(404);
       res.render('error', {url: req.url, status: 404});
     }
   });

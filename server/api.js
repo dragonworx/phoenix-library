@@ -1,36 +1,25 @@
-
+const { select } = require('./query');
+const password = require('./password');
 
 module.exports = {
-  getUser () {
-    
+  login (email, plainTextPassword) {
+    return select('SELECT first_name, last_name, password, is_admin, is_super, is_designer, last_login FROM users WHERE email = ?', [email])
+      .then(data => {
+        if (data.length) {
+          const user = data[0];
+          return password.verify(plainTextPassword, user.password).then(verified => {
+            if (verified) {
+              delete user.password;
+              user.success = true;
+              user.email = email;
+              return user;
+            } else {
+              return null;
+            }
+          });
+        } else {
+          return null;
+        }
+      });
   }
 };
-
-/*
-let fromDate = new Date(parseInt(req.query.from, 10));
-    let toDate = new Date(parseInt(req.query.to, 10));
-    let account = req.query.account;
-    if (toDate < fromDate) {
-      let temp = fromDate;
-      fromDate = toDate;
-      toDate = temp;
-    }
-
-    db.transaction.findAll({
-      where: {
-        date: {
-          $between: [fromDate, toDate]
-        },
-        account: account
-      },
-      order: 't_date'
-    }).then((transactions) => {
-      transactions.forEach((transaction) => {
-        transaction.balance = parseFloat(transaction.balance);
-        transaction.cheque = parseFloat(transaction.cheque);
-        transaction.debit = parseFloat(transaction.debit);
-        transaction.credit = parseFloat(transaction.credit);
-      });
-      res.send(JSON.stringify(transactions));
-    });
-*/

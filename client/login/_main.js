@@ -1,4 +1,4 @@
 import App from '../common/App';
-import Root from './root';
+import Login from './index';
 
-App.render(Root);
+App.render(Login);

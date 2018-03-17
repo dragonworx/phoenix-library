@@ -8,7 +8,9 @@ CREATE TABLE public.users (
     email text,
 	password text,
 	is_admin boolean,
+    is_super boolean,
 	is_designer boolean,
+    last_login timestamp DEFAULT NULL,
     PRIMARY KEY (id)
 );
 

@@ -1,9 +1,10 @@
 <html>
   <title>Phoenix Pilates Library | Login</title>
-  <% include style %>
+  <link rel="stylesheet" type="text/css" href="/fonts.css">
+  <link rel="stylesheet" type="text/css" href="/error-style.css">
   <body>
-    <p>
-      <%= status %> <%= url %>
+    <p class="error">
+      Not found <span>(<%= status %>)</span> - <span><%= url %></span>
     </p>
   </body>
 </html>
