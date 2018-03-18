@@ -1,5 +1,5 @@
-insert into users (first_name, last_name, email, password, is_admin, is_super, is_designer)
-values (
+INSERT INTO users (first_name, last_name, email, password, is_admin, is_super, is_designer)
+VALUES (
         'Liz',
         'Chamas',
         'magnoliasoup@gmail.com',

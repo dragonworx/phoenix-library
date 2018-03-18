@@ -16,7 +16,9 @@ database.then(() => {
   app.set('view engine', 'ejs');
   app.use(session({
     secret: PHOENIX_PASSWORD,
-    cookie: {},
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24 /* 1 day */
+    },
     resave: false,
     saveUninitialized: false,
   }));

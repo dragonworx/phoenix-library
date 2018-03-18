@@ -12,6 +12,7 @@ import Typography from 'material-ui/Typography';
 import ListMenu from './listMenu';
 import styles from './styles';
 import { user } from '../common/session';
+import Exercises from './exercises';
 
 function Admin(props) {
   const { classes } = props;
@@ -37,9 +38,9 @@ function Admin(props) {
       </Drawer>
       <main className={classes.content}>
         <div className={classes.toolbar} />
-        <Route exact path="/admin/" render={() => <p>home!</p>}/>
-        <Route path="/admin/users" render={() => <p>users!</p>}/>
-        <Route path="/admin/exercises" render={() => <p>exercises!</p>}/>
+        <Route exact path="/admin/" render={() => <p>Coming soon!</p>}/>
+        <Route path="/admin/users" render={() => <p>Coming soon!</p>}/>
+        <Route path="/admin/exercises" component={Exercises}/>
       </main>
     </div>
     </Router>

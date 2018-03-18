@@ -22,7 +22,7 @@ CREATE TABLE public.label (
 	created timestamp DEFAULT CURRENT_TIMESTAMP,
     modified timestamp DEFAULT CURRENT_TIMESTAMP,
     id integer DEFAULT nextval('label_id_seq'),
-	label_type_id integer,
+	type integer,
     name text,
 	description text,
     color text,
@@ -32,19 +32,6 @@ CREATE TABLE public.label (
 ALTER TABLE public.label
     OWNER to phoenix_lib;
 
--- create label_type table
-CREATE TABLE public.label_type (
-	created timestamp DEFAULT CURRENT_TIMESTAMP,
-    modified timestamp DEFAULT CURRENT_TIMESTAMP,
-    id integer DEFAULT nextval('label_type_id_seq'),
-    name text,
-    is_root boolean,
-    PRIMARY KEY (id)
-);
-
-ALTER TABLE public.label_type
-    OWNER to phoenix_lib;
-
 -- create exercises table
 CREATE TABLE public.exercise (
 	created timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -52,36 +39,26 @@ CREATE TABLE public.exercise (
     id integer DEFAULT nextval('exercise_id_seq'),
     name text,
 	description text,
-	springs smallint,
-    photo_ref text,
-    video_ref text,
+	springs text,
+    photo_url text,
+    video_url text,
+    thumbnail_url text,
     PRIMARY KEY (id)
 );
 
 ALTER TABLE public.exercise
     OWNER to phoenix_lib;
 
--- create categorisations table
-CREATE TABLE public.categorisation (
+-- create exercise_label table
+CREATE TABLE public.exercise_label (
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     modified timestamp DEFAULT CURRENT_TIMESTAMP,
     exercise_id integer,
-    parent_label_id integer,
-    label_id integer
+    genre_id integer,
+    movement_id integer
 );
 
-ALTER TABLE public.categorisation
-    OWNER to phoenix_lib;
-
--- create categorisation_nesting table
-CREATE TABLE public.categorisation_nesting (
-    created timestamp DEFAULT CURRENT_TIMESTAMP,
-    modified timestamp DEFAULT CURRENT_TIMESTAMP,
-    parent_label_id integer,
-    child_label_id integer
-);
-
-ALTER TABLE public.categorisation_nesting
+ALTER TABLE public.exercise_label
     OWNER to phoenix_lib;
 
 -- create class_status table

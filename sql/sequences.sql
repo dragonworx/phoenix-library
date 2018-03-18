@@ -6,10 +6,6 @@ CREATE SEQUENCE user_id_seq
 CREATE SEQUENCE label_id_seq
   START 1;
 
--- create label_type sequence
-CREATE SEQUENCE label_type_id_seq
-  START 1;
-
 -- create exercises sequence
 CREATE SEQUENCE exercise_id_seq
   START 1;

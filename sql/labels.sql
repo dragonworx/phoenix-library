@@ -1,0 +1,12 @@
+INSERT INTO label (type, name) VALUES (0, 'Pump');
+INSERT INTO label (type, name) VALUES (0, 'Jump');
+INSERT INTO label (type, name) VALUES (0, 'Connect');
+INSERT INTO label (type, name) VALUES (0, 'Freestyle');
+INSERT INTO label (type, name) VALUES (0, 'Technique');
+INSERT INTO label (type, name) VALUES (1, 'Warm Up');
+INSERT INTO label (type, name) VALUES (1, 'Supine Legs');
+INSERT INTO label (type, name) VALUES (1, 'Supine Arms & Abs');
+INSERT INTO label (type, name) VALUES (1, 'Weight Bearing Arms');
+INSERT INTO label (type, name) VALUES (1, 'Seated / Knealing');
+INSERT INTO label (type, name) VALUES (1, 'Prone');
+INSERT INTO label (type, name) VALUES (1, 'Full Body / Standing');
