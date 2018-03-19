@@ -14,5 +14,11 @@ export default theme => ({
   },
   content: {
     marginTop: theme.spacing.unit * 3
-  }
+  },
+  snackbar: {
+    position: 'absolute',
+  },
+  snackbarContent: {
+    width: 360,
+  },
 });

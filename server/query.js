@@ -26,6 +26,24 @@ module.exports = {
     sqlQuery += `select currval('${tableName[1]}_id_seq');`;
     return query(sqlQuery, data, sql.QueryTypes.INSERT).then(result => {
       return parseFloat(result[0][0].currval);
+    }).catch(error => {
+      log('Database Query Error:', 'red');
+      log(error.original.sql, 'red');
+      log('-'.repeat(error.original.position - 1) + '^', 'red');
+      return Promise.reject();
     });
-  }
+  },
+  update (sqlQuery, data) {
+    // TODO..
+    const tableName = sqlQuery.match(/^insert into ([a-z_0-9]+)/i);
+    sqlQuery += `select currval('${tableName[1]}_id_seq');`;
+    return query(sqlQuery, data, sql.QueryTypes.INSERT).then(result => {
+      return parseFloat(result[0][0].currval);
+    }).catch(error => {
+      log('Database Query Error:', 'red');
+      log(error.original.sql, 'red');
+      log('-'.repeat(error.original.position - 1) + '^', 'red');
+      return Promise.reject();
+    });
+  },
 };

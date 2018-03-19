@@ -4,6 +4,7 @@ const logger = require('morgan');
 const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const session = require('express-session');
+const fileUpload = require('express-fileupload');
 const database = require('./database');
 const routes = require('./routes');
 const log = require('./log');
@@ -28,6 +29,8 @@ database.then(() => {
   app.use(bodyParser.urlencoded({ extended: false }));
 
   app.use(express.static(path.resolve(__dirname, '../static')));
+
+  app.use(fileUpload());
 
   routes(app);
     

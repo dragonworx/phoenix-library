@@ -19,30 +19,30 @@ function Admin(props) {
 
   return (
     <Router>
-    <div className={classes.root}>
-      <AppBar position="absolute" className={classes.appBar}>
-        <Toolbar>
-          <Typography variant="title" color="inherit" noWrap>
-            {`Welcome${user.last_login ? ' back' : ''} ${user.first_name}`}
-          </Typography>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
-        <div className={classes.toolbar} />
-        <ListMenu />
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.toolbar} />
-        <Route exact path="/admin/" render={() => <p>Coming soon!</p>}/>
-        <Route path="/admin/users" render={() => <p>Coming soon!</p>}/>
-        <Route path="/admin/exercises" component={Exercises}/>
-      </main>
-    </div>
+      <div className={classes.root}>
+        <AppBar position="absolute" className={classes.appBar}>
+          <Toolbar>
+            <Typography variant="title" color="inherit" noWrap>
+              {`Welcome${user.last_login ? ' back' : ''} ${user.first_name}`}
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant="permanent"
+          classes={{
+            paper: classes.drawerPaper,
+          }}
+        >
+          <div className={classes.toolbar} />
+          <ListMenu />
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.toolbar} />
+          <Route exact path="/admin/" render={() => <p>Coming soon!</p>}/>
+          <Route exact path="/admin/users" render={() => <p>Coming soon!</p>}/>
+          <Route exact path="/admin/exercises" component={Exercises}/>
+        </main>
+      </div>
     </Router>
   );
 }

@@ -17,7 +17,8 @@
     "document": true,
     "console": true,
     "process": true,
-    "Promise": true
+    "Promise": true,
+    "__BUILD__": true,
   },
   "rules": {
     "arrow-parens": 0,

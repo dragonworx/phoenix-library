@@ -42,7 +42,7 @@ class Login extends React.Component {
       email: this.state.email,
       password: this.state.password
     }).then(() => {
-      location = '/admin';
+      location = '/admin/land';
     }).catch(() => {
       this.setState({ loginFail: true });
       setTimeout(() => this.setState({ loginFail: false }), 1000)

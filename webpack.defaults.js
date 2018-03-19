@@ -18,5 +18,5 @@ module.exports = (entryFile, outputFile) => ({
   },
   resolve: {
     extensions: ['.js', '.jsx']
-  }
+  },
 });

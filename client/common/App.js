@@ -1,7 +1,6 @@
 import React from "react";
 import ReactDOM from 'react-dom';
 import { MuiThemeProvider, createMuiTheme } from "material-ui/styles";
-import ErrorDialog from './errorDialog';
 
 class App extends React.Component {
   state = {
@@ -11,7 +10,7 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     window.onerror = (message, source, lineno, colno, error) => {
-      this.setState({ error: (error && error.stack) || message });
+      document.write(`<pre style="padding: 10px; white-space: pre-wrap; color: white; background-color: #be6650;">${(error && error.stack) || message}</pre>`);
     };
   }
 
@@ -27,7 +26,7 @@ class App extends React.Component {
   render () {
     return (
       <MuiThemeProvider theme={createMuiTheme()}>
-        {this.state.error ? <ErrorDialog message={this.state.error} /> : this.props.children}
+        {this.props.children}
       </MuiThemeProvider>
     );
   }

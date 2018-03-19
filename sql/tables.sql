@@ -40,9 +40,9 @@ CREATE TABLE public.exercise (
     name text,
 	description text,
 	springs text,
-    photo_url text,
-    video_url text,
-    thumbnail_url text,
+    photo text,
+    video text,
+    thumbnail text,
     PRIMARY KEY (id)
 );
 
