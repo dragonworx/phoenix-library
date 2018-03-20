@@ -60,7 +60,7 @@ class ExerciseGrid extends React.PureComponent {
       { name: 'movement', title: 'Movement Cat.' },
       { name: 'springs', title: 'Springs' },
       { name: 'description', title: 'Description' },
-      { name: 'video_url', title: 'Video URL' },
+      { name: 'video', title: 'Video URL' },
     ],
     rows: [],
     filteringStateColumnExtensions: [
@@ -130,9 +130,14 @@ class ExerciseGrid extends React.PureComponent {
     const rows = [
       ...this.state.rows,
     ];
-    const row = rows.find(row => row.id === savedRow.id);
+    const id = this.state.editItem.id;
+    const row = rows.find(row => row.id === id);
     row.name = savedRow.name;
-    this.setState({ rows });
+    row.springs = savedRow.springs;
+    row.description = savedRow.description;
+    row.video = savedRow.video;
+    row.id = id;
+    this.setState({ rows, editItem: null });
   };
 
   renderEditControls () {
@@ -140,7 +145,7 @@ class ExerciseGrid extends React.PureComponent {
     const { classes } = this.props;
 
     return (
-      <div>
+      <div className={classes.root}>
         <Button variant="fab" color="primary" aria-label="add" className={classes.button} onClick={this.onAddClick}>
           <AddIcon />
         </Button>

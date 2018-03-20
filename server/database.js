@@ -4,7 +4,7 @@ const env = require('./environment');
 const log = require('./log');
 
 process.on('unhandledRejection', function (err) {
-  log(err.stack, 'red');
+  log(err.stack ? err.stack : err, 'red');
   process.exit(-1);
 });
 

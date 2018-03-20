@@ -78,7 +78,7 @@ class AddEdit extends React.Component {
   };
 
   handleSave = () => {
-    const { mode } = this.props;
+    const { mode, editItem } = this.props;
     const values = this.values;
     const data = new FormData();
     data.append('name', values.name);
@@ -86,6 +86,9 @@ class AddEdit extends React.Component {
     data.append('description', values.description);
     data.append('photo', values.photo);
     data.append('video', values.video);
+    if (editItem) {
+      data.append('id', editItem.id);
+    }
     return axios.post(`/exercise/${mode}`, data, {
       headers: { 'content-type': 'multipart/form-data' }
     }).then(res => {

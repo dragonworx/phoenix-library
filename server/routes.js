@@ -133,19 +133,21 @@ module.exports = function (app) {
   });
 
   app.post('/exercise/edit', (req, res) => {
+    const id = req.body.id;
     const name = req.body.name;
     const springs = req.body.springs;
     const description = req.body.description;
     const photo = req.files && req.files.photo;
     const video = req.body.video;
     api.editExercise(
+      id,
       name,
       springs,
       description,
       photo,
       video
-    ).then(id => {
-      res.sendJSON({ id });
+    ).then(() => {
+      res.end();
     }).catch(error => {
       res.status(500);
       res.sendJSON({ error });

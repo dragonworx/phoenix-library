@@ -1,9 +1,13 @@
-const { select, insert, update } = require('./query');
+const query = require('./query');
 const password = require('./password');
+const TABLE = {
+  USER: 'users',
+  EXERCISE: 'exercise',
+};
 
 module.exports = {
   login (email, plainTextPassword) {
-    return select('SELECT first_name, last_name, password, is_admin, is_super, is_designer, last_login FROM users WHERE email = ?;', [email])
+    return query.select(TABLE.USER, ['first_name', 'last_name', 'password', 'is_admin', 'is_super', 'is_designer', 'last_login'], { email })
       .then(data => {
         if (data.length) {
           const user = data[0];
@@ -24,30 +28,20 @@ module.exports = {
   },
   addExercise (name, springs, description, photo, video) {
     // TODO: create thumbnail, reduce size, upload images to S3...
-    return insert('INSERT INTO exercise (name, springs, description, video) VALUES (?, ?, ?, ?);', [
-      name,
-      springs,
-      description,
-      video
-    ]);
+    return query.insert(TABLE.EXERCISE, { name, springs, description, video });
   },
   getExercises () {
-    return select('SELECT created, modified, id, name, springs, description, thumbnail, photo, video FROM exercise ORDER by id;')
+    return query.select(TABLE.EXERCISE, ['created', 'modified', 'id', 'name', 'springs', 'description', 'thumbnail', 'photo', 'video'])
       .then(array => {
         // TODO: join with exercise label data
         return Promise.resolve(array);
       });
   },
   deleteExercises (ids) {
-    return select('DELETE FROM exercise WHERE id IN(:ids);', {ids});
+    return query.remove(TABLE.EXERCISE, ids);
   },
-  editExercise (name, springs, description, photo, video) {
+  editExercise (id, name, springs, description, photo, video) {
     // TODO: create thumbnail, reduce size, upload images to S3...
-    return update('INSERT INTO exercise (name, springs, description, video) VALUES (?, ?, ?, ?);', [
-      name,
-      springs,
-      description,
-      video
-    ]);
+    return query.update(TABLE.EXERCISE, { name, springs, description, video }, { id });
   },
 };

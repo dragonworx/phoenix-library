@@ -121,7 +121,8 @@ CREATE TABLE public.test (
 	created timestamp DEFAULT CURRENT_TIMESTAMP,
     modified timestamp DEFAULT CURRENT_TIMESTAMP,
     id integer DEFAULT nextval('test_id_seq'),
-    val text,
+    foo text,
+    bar text,
     PRIMARY KEY (id)
 );
 
