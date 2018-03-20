@@ -9,7 +9,7 @@ import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import ListMenu from './listMenu';
+import SideNav from './sideNav';
 import styles from './styles';
 import { user } from '../common/session';
 import Exercises from './exercises';
@@ -34,7 +34,7 @@ function Admin(props) {
           }}
         >
           <div className={classes.toolbar} />
-          <ListMenu />
+          <SideNav />
         </Drawer>
         <main className={classes.content}>
           <div className={classes.toolbar} />

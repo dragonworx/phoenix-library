@@ -63,6 +63,7 @@ class ExerciseGrid extends React.PureComponent {
       { name: 'video', title: 'Video URL' },
     ],
     rows: [],
+    labels: [],
     filteringStateColumnExtensions: [
       { columnName: 'thumbnail', filteringEnabled: false },
     ],
@@ -76,7 +77,8 @@ class ExerciseGrid extends React.PureComponent {
       .then(res => {
         this.setState({
           mode: MODE.READ,
-          rows: res.data
+          rows: res.data.exercises,
+          labels: res.data.labels,
         });
       });
   }
@@ -169,6 +171,7 @@ class ExerciseGrid extends React.PureComponent {
       htmlColumns,
       selection,
       editItem,
+      labels,
     } = this.state;
     const { readOnly } = this.props;
 
@@ -183,13 +186,9 @@ class ExerciseGrid extends React.PureComponent {
     return (
       <Paper>
         { readOnly ? null : this.renderEditControls() }
-
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
-          <DescriptionTypeProvider
-            for={htmlColumns}
-          />
+          <DescriptionTypeProvider for={htmlColumns} />
           <DragDropProvider />
-
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />
           <SortingState
@@ -202,15 +201,10 @@ class ExerciseGrid extends React.PureComponent {
             ]}
           />
           { readOnly ? null : <SelectionState selection={selection} onSelectionChange={this.onSelectionChange} /> }
-
           <IntegratedFiltering />
           <IntegratedSorting />
-
           { readOnly ? null : <IntegratedSelection /> }
-
-          <VirtualTable
-            columnExtensions={tableColumnExtensions}
-            cellComponent={Cell}
+          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell}
           />
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
@@ -219,9 +213,12 @@ class ExerciseGrid extends React.PureComponent {
           <Toolbar />
           <SearchPanel />
         </Grid>
-
-        { mode === MODE.ADD || mode === MODE.EDIT ? <AddEdit mode={mode} editItem={editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null }
-        { mode === MODE.CONFIRM_DELETE ? 
+        {
+          mode === MODE.ADD || mode === MODE.EDIT ? 
+          <AddEdit mode={mode} editItem={editItem} labels={labels} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
+        }
+        {
+          mode === MODE.CONFIRM_DELETE ? 
           <Alert 
             title="Confirm Delete" 
             message={`Do you really want to delete these exercises?`}

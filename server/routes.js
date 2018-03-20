@@ -80,10 +80,17 @@ module.exports = function (app) {
 
   app.get('/exercise/get', (req, res) => {
     api.getExercises()
-      .then(array => {
-        res.sendJSON(array);
+      .then(data => {
+        res.sendJSON(data);
       });
   });
+
+  // app.get('/labels/get', (req, res) => {
+  //   api.getLabels()
+  //     .then(array => {
+  //       res.sendJSON(array);
+  //     });
+  // });
 
   /* post */
 

@@ -10,12 +10,14 @@ import Input from 'material-ui/Input';
 import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import Snackbar from 'material-ui/Snackbar';
+import Grid from 'material-ui/Grid';
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 import { withStyles } from "material-ui/styles";
 import axios from 'axios';
 import SaveButton from '../../saveButton';
+import ExerciseLabels from '../../../admin/exerciseLabels';
 import styles from './styles';
 
 const ERROR = {
@@ -78,6 +80,7 @@ class AddEdit extends React.Component {
   };
 
   handleSave = () => {
+    console.log(this.exerciseLabels.values());return;
     const { mode, editItem } = this.props;
     const values = this.values;
     const data = new FormData();
@@ -135,9 +138,13 @@ class AddEdit extends React.Component {
     this.setState({ error: null });
   };
 
+  handleExerciseLabelChange = (title, options) => {
+    console.log(title, options);
+  };
+
   render () {
     const { error } = this.state;
-    const { mode, classes } = this.props;
+    const { mode, classes, labels } = this.props;
     const hasError = !!error;
     const defaultItem = this.defaultItem;
 
@@ -146,6 +153,7 @@ class AddEdit extends React.Component {
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
+          maxWidth="md"
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
@@ -154,40 +162,47 @@ class AddEdit extends React.Component {
         </AppBar>
 
         <DialogContent className={classes.content}>
-        <TextField
-            autoFocus
-            margin="dense"
-            id="addEdit_name"
-            label="Name"
-            type="text"
-            fullWidth
-            defaultValue={defaultItem.name}
-          />
-          <TextField
-            margin="dense"
-            id="addEdit_springs"
-            label="Springs"
-            type="text"
-            fullWidth
-            defaultValue={defaultItem.springs}
-          />
-          <FormLabel className={classes.descLabel} component="legend">Description</FormLabel>
-          <div className={classes.editor} >
-            <Editor
-              editorState={this.state.editorState}
-              handleKeyCommand={this.handleEditorKeyCommand}
-              onChange={this.onChange} />
-          </div>
-          <FormLabel className={classes.descLabel} component="legend">Photo</FormLabel>
-          <Input id="addEdit_photo" type="file" onChange={this.handleFileUpload} error={error === ERROR.IMAGE_FORMAT} />
-          <TextField
-            margin="dense"
-            id="addEdit_video"
-            label="Video URL"
-            type="text"
-            fullWidth
-            defaultValue={defaultItem.video}
-          />
+          <Grid container spacing={24}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                  autoFocus
+                  margin="dense"
+                  id="addEdit_name"
+                  label="Name"
+                  type="text"
+                  fullWidth
+                  defaultValue={defaultItem.name}
+                />
+                <TextField
+                  margin="dense"
+                  id="addEdit_springs"
+                  label="Springs"
+                  type="text"
+                  fullWidth
+                  defaultValue={defaultItem.springs}
+                />
+                <FormLabel className={classes.descLabel} component="legend">Description</FormLabel>
+                <div className={classes.editor} >
+                  <Editor
+                    editorState={this.state.editorState}
+                    handleKeyCommand={this.handleEditorKeyCommand}
+                    onChange={this.onChange} />
+                </div>
+                <FormLabel className={classes.descLabel} component="legend">Photo</FormLabel>
+                <Input id="addEdit_photo" type="file" onChange={this.handleFileUpload} error={error === ERROR.IMAGE_FORMAT} />
+                <TextField
+                  margin="dense"
+                  id="addEdit_video"
+                  label="Video URL"
+                  type="text"
+                  fullWidth
+                  defaultValue={defaultItem.video}
+                />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <ExerciseLabels onChange={this.handleExerciseLabelChange} labels={labels} />
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={this.handleClose} color="primary">

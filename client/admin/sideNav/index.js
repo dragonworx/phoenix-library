@@ -14,7 +14,7 @@ function menuItemClassName (url, classes, defaultClassName) {
   return (location.pathname === url ? classes.selected : '') + ' ' + classes[defaultClassName];
 }
 
-function SimpleList(props) {
+function SideNav(props) {
   const { classes } = props;
   return (
     <div className={classes.root}>
@@ -57,4 +57,4 @@ function SimpleList(props) {
   );
 }
 
-export default withStyles(styles)(SimpleList);
+export default withStyles(styles)(SideNav);

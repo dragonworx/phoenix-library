@@ -3,6 +3,7 @@ const password = require('./password');
 const TABLE = {
   USER: 'users',
   EXERCISE: 'exercise',
+  LABEL: 'label',
 };
 
 module.exports = {
@@ -31,10 +32,16 @@ module.exports = {
     return query.insert(TABLE.EXERCISE, { name, springs, description, video });
   },
   getExercises () {
-    return query.select(TABLE.EXERCISE, ['created', 'modified', 'id', 'name', 'springs', 'description', 'thumbnail', 'photo', 'video'])
-      .then(array => {
-        // TODO: join with exercise label data
-        return Promise.resolve(array);
+    return query.select(TABLE.EXERCISE, ['id', 'name', 'springs', 'description', 'thumbnail', 'photo', 'video'])
+      .then(exercises => {
+        // TODO: join with exercise label data...add genre and movement cat virtual columns to exercises before sending...
+        return this.getLabels()
+          .then(labels => {
+            return {
+              exercises,
+              labels
+            };
+          });
       });
   },
   deleteExercises (ids) {
@@ -43,5 +50,8 @@ module.exports = {
   editExercise (id, name, springs, description, photo, video) {
     // TODO: create thumbnail, reduce size, upload images to S3...
     return query.update(TABLE.EXERCISE, { name, springs, description, video }, { id });
+  },
+  getLabels () {
+    return query.select(TABLE.LABEL, ['id', 'type', 'name', 'description', 'color']);
   },
 };
