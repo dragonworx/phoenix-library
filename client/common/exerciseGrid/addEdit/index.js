@@ -19,6 +19,7 @@ import { LinearProgress } from 'material-ui/Progress';
 import axios from 'axios';
 import SaveButton from '../../saveButton';
 import ExerciseLabels from '../../../admin/exerciseLabels';
+import { clone, trimUsage } from '../../../common/util';
 import styles from './styles';
 
 const ERROR = {
@@ -46,23 +47,31 @@ class AddEdit extends React.Component {
   }
 
   componentWillMount () {
-    const { editItem } = this.props;
+    const { editItem, labels } = this.props;
     if (editItem) {
       const state = stateFromHTML(editItem.description);
-      this.usage = editItem.usage;
+      const usage = clone(editItem.usage);
+      Object.entries(usage).forEach(({ 1: selections }) => {
+        Object.entries(selections).forEach(({ 0: movementId, 1: isSelected }) => {
+          const label = labels.find(label => label.id === parseInt(movementId, 10));
+          selections[movementId] = clone(label);
+          selections[movementId].selected = isSelected;
+        });
+      });
+      this.usage = usage;
       this.setState({editorState: EditorState.createWithContent(state)});
     }
   }
 
   get defaultItem () {
-    const { editItem } = this.props;
+    const { mode, editItem } = this.props;
     const item = {
       name: '',
       springs: '',
       description: '',
       video: '',
     };
-    if (editItem) {
+    if (mode === MODE.EDIT && editItem) {
       item.name = editItem.name;
       item.springs = editItem.springs;
       item.name = editItem.name;
@@ -85,11 +94,12 @@ class AddEdit extends React.Component {
   getSelectedLabels () {
     const usage = {};
     Object.entries(this.usage).forEach(({ 0: rootLabelId, 1: subLabels }) => {
-      const selectedSubLabels = Object.entries(subLabels).filter(({ 1: subLabel }) => subLabel.selected).map(kv => kv[1]);
+      const selectedSubLabels = Object.entries(subLabels).filter(({ 1: subLabel }) => typeof subLabel.selected === 'boolean').map(kv => kv[1]);
       const ids = {};
-      selectedSubLabels.map(subLabel => ids[subLabel.id] = true);
+      selectedSubLabels.map(subLabel => ids[subLabel.id] = subLabel.selected);
       usage[rootLabelId] = ids;
     });
+    trimUsage(usage);
     return usage;
   }
 
@@ -106,6 +116,7 @@ class AddEdit extends React.Component {
     const { mode, editItem } = this.props;
     const values = this.values;
     const usage = this.getSelectedLabels();
+    trimUsage(usage);
     const data = new FormData();
     data.append('name', values.name);
     data.append('springs', values.springs);
@@ -113,7 +124,7 @@ class AddEdit extends React.Component {
     data.append('photo', values.photo);
     data.append('video', values.video);
     data.append('usage', JSON.stringify(usage));
-    if (editItem) {
+    if (mode === MODE.EDIT && editItem) {
       data.append('id', editItem.id);
     }
     return axios.post(`/exercise/${mode}`, data, {
@@ -124,7 +135,7 @@ class AddEdit extends React.Component {
         values.id = id;
         this.setState({ open: false });
         this.props.onClose();
-        if (mode === 'add') {
+        if (mode === MODE.ADD) {
           this.props.onAdded(values, usage);
         } else {
           this.props.onSaved(values, usage);
@@ -178,7 +189,7 @@ class AddEdit extends React.Component {
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            {mode === 'add' ? 'New' : 'Edit'} Exercise
+            {mode === MODE.ADD ? 'New' : 'Edit'} Exercise
           </Typography>
         </AppBar>
 
@@ -200,10 +211,9 @@ class AddEdit extends React.Component {
 
   renderContent () {
     const { error } = this.state;
-    const { classes, labels } = this.props;
+    const { classes, labels, editItem } = this.props;
     const hasError = !!error;
     const defaultItem = this.defaultItem;
-    const usage = this.usage;
     
     return (
       <div>
@@ -246,7 +256,7 @@ class AddEdit extends React.Component {
               />
           </Grid>
           <Grid item xs={12} sm={6}>
-            <ExerciseLabels onChange={this.handleExerciseLabelChange} usage={usage} labels={labels} />
+            <ExerciseLabels onChange={this.handleExerciseLabelChange} usage={editItem && editItem.usage} labels={labels} />
           </Grid>
         </Grid>
       </DialogContent>

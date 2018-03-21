@@ -22,7 +22,7 @@ import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import AddEdit from './addEdit';
 import Alert from '../../common/alert';
-import { distinct } from '../../common/util';
+import { distinct, trimUsage } from '../../common/util';
 import styles from './styles';
 
 const Cell = (props) => {
@@ -114,6 +114,7 @@ class ExerciseGrid extends React.PureComponent {
   }
 
   updateRowLabels (row, usage) {
+    trimUsage(usage);
     const labels = {};
     this.labels.forEach(label => labels[label.id] = label);
     const genres = Object.entries(usage)
@@ -170,6 +171,7 @@ class ExerciseGrid extends React.PureComponent {
     const rows = [
       ...this.state.rows,
     ];
+    addedRow.usage = usage;
     rows.push(addedRow);
     this.setState({ rows });
   };
@@ -185,6 +187,7 @@ class ExerciseGrid extends React.PureComponent {
     row.description = savedRow.description;
     row.video = savedRow.video;
     row.id = id;
+    this.updateRowLabels(row, usage);
     this.setState({ rows, editItem: null });
   };
 
@@ -268,7 +271,7 @@ class ExerciseGrid extends React.PureComponent {
         </Grid>
         {
           mode === MODE.ADD || mode === MODE.EDIT ? 
-          <AddEdit mode={mode} labels={labels} editItem={editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
+          <AddEdit mode={mode} labels={labels} editItem={mode === MODE.EDIT && editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
         }
         {
           mode === MODE.CONFIRM_DELETE ? 

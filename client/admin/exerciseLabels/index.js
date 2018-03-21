@@ -19,7 +19,7 @@ class ExerciseLabels extends React.Component {
     super(props);
     this.rootLabels = this.props.labels.filter(label => label.type === LABEL.ROOT);
     this.subLabels = this.props.labels.filter(label => label.type === LABEL.SUB);
-    this.subLabels.forEach(label => label.selected = false/*TODO: reflect edit state*/);
+    this.subLabels.forEach(label => label.selected = null);
   }
 
   handleClick = () => {
@@ -40,7 +40,7 @@ class ExerciseLabels extends React.Component {
         <div className={classes.container}>
           <List component="nav">
           {
-            rootLabels.map(rootLabel => <LabelGroup key={`group_${rootLabel.name}`} usage={usage[rootLabel.id]} rootLabel={rootLabel} subLabels={subLabels} onChange={this.handleGroupChange} />)
+            rootLabels.map(rootLabel => <LabelGroup key={`group_${rootLabel.name}`} usage={usage && usage[rootLabel.id]} rootLabel={rootLabel} subLabels={subLabels} onChange={this.handleGroupChange} />)
           }
           </List>
         </div>

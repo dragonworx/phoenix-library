@@ -29,7 +29,7 @@ class LabelGroup extends React.Component {
     const selections = {};
     this.props.subLabels.forEach(label => {
       const labelCopy = clone(label);
-      labelCopy.selected = usage && !!usage[label.id];
+      labelCopy.selected = usage && (usage[label.id] || null);
       selections[label.id] = labelCopy;
     });
     this.state.selections = selections;
@@ -86,7 +86,7 @@ class LabelGroup extends React.Component {
               {
                 labels.map(label => (
                   <MenuItem key={`menu_${label.id}`} onClick={() => this.handleMenuClick(label)}>
-                    <Checkbox checked={label.selected} value={String(label.id)} />
+                    <Checkbox checked={label.selected === true} value={String(label.id)} />
                     <ListItemText primary={label.id + ':' + label.name} />
                   </MenuItem>
                 ))

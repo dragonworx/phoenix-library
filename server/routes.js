@@ -18,6 +18,8 @@ module.exports = function (app) {
   app.use((req, res, next) => {
     res.sendJSON = data => {
       res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Accept-Ranges', 'bytes');
+      res.setHeader('Cache-Control', 'no-cache');
       res.send(JSON.stringify(data));
     };
     next();
@@ -113,7 +115,7 @@ module.exports = function (app) {
       description,
       photo,
       video,
-      usage
+      usage,
     ).then(id => {
       res.sendJSON({ id });
     }).catch(error => {
@@ -141,13 +143,15 @@ module.exports = function (app) {
     const description = req.body.description;
     const photo = req.files && req.files.photo;
     const video = req.body.video;
+    const usage = JSON.parse(req.body.usage);
     api.editExercise(
       id,
       name,
       springs,
       description,
       photo,
-      video
+      video,
+      usage,
     ).then(() => {
       res.end();
     }).catch(error => {
