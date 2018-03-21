@@ -16,7 +16,8 @@
     "server": "node ./server",
     "server-dev": "nodemon ./server",
     "hash": "node ./scripts/hash.js",
-    "query": "node ./scripts/query.js"
+    "test-query": "node ./scripts/query.js",
+    "test-api": "node ./scripts/api.js"
   },
   "dependencies": {
     "@devexpress/dx-react-core": "^1.1.0",
@@ -72,7 +73,8 @@
     "open-browser-webpack-plugin": "0.0.3",
     "style-loader": "~0.13.1",
     "validate-commit-msg": "2.x",
-    "webpack": "^2.0.10"
+    "webpack": "^2.0.10",
+    "webpack-build-notifier": "^0.1.23"
   },
   "keywords": [
     "es6",

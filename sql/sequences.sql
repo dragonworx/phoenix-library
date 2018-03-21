@@ -10,6 +10,10 @@ CREATE SEQUENCE label_id_seq
 CREATE SEQUENCE exercise_id_seq
   START 1;
 
+-- create exercises sequence
+CREATE SEQUENCE exercise_label_id_seq
+  START 1;
+
 -- create class_status sequence
 CREATE SEQUENCE class_status_id_seq
   START 1;

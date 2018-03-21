@@ -7671,7 +7671,7 @@ var App = function (_React$Component) {
     };
 
     window.onerror = function (message, source, lineno, colno, error) {
-      document.write("<pre style=\"padding: 10px; white-space: pre-wrap; color: white; background-color: #be6650;\">" + (error && error.stack || message) + "</pre>");
+      document.write("<pre style=\"padding: 10px; white-space: pre-wrap; color: white; background-color: #c66262; border: 2px dashed white;\">" + (error && error.stack || message) + "</pre>");
     };
     return _this;
   }

@@ -64,13 +64,25 @@ const exported = {
     const columns = Object.keys(data);
     const values = columns.map(k => `:${k}`);
     const sqlQuery = `INSERT INTO ${tableName} (${columns.join(', ')}) values (${values.join(', ')}); select currval('${tableName}_id_seq');`;
-    return this.insertRaw(sqlQuery, data);
+    return this.insertRaw(sqlQuery, data)
+      .then(id => {
+        log('> ' + id);
+        return id;
+      });
   },
   insertRaw (sqlQuery, data) {
     return query(sqlQuery, data, sql.QueryTypes.INSERT)
     .then(result => {
       return parseFloat(result[0][0].currval);
     }).catch(onError);
+  },
+  /**
+   * INSERT multiple
+   * @param {string} tableName 
+   * @param {[]} data 
+   */
+  inserts (tableName, dataArray) {
+    return Promise.all(dataArray.map(data => this.insert(tableName, data)));
   },
   /**
    * UPDATE
@@ -103,12 +115,16 @@ const exported = {
    * @param {string} tableName
    * @param {[]} ids 
    */
-  remove (tableName, ids) {
-    const sqlQuery = `DELETE FROM ${tableName} WHERE id IN(:ids)`;
+  remove (tableName, ids, idColumn = 'id') {
+    const sqlQuery = `DELETE FROM ${tableName} WHERE ${idColumn} IN(:ids)`;
     return this.removeRaw(sqlQuery, { ids });
   },
   removeRaw (sqlQuery, data) {
     return query(sqlQuery, data, sql.QueryTypes.DELETE).catch(onError);
+  },
+  clear (tableName) {
+    const sqlQuery = `TRUNCATE ${tableName}`;
+    return query(sqlQuery);
   },
 };
 

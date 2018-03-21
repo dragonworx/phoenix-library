@@ -7,12 +7,17 @@ database.then(() => {
   //   .then(id => console.log(id));
   // }
 
+  query.inserts('test', [
+    { foo: 'a1' },
+    { foo: 'a2', bar: 'b2' }
+  ]).then(ids => console.log(ids));
+
   // query.select('test', ['foo'], { id: 2 })
   //   .then(rows => console.log(rows));
 
   // query.update('test', { foo: 'xyz', bar: '123' }, { id: 2 })
   //   .then(rowsAffected => console.log(rowsAffected));
 
-  query.delete('test', [5, 6])
-    .then(() => console.log('done.'));
+  // query.remove('test', [5, 6])
+  //   .then(() => console.log('done.'));
 });

@@ -10,7 +10,7 @@ class App extends React.Component {
   constructor (props) {
     super(props);
     window.onerror = (message, source, lineno, colno, error) => {
-      document.write(`<pre style="padding: 10px; white-space: pre-wrap; color: white; background-color: #be6650;">${(error && error.stack) || message}</pre>`);
+      document.write(`<pre style="padding: 10px; white-space: pre-wrap; color: white; background-color: #c66262; border: 2px dashed white;">${(error && error.stack) || message}</pre>`);
     };
   }
 

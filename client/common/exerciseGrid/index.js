@@ -4,23 +4,26 @@ import Paper from 'material-ui/Paper';
 import {
   SortingState, SelectionState, FilteringState, SearchState,
   IntegratedFiltering, IntegratedSorting, IntegratedSelection,
-  DataTypeProvider
+  DataTypeProvider,
 } from '@devexpress/dx-react-grid';
 import {
   Grid,
   VirtualTable, TableHeaderRow, TableFilterRow, TableSelection,
   DragDropProvider, TableColumnReordering, Toolbar, SearchPanel,
+  ColumnChooser, TableColumnVisibility, /*TableColumnResizing,*/
 } from '@devexpress/dx-react-grid-material-ui';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
+import Tooltip from 'material-ui/Tooltip';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
-import styles from './styles';
 import AddEdit from './addEdit';
 import Alert from '../../common/alert';
+import { distinct } from '../../common/util';
+import styles from './styles';
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -50,6 +53,21 @@ const DescriptionTypeProvider = props => (
   />
 );
 
+const TooltipFormatter = ({ value }) => {
+  if (value) {
+    const values = value.join(', ');
+    return <Tooltip title={values} placement="top"><span>{values}</span></Tooltip>;
+  }
+  return null;
+};
+
+const TooltipTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={TooltipFormatter}
+    {...props}
+  />
+);
+
 class ExerciseGrid extends React.PureComponent {
   state = {
     mode: MODE.LOADING,
@@ -63,11 +81,21 @@ class ExerciseGrid extends React.PureComponent {
       { name: 'video', title: 'Video URL' },
     ],
     rows: [],
-    labels: [],
     filteringStateColumnExtensions: [
       { columnName: 'thumbnail', filteringEnabled: false },
     ],
+    defaultHiddenColumnNames: ['video'],
+    defaultColumnWidths: [
+      { columnName: 'thumbnail', width: 50 },
+      { columnName: 'name', width: 50 },
+      { columnName: 'genre', width: 100 },
+      { columnName: 'movement', width: 100 },
+      { columnName: 'springs', width: 50 },
+      { columnName: 'description', width: 100 },
+      { columnName: 'video', width: 50 },
+    ],
     htmlColumns: ['description'],
+    labelColumns: ['genre', 'movement'],
     selection: [],
     editItem: null,
   };
@@ -75,12 +103,29 @@ class ExerciseGrid extends React.PureComponent {
   componentWillMount () {
     axios.get('/exercise/get')
       .then(res => {
+        const { exercises, labels } = res.data;
+        this.labels = labels;
+        exercises.forEach(exercise => this.updateRowLabels(exercise, exercise.usage));
         this.setState({
           mode: MODE.READ,
-          rows: res.data.exercises,
-          labels: res.data.labels,
+          rows: exercises,
         });
       });
+  }
+
+  updateRowLabels (row, usage) {
+    const labels = {};
+    this.labels.forEach(label => labels[label.id] = label);
+    const genres = Object.entries(usage)
+      .map(({ 0: id }) => labels[id].name);
+    const movementCategories = [];
+    Object.entries(usage)
+      .map(({ 1: selections }) => Object.keys(selections))
+      .forEach(ids => ids.forEach(id => movementCategories.push(labels[id].name)));
+    genres.sort();
+    movementCategories.sort();
+    row.genre = genres;
+    row.movement = distinct(movementCategories);
   }
 
   onAddClick = () => {
@@ -120,7 +165,8 @@ class ExerciseGrid extends React.PureComponent {
     this.setState({selection});
   };
 
-  onAdded = addedRow => {
+  onAdded = (addedRow, usage) => {
+    this.updateRowLabels(addedRow, usage);
     const rows = [
       ...this.state.rows,
     ];
@@ -128,7 +174,7 @@ class ExerciseGrid extends React.PureComponent {
     this.setState({ rows });
   };
 
-  onSaved = savedRow => {
+  onSaved = (savedRow, usage) => {
     const rows = [
       ...this.state.rows,
     ];
@@ -163,17 +209,20 @@ class ExerciseGrid extends React.PureComponent {
 
   render () {
     const { 
-      rows, 
+      rows,
       columns, 
       tableColumnExtensions, 
       filteringStateColumnExtensions,
+      defaultHiddenColumnNames,
+      // defaultColumnWidths,
       mode,
       htmlColumns,
+      labelColumns,
       selection,
       editItem,
-      labels,
     } = this.state;
     const { readOnly } = this.props;
+    const labels = this.labels;
 
     if (mode === MODE.LOADING) {
       return (
@@ -188,6 +237,7 @@ class ExerciseGrid extends React.PureComponent {
         { readOnly ? null : this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
+          <TooltipTypeProvider for={labelColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />
@@ -206,22 +256,25 @@ class ExerciseGrid extends React.PureComponent {
           { readOnly ? null : <IntegratedSelection /> }
           <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell}
           />
+          {/*<TableColumnResizing defaultColumnWidths={defaultColumnWidths} />*/}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
           { readOnly ? null : <TableSelection showSelectAll /> }
+          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} />
           <Toolbar />
+          <ColumnChooser />
           <SearchPanel />
         </Grid>
         {
           mode === MODE.ADD || mode === MODE.EDIT ? 
-          <AddEdit mode={mode} editItem={editItem} labels={labels} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
+          <AddEdit mode={mode} labels={labels} editItem={editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
         }
         {
           mode === MODE.CONFIRM_DELETE ? 
           <Alert 
             title="Confirm Delete" 
-            message={`Do you really want to delete these exercises?`}
+            message={`Do you really want to delete ${selection.length === 1 ? 'this exercise' : 'these ' + selection.length + ' exercises'}?`}
             submitText="Delete" 
             onClose={this.onConfirmDeleteClose} 
           /> : null

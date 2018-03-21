@@ -6,8 +6,8 @@ import LabelGroup from './labelGroup';
 import styles from './styles';
 
 const LABEL = {
-  GENRE: 0,
-  MOVEMENT_CATEGORY: 1
+  ROOT: 0,
+  SUB: 1
 };
 
 class ExerciseLabels extends React.Component {
@@ -17,27 +17,22 @@ class ExerciseLabels extends React.Component {
 
   constructor (props) {
     super(props);
-    this.genres = this.props.labels.filter(label => label.type === LABEL.GENRE);
-    this.movementCategories = this.props.labels.filter(label => label.type === LABEL.MOVEMENT_CATEGORY);
-    const keys = this.movementCategories.map(label => label.name);
-    const options = {};
-    for (let key of keys) {
-      options[key] = false;
-    }
-    this.options = options;
+    this.rootLabels = this.props.labels.filter(label => label.type === LABEL.ROOT);
+    this.subLabels = this.props.labels.filter(label => label.type === LABEL.SUB);
+    this.subLabels.forEach(label => label.selected = false/*TODO: reflect edit state*/);
   }
 
   handleClick = () => {
     this.setState({ open: !this.state.open });
   };
 
-  handleGroupChange = (title, options) => {
-    this.props.onChange(title, options);
+  handleGroupChange = (rootLabel, selections) => {
+    this.props.onChange(rootLabel, selections);
   };
 
   render() {
-    const { classes } = this.props;
-    const { genres, options } = this;
+    const { classes, usage } = this.props;
+    const { rootLabels, subLabels } = this;
 
     return (
       <div className={classes.root}>
@@ -45,7 +40,7 @@ class ExerciseLabels extends React.Component {
         <div className={classes.container}>
           <List component="nav">
           {
-            genres.map(label => <LabelGroup key={`group_${label.name}`} title={label.name} options={options} onChange={this.handleGroupChange} />)
+            rootLabels.map(rootLabel => <LabelGroup key={`group_${rootLabel.name}`} usage={usage[rootLabel.id]} rootLabel={rootLabel} subLabels={subLabels} onChange={this.handleGroupChange} />)
           }
           </List>
         </div>

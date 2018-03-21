@@ -12,6 +12,7 @@ import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Menu, { MenuItem } from 'material-ui/Menu';
+import { clone } from '../../../common/util';
 import styles from './styles';
 
 const MENU_HEIGHT = 78;
@@ -19,12 +20,19 @@ const MENU_HEIGHT = 78;
 class LabelGroup extends React.Component {
   state = {
     anchorEl: null,
-    options: {},
+    selections: {},
   };
 
   constructor (props) {
     super(props);
-    this.state.options = this.props.options;
+    const { usage } = this.props;
+    const selections = {};
+    this.props.subLabels.forEach(label => {
+      const labelCopy = clone(label);
+      labelCopy.selected = usage && !!usage[label.id];
+      selections[label.id] = labelCopy;
+    });
+    this.state.selections = selections;
   }
 
   handleClick = event => {
@@ -35,28 +43,17 @@ class LabelGroup extends React.Component {
     this.setState({ anchorEl: null });
   };
 
-  handleCheck = (e, checked) => {
-    const options = {
-      ...this.state.options
-    };
-    options[e.target.value] = checked;
-    this.setState({ options });
-    this.props.onChange(this.props.title, options);
-  };
-
-  handleMenuClick = (key) => {
-    const options = {
-      ...this.state.options
-    };
-    options[key] = !options[key];
-    this.setState({ options });
-    this.props.onChange(this.props.title, options);
+  handleMenuClick = (label) => {
+    const { selections } = this.state;
+    label.selected = !label.selected;
+    this.setState({ selections });
+    this.props.onChange(this.props.rootLabel, selections);
   };
 
   render() {
-    const { classes, title } = this.props;
-    const { anchorEl, options } = this.state;
-    const keys = Object.keys(options);
+    const { classes, rootLabel } = this.props;
+    const { anchorEl, selections } = this.state;
+    const labels = Object.entries(selections).map(({ 1: label }) => label);
 
     return (
       <div>
@@ -64,7 +61,7 @@ class LabelGroup extends React.Component {
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
-          <ListItemText inset primary={title} />
+          <ListItemText inset primary={rootLabel.id + ':' + rootLabel.name} />
           <ListItemSecondaryAction>
             <IconButton
               aria-label="More"
@@ -87,10 +84,10 @@ class LabelGroup extends React.Component {
               }}
             >
               {
-                keys.map(key => (
-                  <MenuItem key={`menu_${key}`} onClick={() => this.handleMenuClick(key)}>
-                    <Checkbox checked={options[key]} value={key} />
-                    <ListItemText primary={key} />
+                labels.map(label => (
+                  <MenuItem key={`menu_${label.id}`} onClick={() => this.handleMenuClick(label)}>
+                    <Checkbox checked={label.selected} value={String(label.id)} />
+                    <ListItemText primary={label.id + ':' + label.name} />
                   </MenuItem>
                 ))
               }
@@ -98,13 +95,13 @@ class LabelGroup extends React.Component {
           </ListItemSecondaryAction>
         </ListItem>
         {
-          keys.map(key => (
-            options[key]
-              ? <ListItem key={`item_${key}`} className={classes.subItem}>
+          labels.map(label => (
+            label.selected
+              ? <ListItem key={`item_${label.id}`} className={classes.subItem}>
                   <ListItemIcon>
                     <CheckIcon />
                   </ListItemIcon>
-                  <ListItemText inset secondary={key} />
+                  <ListItemText inset secondary={label.id + ':' + label.name} />
                 </ListItem>
               : null
           ))

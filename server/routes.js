@@ -85,13 +85,6 @@ module.exports = function (app) {
       });
   });
 
-  // app.get('/labels/get', (req, res) => {
-  //   api.getLabels()
-  //     .then(array => {
-  //       res.sendJSON(array);
-  //     });
-  // });
-
   /* post */
 
   app.post('/login', (req, res) => {
@@ -113,12 +106,14 @@ module.exports = function (app) {
     const description = req.body.description;
     const photo = req.files && req.files.photo;
     const video = req.body.video;
+    const usage = JSON.parse(req.body.usage);
     api.addExercise(
       name,
       springs,
       description,
       photo,
-      video
+      video,
+      usage
     ).then(id => {
       res.sendJSON({ id });
     }).catch(error => {

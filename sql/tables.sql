@@ -53,6 +53,7 @@ ALTER TABLE public.exercise
 CREATE TABLE public.exercise_label (
     created timestamp DEFAULT CURRENT_TIMESTAMP,
     modified timestamp DEFAULT CURRENT_TIMESTAMP,
+    id integer DEFAULT nextval('exercise_label_id_seq'),
     exercise_id integer,
     genre_id integer,
     movement_id integer
