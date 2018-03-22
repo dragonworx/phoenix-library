@@ -58,7 +58,7 @@ log('Building ' + config.envName, 'green');
 
 module.exports = [
   /* /login */
-  config('client/login/_main.js', './login-bundle.js'),
+  config('client/main_login.js', './login-bundle.js'),
   /* /admin */
-  config('client/admin/_main.js', './admin-bundle.js'),
+  config('client/main_admin.js', './admin-bundle.js'),
 ];
