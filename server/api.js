@@ -16,6 +16,9 @@ function hashById (rows) {
 }
 
 module.exports = {
+  ping () {
+    return query.raw('SELECT true;');
+  },
   clearExercises () {
     return query.clear(TABLE.EXERCISE_LABEL)
       .then(() => {
@@ -65,12 +68,12 @@ module.exports = {
       });
     });
     if (exerciseLabelData.length) {
-      log("adding " + exerciseLabelData.length);
+      log(`adding ${exerciseLabelData.length} exercise labels for #${exerciseId}`);
       return query.inserts(TABLE.EXERCISE_LABEL, exerciseLabelData).then(() => {
         return exerciseId;
       });
     } else {
-      log("adding node");
+      log(`adding no exercise labels for #${exerciseId}`);
       return Promise.resolve(exerciseId);
     }
   },

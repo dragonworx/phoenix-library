@@ -55,6 +55,15 @@ module.exports = function (app) {
     next();
   });
 
+  app.get('/ping', (req, res) => {
+    api.ping().then(() => {
+      res.end();
+    }).catch(() => {
+      res.status(500);
+      res.end();
+    });
+  });
+
   app.get('/admin', (req, res) => {
     res.render('admin', { user: encodedUser(req) });
   });

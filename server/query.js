@@ -12,6 +12,7 @@ function query (sqlQuery, data = null, type = sql.QueryTypes.SELECT) {
     options.replacements = data;
   }
   log(sqlQuery, 'cyan');
+  log(JSON.stringify(data), 'cyan');
   return sql.query(sqlQuery, options);
 }
 
@@ -66,7 +67,7 @@ const exported = {
     const sqlQuery = `INSERT INTO ${tableName} (${columns.join(', ')}) values (${values.join(', ')}); select currval('${tableName}_id_seq');`;
     return this.insertRaw(sqlQuery, data)
       .then(id => {
-        log('> ' + id);
+        log(`row #${id} added to ${tableName}`);
         return id;
       });
   },

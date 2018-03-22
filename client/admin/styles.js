@@ -24,4 +24,11 @@ module.exports = theme => ({
     minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,
+  avatar: {
+    margin: 10,
+  },
+  bigAvatar: {
+    width: 48,
+    height: 48,
+  },
 });
