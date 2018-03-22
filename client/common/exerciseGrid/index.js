@@ -43,7 +43,7 @@ const htmlNode = document.createElement('div');
 
 const DescriptionFormatter = ({ value }) => {
   htmlNode.innerHTML = value;
-  return <span>{htmlNode.textContent}</span>;
+  return <Tooltip title={htmlNode.textContent} placement="top"><span>{htmlNode.textContent}</span></Tooltip>;
 };
 
 const DescriptionTypeProvider = props => (
@@ -55,7 +55,7 @@ const DescriptionTypeProvider = props => (
 
 const TooltipFormatter = ({ value }) => {
   if (value) {
-    const values = value.join(', ');
+    const values = Array.isArray(value) ? value.join(', ') : String(value);
     return <Tooltip title={values} placement="top"><span>{values}</span></Tooltip>;
   }
   return null;
@@ -84,7 +84,7 @@ class ExerciseGrid extends React.PureComponent {
     filteringStateColumnExtensions: [
       { columnName: 'thumbnail', filteringEnabled: false },
     ],
-    defaultHiddenColumnNames: ['video'],
+    defaultHiddenColumnNames: ['thumbnail', 'video'],
     defaultColumnWidths: [
       { columnName: 'thumbnail', width: 50 },
       { columnName: 'name', width: 50 },
@@ -95,7 +95,7 @@ class ExerciseGrid extends React.PureComponent {
       { columnName: 'video', width: 50 },
     ],
     htmlColumns: ['description'],
-    labelColumns: ['genre', 'movement'],
+    labelColumns: ['name', 'genre', 'movement', 'springs'],
     selection: [],
     editItem: null,
   };
