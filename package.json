@@ -15,12 +15,14 @@
     "server-prod": "pm2 start ./server/index.js --name phoenix_lib",
     "hash": "node ./scripts/hash.js",
     "test-query": "node ./scripts/query.js",
-    "test-api": "node ./scripts/api.js"
+    "test-api": "node ./scripts/api.js",
+    "dev": "yarn build-dev & yarn server-dev"
   },
   "dependencies": {
     "@devexpress/dx-react-core": "^1.1.0",
     "@devexpress/dx-react-grid": "^1.1.0",
     "@devexpress/dx-react-grid-material-ui": "^1.1.0",
+    "aws-sdk": "^2.213.1",
     "axios": "^0.18.0",
     "babel-eslint": "^8.2.2",
     "babel-polyfill": "^6.26.0",
@@ -51,7 +53,8 @@
     "react-dom": "^16.2.0",
     "react-router-dom": "^4.2.2",
     "sequelize": "^4.35.2",
-    "serve-favicon": "^2.4.5"
+    "serve-favicon": "^2.4.5",
+    "sharp": "^0.20.1"
   },
   "devDependencies": {
     "babel-core": "6.x",

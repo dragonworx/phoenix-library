@@ -1,6 +1,7 @@
 const query = require('./query');
 const password = require('./password');
 const log = require('./log');
+const storage = require('./storage');
 
 const TABLE = {
   USER: 'users',
@@ -17,7 +18,7 @@ function hashById (rows) {
 
 module.exports = {
   ping () {
-    return query.raw('SELECT true;');
+    return query.raw('SELECT true;', false);
   },
   clearExercises () {
     return query.clear(TABLE.EXERCISE_LABEL)
@@ -44,38 +45,6 @@ module.exports = {
           return null;
         }
       });
-  },
-  addExercise (name, springs, description, photo, video, usage) {
-    // TODO: create thumbnail, reduce size, upload images to S3...
-    return query.insert(TABLE.EXERCISE, { name, springs, description, video })
-      .then(exerciseId => {
-        log(usage);
-        return this.createExerciseLabels(exerciseId, usage);
-      });
-  },
-  createExerciseLabels (exerciseId, usage) {
-    const exerciseLabelData = [];
-    Object.entries(usage).map(({ 0: genreId, 1: selectedMovementCategories }) => {
-      Object.entries(selectedMovementCategories).forEach(({ 0: movementId, 1: isSelected }) => {
-        log(movementId + ':' + isSelected);
-        if (isSelected === true) {
-          exerciseLabelData.push({
-            exercise_id: exerciseId,
-            genre_id: genreId,
-            movement_id: movementId
-          });
-        }
-      });
-    });
-    if (exerciseLabelData.length) {
-      log(`adding ${exerciseLabelData.length} exercise labels for #${exerciseId}`);
-      return query.inserts(TABLE.EXERCISE_LABEL, exerciseLabelData).then(() => {
-        return exerciseId;
-      });
-    } else {
-      log(`adding no exercise labels for #${exerciseId}`);
-      return Promise.resolve(exerciseId);
-    }
   },
   getExercises () {
     return query.select(TABLE.EXERCISE, ['id', 'name', 'springs', 'description', 'thumbnail', 'photo', 'video'])
@@ -118,22 +87,73 @@ module.exports = {
           });
       });
   },
-  deleteExercises (ids) {
-    return query.remove(TABLE.EXERCISE, ids)
-      .then(() => {
-        return query.remove(TABLE.EXERCISE_LABEL, ids, 'exercise_id');
+  addExercise (name, springs, description, photo, video, usage) {
+    return query.insert(TABLE.EXERCISE, { name, springs, description, video })
+      .then(exerciseId => {
+        log(usage);
+        return this.createExerciseLabels(exerciseId, usage)
+          .then(exerciseId => {
+            if (!photo) {
+              return exerciseId;
+            }
+            const photo_full_url = storage.imageUrl(exerciseId, 'full');
+            const photo_thumb_url = storage.imageUrl(exerciseId, 'thumb');
+            return query.update(TABLE.EXERCISE, { photo: photo_full_url, thumbnail: photo_thumb_url }, { id: exerciseId })
+              .then(() => exerciseId);
+          });
       });
   },
   editExercise (exerciseId, name, springs, description, photo, video, usage) {
-    // TODO: create thumbnail, reduce size, upload images to S3...
     return query.update(TABLE.EXERCISE, { name, springs, description, video }, { id: exerciseId })
       .then(() => {
         return query.remove(TABLE.EXERCISE_LABEL, [exerciseId], 'exercise_id')
           .then(() => {
             log(usage);
-            return this.createExerciseLabels(exerciseId, usage);
+            return this.createExerciseLabels(exerciseId, usage)
+              .then(exerciseId => {
+                if (!photo) {
+                  return exerciseId;
+                }
+                const photo_full_url = storage.imageUrl(exerciseId, 'full');
+                const photo_thumb_url = storage.imageUrl(exerciseId, 'thumb');
+                return query.update(TABLE.EXERCISE, { photo: photo_full_url, thumbnail: photo_thumb_url }, { id: exerciseId })
+                  .then(() => exerciseId);
+              });
           });
       });
+  },
+  deleteExercises (ids) {
+    return query.remove(TABLE.EXERCISE, ids)
+      .then(() => {
+        return query.remove(TABLE.EXERCISE_LABEL, ids, 'exercise_id')
+          .then(() => {
+            return Promise.all(ids.map(exerciseId => storage.deleteImages(exerciseId)));
+          });
+      });
+  },
+  createExerciseLabels (exerciseId, usage) {
+    const exerciseLabelData = [];
+    Object.entries(usage).map(({ 0: genreId, 1: selectedMovementCategories }) => {
+      Object.entries(selectedMovementCategories).forEach(({ 0: movementId, 1: isSelected }) => {
+        log(movementId + ':' + isSelected);
+        if (isSelected === true) {
+          exerciseLabelData.push({
+            exercise_id: exerciseId,
+            genre_id: genreId,
+            movement_id: movementId
+          });
+        }
+      });
+    });
+    if (exerciseLabelData.length) {
+      log(`adding ${exerciseLabelData.length} exercise labels for #${exerciseId}`);
+      return query.inserts(TABLE.EXERCISE_LABEL, exerciseLabelData).then(() => {
+        return exerciseId;
+      });
+    } else {
+      log(`adding no exercise labels for #${exerciseId}`);
+      return Promise.resolve(exerciseId);
+    }
   },
   getLabels () {
     return query.select(TABLE.LABEL, ['id', 'type', 'name', 'description', 'color']);

@@ -1,5 +1,6 @@
 const log = require('./log');
 const api = require('./api');
+const storage = require('./storage');
 
 function encodedUser (req) {
   const sessionUser = req.session.user;
@@ -25,6 +26,19 @@ module.exports = function (app) {
     next();
   });
 
+  app.get('/ping', (req, res) => {
+    const onReject = () => {
+      res.status(500);
+      res.end();
+    };
+    api.ping().then(() => {
+      if (!req.session || (!req.session.user)) {
+        onReject();
+      }
+      res.end();
+    }).catch(onReject);
+  });
+
   app.get('/login', (req, res) => {
     const user = req.session.user;
     if (user) {
@@ -36,7 +50,7 @@ module.exports = function (app) {
   
   /* authenticate */
 
-  app.use( (req, res, next) => {  
+  app.use((req, res, next) => {  
     const user = req.session.user;
     const isAdmin = !!(user && user.is_admin);
     const isUnauthorised = (req.url.match('^\/admin') && !isAdmin)
@@ -53,15 +67,6 @@ module.exports = function (app) {
     }
   
     next();
-  });
-
-  app.get('/ping', (req, res) => {
-    api.ping().then(() => {
-      res.end();
-    }).catch(() => {
-      res.status(500);
-      res.end();
-    });
   });
 
   app.get('/admin', (req, res) => {
@@ -125,8 +130,56 @@ module.exports = function (app) {
       photo,
       video,
       usage,
-    ).then(id => {
-      res.sendJSON({ id });
+    ).then(exerciseId => {
+      if (!photo) {
+        res.sendJSON({ id: exerciseId });
+        return;
+      }
+      const uploads = [
+        storage.uploadImage(exerciseId, 'full', photo.data),
+        storage.uploadImage(exerciseId, 'thumb', photo.data, 100, 100)
+      ];
+      return Promise.all(uploads)
+        .then(() => {
+          log(`Successfully uploaded: ${exerciseId} ${storage.imageUrl(exerciseId, 'thumb')}`, 'green');
+          res.sendJSON({ id: exerciseId, photo: storage.imageUrl(exerciseId, 'full'), thumbnail: storage.imageUrl(exerciseId, 'thumb') });
+        });
+    }).catch(error => {
+      res.status(500);
+      res.sendJSON({ error });
+    });
+  });
+
+  app.post('/exercise/edit', (req, res) => {
+    const exerciseId = req.body.id;
+    const name = req.body.name;
+    const springs = req.body.springs;
+    const description = req.body.description;
+    const photo = req.files && req.files.photo;
+    const video = req.body.video;
+    const usage = JSON.parse(req.body.usage);
+    api.editExercise(
+      exerciseId,
+      name,
+      springs,
+      description,
+      photo,
+      video,
+      usage,
+    ).then(() => {
+      if (!photo) {
+        res.sendJSON({ id: exerciseId });
+        return;
+      }
+      const uploads = [
+        storage.uploadImage(exerciseId, 'full', photo.data),
+        storage.uploadImage(exerciseId, 'thumb', photo.data, 100, 100)
+      ];
+      return Promise.all(uploads)
+        .then(() => {
+          log(`Successfully uploaded: ${exerciseId} ${storage.imageUrl(exerciseId, 'thumb')}`, 'green');
+          res.sendJSON({ id: exerciseId, photo: storage.imageUrl(exerciseId, 'full'), thumbnail: storage.imageUrl(exerciseId, 'thumb') });
+        });
     }).catch(error => {
       res.status(500);
       res.sendJSON({ error });
@@ -143,29 +196,5 @@ module.exports = function (app) {
         res.status(500);
         res.sendJSON({ error });
       });
-  });
-
-  app.post('/exercise/edit', (req, res) => {
-    const id = req.body.id;
-    const name = req.body.name;
-    const springs = req.body.springs;
-    const description = req.body.description;
-    const photo = req.files && req.files.photo;
-    const video = req.body.video;
-    const usage = JSON.parse(req.body.usage);
-    api.editExercise(
-      id,
-      name,
-      springs,
-      description,
-      photo,
-      video,
-      usage,
-    ).then(() => {
-      res.end();
-    }).catch(error => {
-      res.status(500);
-      res.sendJSON({ error });
-    });
   });
 };

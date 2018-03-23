@@ -131,8 +131,9 @@ class AddEdit extends React.Component {
       headers: { 'content-type': 'multipart/form-data' }
     }).then(res => {
       setTimeout(() => {
-        const id = res.data.id;
-        values.id = id;
+        values.id = res.data.id;
+        values.photo = res.data.photo;
+        values.thumbnail = res.data.thumbnail;
         this.setState({ open: false });
         this.props.onClose();
         if (mode === MODE.ADD) {
@@ -186,6 +187,7 @@ class AddEdit extends React.Component {
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
           maxWidth="md"
+          disableEscapeKeyDown={true}
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
@@ -228,6 +230,7 @@ class AddEdit extends React.Component {
                 type="text"
                 fullWidth
                 defaultValue={defaultItem.name}
+                onChange={this.handleChange}
               />
               <TextField
                 margin="dense"

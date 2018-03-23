@@ -22,6 +22,7 @@ import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import AddEdit from './addEdit';
 import Alert from '../../common/alert';
+import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
 import styles from './styles';
 
@@ -40,6 +41,19 @@ const MODE = {
 };
 
 const htmlNode = document.createElement('div');
+
+const ThumbnailFormatter = ({ row, value }) => {
+  return row.photo
+  ? <ThumbnailLink photo={row.photo} thumbnail={row.thumbnail} cacheBust={row.cacheBust} />
+  : <img src="/img/image-placeholder.png" />;
+};
+
+const ThumbnailTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={ThumbnailFormatter}
+    {...props}
+  />
+);
 
 const DescriptionFormatter = ({ value }) => {
   htmlNode.innerHTML = value;
@@ -84,7 +98,7 @@ class ExerciseGrid extends React.PureComponent {
     filteringStateColumnExtensions: [
       { columnName: 'thumbnail', filteringEnabled: false },
     ],
-    defaultHiddenColumnNames: ['thumbnail', 'video'],
+    defaultHiddenColumnNames: ['video'],
     defaultColumnWidths: [
       { columnName: 'thumbnail', width: 50 },
       { columnName: 'name', width: 50 },
@@ -94,6 +108,7 @@ class ExerciseGrid extends React.PureComponent {
       { columnName: 'description', width: 100 },
       { columnName: 'video', width: 50 },
     ],
+    thumbnailColumns: ['thumbnail'],
     htmlColumns: ['description'],
     labelColumns: ['name', 'genre', 'movement', 'springs'],
     selection: [],
@@ -105,7 +120,10 @@ class ExerciseGrid extends React.PureComponent {
       .then(res => {
         const { exercises, labels } = res.data;
         this.labels = labels;
-        exercises.forEach(exercise => this.updateRowLabels(exercise, exercise.usage));
+        exercises.forEach(exercise => {
+          this.updateRowLabels(exercise, exercise.usage);
+          exercise.cacheBust = Date.now();
+        });
         this.setState({
           mode: MODE.READ,
           rows: exercises,
@@ -186,9 +204,12 @@ class ExerciseGrid extends React.PureComponent {
     row.springs = savedRow.springs;
     row.description = savedRow.description;
     row.video = savedRow.video;
+    row.photo = savedRow.photo;
+    row.thumbnail = savedRow.thumbnail;
     row.id = id;
+    row.cacheBust = Date.now();
     this.updateRowLabels(row, usage);
-    this.setState({ rows, editItem: null });
+    this.setState({ rows, editItem: null, selection: [] });
   };
 
   renderEditControls () {
@@ -221,6 +242,7 @@ class ExerciseGrid extends React.PureComponent {
       mode,
       htmlColumns,
       labelColumns,
+      thumbnailColumns,
       selection,
       editItem,
     } = this.state;
@@ -241,6 +263,7 @@ class ExerciseGrid extends React.PureComponent {
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
           <TooltipTypeProvider for={labelColumns} />
+          <ThumbnailTypeProvider for={thumbnailColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />

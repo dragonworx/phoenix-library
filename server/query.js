@@ -8,11 +8,15 @@ function query (sqlQuery, data = null, type = sql.QueryTypes.SELECT) {
     raw: true,
     type
   };
-  if (data) {
-    options.replacements = data;
+  if (data !== false) {
+    if (data) {
+      options.replacements = data;
+    }
+    log(sqlQuery, 'cyan');
+    if (data) {
+      log(JSON.stringify(data), 'cyan');
+    }
   }
-  log(sqlQuery, 'cyan');
-  log(JSON.stringify(data), 'cyan');
   return sql.query(sqlQuery, options);
 }
 
