@@ -8,7 +8,7 @@ const IMAGE = {
   THUMB: 'thumb',
 };
 const MASSTORAGE_BASE_URL = 'https://masstorage.sgp1.digitaloceanspaces.com/';
-const { MASSTORAGE_KEY_ID, MASSTORAGE_SECRET } = env([ 'MASSTORAGE_KEY_ID', 'MASSTORAGE_SECRET' ]);
+const { MASSTORAGE_KEY_ID, MASSTORAGE_SECRET, PHOENIX_ENV } = env([ 'MASSTORAGE_KEY_ID', 'MASSTORAGE_SECRET', 'PHOENIX_ENV' ]);
 
 const s3 = new aws.S3({
   accessKeyId: MASSTORAGE_KEY_ID,
@@ -18,10 +18,10 @@ const s3 = new aws.S3({
 
 module.exports = {
   imageUrl (exerciseId, type) {
-    return `${MASSTORAGE_BASE_URL}phoenix_lib/excelsior/${exerciseId}_${type}.png`;
+    return `${MASSTORAGE_BASE_URL}phoenix_lib/${PHOENIX_ENV}/excelsior/${exerciseId}_${type}.png`;
   },
   imageKey (exerciseId, type) {
-    return `phoenix_lib/excelsior/${exerciseId}_${type}.png`;
+    return `phoenix_lib/${PHOENIX_ENV}/excelsior/${exerciseId}_${type}.png`;
   },
   upload(buffer, key) {
     if (!key) {
