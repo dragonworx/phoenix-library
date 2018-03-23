@@ -48,3 +48,4 @@ lib
 .idea
 
 static/bundle.js
+log.txt
