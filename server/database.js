@@ -38,7 +38,7 @@ module.exports = new Promise((resolve, reject) => {
     resolve(sql);
   })
   .catch(err => {
-    log('Database connection failed: ' + err, 'ref');
+    log('Database connection failed: ' + err, 'red');
     reject(err);
   });
 });

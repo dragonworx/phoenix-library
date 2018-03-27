@@ -42,7 +42,7 @@ const MODE = {
 
 const htmlNode = document.createElement('div');
 
-const ThumbnailFormatter = ({ row, value }) => {
+const ThumbnailFormatter = ({ row }) => {
   return row.photo
   ? <ThumbnailLink photo={row.photo} thumbnail={row.thumbnail} cacheBust={row.cacheBust} />
   : <img src="/img/image-placeholder.png" />;
