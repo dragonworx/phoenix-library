@@ -20,4 +20,7 @@ module.exports = {
     });
     unusedGenres.forEach(genreId => delete usage[genreId]);
   },
+  multi (...args) {
+    return [...args].join(' ');
+  }
 };

@@ -24,7 +24,6 @@ import AddEdit from './addEdit';
 import Alert from '../../common/alert';
 import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
-import styles from './styles';
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -87,7 +86,7 @@ class ExerciseGrid extends React.PureComponent {
     mode: MODE.LOADING,
     columns: [
       { name: 'thumbnail', title: 'Photo' },
-      { name: 'name', title: 'Name' },
+      { name: 'name', title: 'Name', getCellValue: row => `#${row.id}. ${row.name}` },
       { name: 'genre', title: 'Genre' },
       { name: 'movement', title: 'Movement Cat.' },
       { name: 'springs', title: 'Springs' },
@@ -213,7 +212,7 @@ class ExerciseGrid extends React.PureComponent {
   };
 
   renderEditControls () {
-    const { selection } = this.state;
+    const { selection, rows } = this.state;
     const { classes } = this.props;
 
     return (
@@ -227,6 +226,7 @@ class ExerciseGrid extends React.PureComponent {
         <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
           <DeleteIcon />
         </Button>
+        <span className={classes.count}>{`You have ${rows.length} Exercise${rows.length === 1 ? '' : 's'} saved.`}</span>
       </div>
     );
   }
@@ -314,4 +314,17 @@ ExerciseGrid.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(ExerciseGrid);
+export default withStyles(theme => ({
+  root: {
+    position: 'absolute',
+    zIndex: 1100,
+  },
+  button: {
+    margin: theme.spacing.unit,
+  },
+  count: {
+    display: 'inline-block',
+    marginLeft: 10,
+    color: '#ccc',
+  }
+}))(ExerciseGrid);

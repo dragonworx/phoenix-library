@@ -3,7 +3,6 @@ import Icon from 'material-ui-icons/Cloud';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from "material-ui/styles";
 import axios from 'axios';
-import styles from './styles';
 
 const PING_INTERVAL_SECS = 30;
 
@@ -25,10 +24,11 @@ class PingStatus extends React.Component {
   render () {
     const { classes } = this.props;
     const { isConnected } = this.state;
+    const title = `v${PHOENIX_LIB_VERSION} ~ ${isConnected ? ' Server is connected' : 'Server is disconnected, try reloading page'}`;
 
     return (
       <div className={classes.root}>
-      <Tooltip title={isConnected ? 'Server is connected' : 'Server is disconnected, try reload page'} placement="left">
+      <Tooltip title={title} placement="left">
         {
           isConnected
             ? <Icon className={classes.online} />
@@ -40,4 +40,16 @@ class PingStatus extends React.Component {
   }
 }
 
-export default withStyles(styles)(PingStatus);
+export default withStyles({
+  root: {
+    position: 'absolute',
+    bottom: 2,
+    right: 6,
+  },
+  online: {
+    color: 'white',
+  },
+  offline: {
+    color: 'red'
+  },
+})(PingStatus);

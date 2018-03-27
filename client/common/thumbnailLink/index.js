@@ -1,6 +1,9 @@
 import React from 'react';
 import { withStyles } from "material-ui/styles";
 import Lightbox from '../../common/lightbox';
+import { multi } from '../../common/util';
+
+const DEFAULT_BORDER = '2px solid #b9b9b9';
 
 class LightLink extends React.Component {
   state = {
@@ -46,17 +49,16 @@ class LightLink extends React.Component {
     e.preventDefault();
   };
 
-  onDragEnter = e => {
-    e.target.style.border = '3px dashed orange';
-  };
+  onDragEnter = e => e.target.style.border = '2px dashed blue';
+  onDragLeave = e => e.target.style.border = DEFAULT_BORDER;
   
 
   render () {
     const { cacheBust, thumbnail, photo, classes } = this.props;
     
     return (
-      <span className={classes.dropZone} onDrop={this.onDrop} onDragOver={this.onDragOver} onDragEnter={this.onDragEnter}>
-        <img src={`${thumbnail}?cache=${cacheBust}`} style={{ width: 48, cursor: 'pointer', boxShadow: '1px 8px 10px -4px rgba(0,0,0,0.3)', border: '1px solid #b9b9b9' }} onClick={this.handleClick} />
+      <span className={multi(classes.dropZoneContainer, classes.round)} onDrop={this.onDrop} onDragOver={this.onDragOver} onDragEnter={this.onDragEnter} onDragLeave={this.onDragLeave}>
+        <img className={multi(classes.dropZoneImg, classes.round)} src={`${thumbnail}?cache=${cacheBust}`} onClick={this.handleClick} />
         {
           this.state.open
           ? <Lightbox src={photo} onClose={this.handleClose} cacheBust={cacheBust}/>
@@ -68,7 +70,16 @@ class LightLink extends React.Component {
 };
 
 export default withStyles({
-  dropZone: {
+  dropZoneContainer: {
     display: 'inline-block',
+  },
+  dropZoneImg: {
+    width: 48,
+    cursor: 'pointer',
+    boxShadow: '1px 8px 10px -4px rgba(0,0,0,0.3)',
+    border: DEFAULT_BORDER
+  },
+  round: {
+    borderRadius: 5,
   }
 })(LightLink);

@@ -1,7 +1,7 @@
 {
-  "name": "react-babel-webpack-boilerplate",
-  "version": "1.4.1",
-  "description": "A boilerplate for React-Babel-Webpack project",
+  "name": "phoenix_lib",
+  "version": "1.1.0",
+  "description": "For Liz",
   "main": "client/main.jsx",
   "scripts": {
     "lint": "eslint --cache --ignore-path .gitignore --ext .jsx,.js --format=node_modules/eslint-formatter-pretty .",

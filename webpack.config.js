@@ -3,6 +3,10 @@ const path = require('path');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const log = require('./server/log');
+const package = require('./package.json');
+const PHOENIX_LIB_VERSION = package.version;
+
+log(`phoenix_lib v${PHOENIX_LIB_VERSION}`, 'cyan');
 
 const defaultConfig = (entryFile, outputFile) => ({
   devtool: 'source-map',
@@ -21,7 +25,10 @@ const defaultConfig = (entryFile, outputFile) => ({
     ]
   },
   resolve: {
-    extensions: ['.js', '.jsx']
+    extensions: ['.js', '.jsx'],
+    // alias: {
+    //   common: path.resolve(__dirname, 'client/common'),
+    // },
   },
 });
 
@@ -32,7 +39,10 @@ const devConfig = (entry, outfile) => {
     plugins: [
       new WebpackBuildNotifierPlugin({
         title: "Phoenix Library"
-      })
+      }),
+      new webpack.DefinePlugin({
+        PHOENIX_LIB_VERSION: JSON.stringify(PHOENIX_LIB_VERSION),
+      }),
     ]
   };
 };
@@ -47,6 +57,9 @@ const prodConfig = (entry, outfile) => {
         compress: {
           warnings: false
         }
+      }),
+      new webpack.DefinePlugin({
+        PHOENIX_LIB_VERSION: JSON.stringify(PHOENIX_LIB_VERSION),
       }),
     ]
   };
