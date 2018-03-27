@@ -47,7 +47,7 @@ module.exports = {
       });
   },
   getExercises () {
-    return query.select(TABLE.EXERCISE, ['id', 'name', 'springs', 'description', 'thumbnail', 'photo', 'video'])
+    return query.select(TABLE.EXERCISE, ['id', 'name', 'springs', 'description', 'photo', 'video'])
       .then(exercises => {
         const exerciseById = hashById(exercises);
         exercises.forEach(exercise => {
@@ -87,6 +87,34 @@ module.exports = {
           });
       });
   },
+  uploadPhoto (exerciseId, image) {
+    if (!image) {
+      return Promise.resolve();
+    }
+
+    const name = image.name;
+    const uploads = [
+      storage.uploadImage(exerciseId, 1, 'full', image.data, {
+        maxWidth: 1000,
+        maxHeight: 1000,
+      }),
+      storage.uploadImage(exerciseId, 1, 'preview', image.data, {
+        width: 600,
+        maxHeight: 600,
+      }),
+      storage.uploadImage(exerciseId, 1, 'thumb', image.data, {
+        width: 100,
+        maxHeight: 100,
+      })
+    ];
+
+    return Promise.all(uploads)
+      .then(() => {
+        log(`Successfully uploaded image "${name}" for #${exerciseId}`, 'green');
+        return query.update(TABLE.EXERCISE, { photo: name }, { id: exerciseId })
+          .then(() => exerciseId);
+      });
+  },
   addExercise (name, springs, description, photo, video, usage) {
     return query.insert(TABLE.EXERCISE, { name, springs, description, video })
       .then(exerciseId => {
@@ -96,10 +124,11 @@ module.exports = {
             if (!photo) {
               return exerciseId;
             }
-            const photo_full_url = storage.imageUrl(exerciseId, 'full');
-            const photo_thumb_url = storage.imageUrl(exerciseId, 'thumb');
-            return query.update(TABLE.EXERCISE, { photo: photo_full_url, thumbnail: photo_thumb_url }, { id: exerciseId })
-              .then(() => exerciseId);
+            return this.uploadPhoto(exerciseId, photo)
+              .then(() => {
+                return query.update(TABLE.EXERCISE, { photo: photo.name }, { id: exerciseId })
+                  .then(() => exerciseId);
+              });
           });
       });
   },
@@ -114,10 +143,11 @@ module.exports = {
                 if (!photo) {
                   return exerciseId;
                 }
-                const photo_full_url = storage.imageUrl(exerciseId, 'full');
-                const photo_thumb_url = storage.imageUrl(exerciseId, 'thumb');
-                return query.update(TABLE.EXERCISE, { photo: photo_full_url, thumbnail: photo_thumb_url }, { id: exerciseId })
-                  .then(() => exerciseId);
+                return this.uploadPhoto(exerciseId, photo)
+                  .then(() => {
+                    return query.update(TABLE.EXERCISE, { photo: photo.name }, { id: exerciseId })
+                      .then(() => exerciseId);
+                  });
               });
           });
       });

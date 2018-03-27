@@ -42,7 +42,6 @@ CREATE TABLE public.exercise (
 	springs text,
     photo text,
     video text,
-    thumbnail text,
     PRIMARY KEY (id)
 );
 

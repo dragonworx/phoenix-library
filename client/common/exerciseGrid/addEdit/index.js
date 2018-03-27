@@ -39,6 +39,7 @@ class AddEdit extends React.Component {
     open: true,
     editorState: EditorState.createEmpty(),
     error: null,
+    isSaving: false,
   };
 
   constructor (props) {
@@ -127,14 +128,16 @@ class AddEdit extends React.Component {
     if (mode === MODE.EDIT && editItem) {
       data.append('id', editItem.id);
     }
+    this.setState({ isSaving: true });
     return axios.post(`/exercise/${mode}`, data, {
       headers: { 'content-type': 'multipart/form-data' }
     }).then(res => {
       setTimeout(() => {
         values.id = res.data.id;
-        values.photo = res.data.photo;
-        values.thumbnail = res.data.thumbnail;
-        this.setState({ open: false });
+        if (res.data.photo) {
+          values.photo = res.data.photo;
+        }
+        this.setState({ open: false, isSaving: false });
         this.props.onClose();
         if (mode === MODE.ADD) {
           this.props.onAdded(values, usage);
@@ -212,7 +215,7 @@ class AddEdit extends React.Component {
   }
 
   renderContent () {
-    const { error } = this.state;
+    const { error, isSaving } = this.state;
     const { classes, labels, editItem } = this.props;
     const hasError = !!error;
     const defaultItem = this.defaultItem;
@@ -264,7 +267,7 @@ class AddEdit extends React.Component {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={this.handleClose} color="primary">
+        <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
           Cancel
         </Button>
         <SaveButton onClick={this.handleSave} />

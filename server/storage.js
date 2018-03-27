@@ -2,26 +2,28 @@ const aws = require('aws-sdk');
 const sharp = require('sharp');
 const env = require('./environment');
 const log = require('./log');
+const Rect = require('./rect');
 
 const IMAGE = {
   FULL: 'full',
+  PREVIEW: 'preview',
   THUMB: 'thumb',
 };
 const MASSTORAGE_BASE_URL = 'https://masstorage.sgp1.digitaloceanspaces.com/';
 const { MASSTORAGE_KEY_ID, MASSTORAGE_SECRET, PHOENIX_ENV } = env([ 'MASSTORAGE_KEY_ID', 'MASSTORAGE_SECRET', 'PHOENIX_ENV' ]);
 
-const s3 = new aws.S3({
+const storage = new aws.S3({
   accessKeyId: MASSTORAGE_KEY_ID,
   secretAccessKey: MASSTORAGE_SECRET,
   endpoint: new aws.Endpoint("sgp1.digitaloceanspaces.com")
 });
 
 module.exports = {
-  imageUrl (exerciseId, type) {
-    return `${MASSTORAGE_BASE_URL}phoenix_lib/${PHOENIX_ENV}/excelsior/${exerciseId}_${type}.png`;
+  imageUrl (exerciseId, type, index = 1) {
+    return `${MASSTORAGE_BASE_URL}${this.imageKey(exerciseId, type, index)}`;
   },
-  imageKey (exerciseId, type) {
-    return `phoenix_lib/${PHOENIX_ENV}/excelsior/${exerciseId}_${type}.png`;
+  imageKey (exerciseId, type, index = 1) {
+    return `phoenix_lib/${PHOENIX_ENV}/excelsior/${exerciseId}_${index}_${type}.png`;
   },
   upload(buffer, key) {
     if (!key) {
@@ -34,7 +36,7 @@ module.exports = {
         Body: buffer,
         ACL: 'public-read'
       };
-      s3.putObject(params, (err, data) => {
+      storage.putObject(params, (err, data) => {
         if (err) {
           reject(err);
         } else {
@@ -43,17 +45,30 @@ module.exports = {
       });
     });
   },
-  uploadImage(exerciseId, type, buffer, width, height) {
-    log(`Uploading #${exerciseId} type: ${type} ${buffer.length} bytes`);
+  uploadImage (exerciseId, index, type, buffer, resizeOptions = {}) {
+    log(`Uploading #${exerciseId}/${index} type: ${type} ${buffer.length} bytes (options: ${JSON.stringify(resizeOptions)})`);
     const image = sharp(buffer);
     return image
       .metadata()
       .then(metadata => {
+        const { width, height, minWidth, minHeight, maxWidth, maxHeight } = resizeOptions;
+        const { width: imgWidth, height: imgHeight } = metadata;
+        const rect = new Rect(imgWidth, imgHeight);
+        rect.ensureWidth(width);
+        rect.ensureHeight(height);
+        rect.ensureMaxWidth(maxWidth);
+        rect.ensureMaxHeight(maxHeight);
+        rect.ensureMinWidth(minWidth);
+        rect.ensureMinHeight(minHeight);
         return image
-          .resize(width || metadata.width, height || metadata.height)
+          .resize(rect.width, rect.height)
           .png()
           .toBuffer()
-          .then(pngBuffer => this.upload(pngBuffer, this.imageKey(exerciseId, type)));
+          .then(pngBuffer => {
+            const imageKey = this.imageKey(exerciseId, type, index);
+            return this.upload(pngBuffer, imageKey)
+              .then(() => imageKey);
+          });
       });
   },
   deleteImages (exerciseId) {
@@ -62,13 +77,14 @@ module.exports = {
         Bucket: 'masstorage', 
         Delete: {
          Objects: [
-            { Key: this.imageKey(exerciseId, IMAGE.FULL) }, 
-            { Key: this.imageKey(exerciseId, IMAGE.THUMB) }, 
+            { Key: this.imageKey(exerciseId, IMAGE.FULL) },
+            { Key: this.imageKey(exerciseId, IMAGE.PREVIEW) },
+            { Key: this.imageKey(exerciseId, IMAGE.THUMB) },
          ], 
          Quiet: false
         }
        };
-       s3.deleteObjects(params, (err, data) => {
+       storage.deleteObjects(params, (err, data) => {
          if (err) {
            reject(err);
          } else {

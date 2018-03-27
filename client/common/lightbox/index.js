@@ -7,11 +7,12 @@ class Lightbox extends React.Component {
   };
 
   render() {
-    const { src, onClose, cacheBust, ...other } = this.props;
+    const { name, src, onClose, ...other } = this.props;
+    const cache = `?now=${Date.now()}`;
 
     return (
       <Dialog open={true} onClose={onClose} aria-labelledby="image preview" maxWidth={false} {...other}>
-        <img src={`${src}?cache=${cacheBust}`} onClick={this.handleImageClick} style={{ cursor: 'pointer'}} />
+        <img title={name} src={`${src}${cache}`} onClick={this.handleImageClick} style={{ cursor: 'pointer'}} />
       </Dialog>
     );
   }

@@ -41,10 +41,19 @@ const MODE = {
 
 const htmlNode = document.createElement('div');
 
+const NameFormatter = ({ row }) => {
+  return <label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span>{row.name}</label>;
+};
+
+const NameTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={NameFormatter}
+    {...props}
+  />
+);
+
 const ThumbnailFormatter = ({ row }) => {
-  return row.photo
-  ? <ThumbnailLink photo={row.photo} thumbnail={row.thumbnail} cacheBust={row.cacheBust} />
-  : <img src="/img/image-placeholder.png" />;
+  return <ThumbnailLink row={row} />;
 };
 
 const ThumbnailTypeProvider = props => (
@@ -85,8 +94,8 @@ class ExerciseGrid extends React.PureComponent {
   state = {
     mode: MODE.LOADING,
     columns: [
-      { name: 'thumbnail', title: 'Photo' },
-      { name: 'name', title: 'Name', getCellValue: row => `#${row.id}. ${row.name}` },
+      { name: 'photo', title: 'Photo' },
+      { name: 'name', title: 'Name' },
       { name: 'genre', title: 'Genre' },
       { name: 'movement', title: 'Movement Cat.' },
       { name: 'springs', title: 'Springs' },
@@ -95,11 +104,11 @@ class ExerciseGrid extends React.PureComponent {
     ],
     rows: [],
     filteringStateColumnExtensions: [
-      { columnName: 'thumbnail', filteringEnabled: false },
+      { columnName: 'photo', filteringEnabled: false },
     ],
     defaultHiddenColumnNames: ['video'],
     defaultColumnWidths: [
-      { columnName: 'thumbnail', width: 50 },
+      { columnName: 'photo', width: 50 },
       { columnName: 'name', width: 50 },
       { columnName: 'genre', width: 100 },
       { columnName: 'movement', width: 100 },
@@ -107,7 +116,8 @@ class ExerciseGrid extends React.PureComponent {
       { columnName: 'description', width: 100 },
       { columnName: 'video', width: 50 },
     ],
-    thumbnailColumns: ['thumbnail'],
+    nameColumns: ['name'],
+    photoColumns: ['photo'],
     htmlColumns: ['description'],
     labelColumns: ['name', 'genre', 'movement', 'springs'],
     selection: [],
@@ -121,7 +131,6 @@ class ExerciseGrid extends React.PureComponent {
         this.labels = labels;
         exercises.forEach(exercise => {
           this.updateRowLabels(exercise, exercise.usage);
-          exercise.cacheBust = Date.now();
         });
         this.setState({
           mode: MODE.READ,
@@ -180,7 +189,7 @@ class ExerciseGrid extends React.PureComponent {
   };
 
   onSelectionChange = selection => {
-    this.setState({selection});
+    this.setState({ selection });
   };
 
   onAdded = (addedRow, usage) => {
@@ -203,10 +212,8 @@ class ExerciseGrid extends React.PureComponent {
     row.springs = savedRow.springs;
     row.description = savedRow.description;
     row.video = savedRow.video;
-    row.photo = savedRow.photo;
-    row.thumbnail = savedRow.thumbnail;
+    row.photo = savedRow.photo || row.photo;
     row.id = id;
-    row.cacheBust = Date.now();
     this.updateRowLabels(row, usage);
     this.setState({ rows, editItem: null, selection: [] });
   };
@@ -242,7 +249,8 @@ class ExerciseGrid extends React.PureComponent {
       mode,
       htmlColumns,
       labelColumns,
-      thumbnailColumns,
+      nameColumns,
+      photoColumns,
       selection,
       editItem,
     } = this.state;
@@ -263,7 +271,8 @@ class ExerciseGrid extends React.PureComponent {
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
           <TooltipTypeProvider for={labelColumns} />
-          <ThumbnailTypeProvider for={thumbnailColumns} />
+          <NameTypeProvider for={nameColumns} />
+          <ThumbnailTypeProvider for={photoColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />

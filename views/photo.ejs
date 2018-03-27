@@ -1,0 +1,21 @@
+<html>
+  <meta charset="utf-8" />
+  <title>Phoenix Pilates Library | Photo</title>
+  <style>
+    label, img {
+      display: block;
+    }
+    ul {
+      margin: 0;
+      padding: 0;
+      list-type: none;
+    }
+  </style>
+  <body>
+    <ul>
+      <li><label>Thumb:</label> <img src="<%= `https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/${env}/excelsior/${exerciseId}_1_thumb.png` %>" /></li>
+      <li><label>Preview:</label> <img src="<%= `https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/${env}/excelsior/${exerciseId}_1_preview.png` %>" /></li>
+      <li><label>Full:</label> <img src="<%= `https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/${env}/excelsior/${exerciseId}_1_full.png` %>" /></li>
+    </ul>
+  </body>
+</html>

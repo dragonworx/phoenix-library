@@ -47,6 +47,11 @@ module.exports = function (app) {
       res.render('login');
     }
   });
+
+  app.get('/photo/:env/:exerciseId', (req, res) => {
+    const { env, exerciseId } = req.params;
+    res.render('photo', { env, exerciseId });
+  });
   
   /* authenticate */
 
@@ -116,6 +121,22 @@ module.exports = function (app) {
       });
   });
 
+  app.put('/exercise/photo', (req, res) => {
+    const exerciseId = req.body.exerciseId;
+    const image = req.files && req.files.photo;
+    return api.uploadPhoto(exerciseId, image)
+      .then(() => {
+        res.sendJSON({
+          id: exerciseId,
+          photo: image && image.name,
+        });
+      })
+      .catch(error => {
+        res.status(500);
+        res.sendJSON({ error });
+      });
+  });
+
   app.post('/exercise/add', (req, res) => {
     const name = req.body.name;
     const springs = req.body.springs;
@@ -131,19 +152,10 @@ module.exports = function (app) {
       video,
       usage,
     ).then(exerciseId => {
-      if (!photo) {
-        res.sendJSON({ id: exerciseId });
-        return;
-      }
-      const uploads = [
-        storage.uploadImage(exerciseId, 'full', photo.data),
-        storage.uploadImage(exerciseId, 'thumb', photo.data, 100, 100)
-      ];
-      return Promise.all(uploads)
-        .then(() => {
-          log(`Successfully uploaded: ${exerciseId} ${storage.imageUrl(exerciseId, 'thumb')}`, 'green');
-          res.sendJSON({ id: exerciseId, photo: storage.imageUrl(exerciseId, 'full'), thumbnail: storage.imageUrl(exerciseId, 'thumb') });
-        });
+      res.sendJSON({
+        id: exerciseId,
+        photo: photo && photo.name,
+      });
     }).catch(error => {
       res.status(500);
       res.sendJSON({ error });
@@ -167,19 +179,10 @@ module.exports = function (app) {
       video,
       usage,
     ).then(() => {
-      if (!photo) {
-        res.sendJSON({ id: exerciseId });
-        return;
-      }
-      const uploads = [
-        storage.uploadImage(exerciseId, 'full', photo.data),
-        storage.uploadImage(exerciseId, 'thumb', photo.data, 100, 100)
-      ];
-      return Promise.all(uploads)
-        .then(() => {
-          log(`Successfully uploaded: ${exerciseId} ${storage.imageUrl(exerciseId, 'thumb')}`, 'green');
-          res.sendJSON({ id: exerciseId, photo: storage.imageUrl(exerciseId, 'full'), thumbnail: storage.imageUrl(exerciseId, 'thumb') });
-        });
+      res.sendJSON({
+        id: exerciseId,
+        photo: photo && photo.name,
+      });
     }).catch(error => {
       res.status(500);
       res.sendJSON({ error });

@@ -5,6 +5,7 @@ const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const log = require('./server/log');
 const package = require('./package.json');
 const PHOENIX_LIB_VERSION = package.version;
+const PHOENIX_LIB_STORAGE = 'https://masstorage.sgp1.digitaloceanspaces.com/';
 
 log(`phoenix_lib v${PHOENIX_LIB_VERSION}`, 'cyan');
 
@@ -41,6 +42,8 @@ const devConfig = (entry, outfile) => {
         title: "Phoenix Library"
       }),
       new webpack.DefinePlugin({
+        PHOENIX_LIB_ENV: JSON.stringify('dev'),
+        PHOENIX_LIB_STORAGE: JSON.stringify(PHOENIX_LIB_STORAGE + 'phoenix_lib/dev/excelsior/'),
         PHOENIX_LIB_VERSION: JSON.stringify(PHOENIX_LIB_VERSION),
       }),
     ]
@@ -59,6 +62,8 @@ const prodConfig = (entry, outfile) => {
         }
       }),
       new webpack.DefinePlugin({
+        PHOENIX_LIB_ENV: JSON.stringify('prod'),
+        PHOENIX_LIB_STORAGE: JSON.stringify(PHOENIX_LIB_STORAGE + 'phoenix_lib/prod/excelsior/'),
         PHOENIX_LIB_VERSION: JSON.stringify(PHOENIX_LIB_VERSION),
       }),
     ]
