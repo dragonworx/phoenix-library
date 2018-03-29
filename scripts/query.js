@@ -1,8 +1,11 @@
 const database = require('../server/database');
 const models = require('../server/models');
+const query = require('../server/query');
+const log = require('../server/log');
+
 const exercises = require('../sql/exercises_remote.json');
 const exerciseLabels = require('../sql/exerciseLabels_remote.json');
-const log = require('../server/log');
+const labels = require('../sql/label_remote.json');
 
 database.then(() => {
   function installRoot () {
@@ -34,11 +37,29 @@ database.then(() => {
     ]);
   }
 
-  function importExercises () {
-    exercises.forEach(exercise => {
-      log(exercise);
-    });
+  async function importExercises () {
+    await models.Exercises.destroy({ truncate: true });
+    await models.ExerciseLabels.destroy({ truncate: true });
+    await models.Labels.destroy({ truncate: true });
+
+    await models.Exercises.bulkCreate(exercises);
+    await models.ExerciseLabels.bulkCreate(exerciseLabels);
+    await models.Labels.bulkCreate(labels);
+    
+    const setSequence = async (items, sequenceName) => {
+      let id = 0;
+      items.forEach(item => id = Math.max(id, item.id));
+      await query.raw(`SELECT setval('${sequenceName}', ${id}, true);`, query.SELECT);
+    };
+    
+    await setSequence(exercises, 'exercises_id_seq');
+    await setSequence(exerciseLabels, 'exercise_labels_id_seq');
+    await setSequence(labels, 'labels_id_seq');
+
+    log('Done');
   }
 
+  // installRoot ();
+  // installLabels();
   importExercises();
 });

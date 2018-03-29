@@ -37,7 +37,7 @@ module.exports = new Promise((resolve, reject) => {
   .then(() => {
     log(`Database connection esablished successfully: ${PHOENIX_USER}@${PHOENIX_DB}`, 'green');
     log('Registering Models');
-    models.load(sql, Sequelize)
+    models.load(sql, Sequelize, { force: false })
       .then(() => {
         log('Database ready', 'green');
         resolve(sql);
