@@ -1,14 +1,14 @@
 const log = require('./log');
 const api = require('./api');
-const storage = require('./storage');
 
 function encodedUser (req) {
   const sessionUser = req.session.user;
     const user = {
       first_name: sessionUser.first_name,
       last_name: sessionUser.first_name,
+      is_admin: sessionUser.is_designer,
+      is_super: sessionUser.is_super,
       is_designer: sessionUser.is_designer,
-      is_super: sessionUser.is_super
     };
     return Buffer.from(JSON.stringify(user)).toString('base64');
 }
@@ -23,20 +23,29 @@ module.exports = function (app) {
       res.setHeader('Cache-Control', 'no-cache');
       res.send(JSON.stringify(data));
     };
+    res.send500 = error => {
+      res.setHeader('Content-Type', 'text/plain');
+      res.status(500);
+      res.send(JSON.stringify((error && error.stack) || String(error)));
+    };
     next();
   });
 
-  app.get('/ping', (req, res) => {
-    const onReject = () => {
-      res.status(500);
-      res.end();
+  app.get('/ping', async (req, res) => {
+    const onReject = error => {
+      res.send500(error);
     };
-    api.ping().then(() => {
-      if (!req.session || (!req.session.user)) {
-        onReject();
-      }
+    try {
+      await api.ping();
       res.end();
-    }).catch(onReject);
+      return;
+    } catch (error) {
+      onReject(error);
+    }
+    if (!req.session || (!req.session.user)) {
+      onReject('No session');
+    }
+    res.end();
   });
 
   app.get('/login', (req, res) => {
@@ -48,6 +57,7 @@ module.exports = function (app) {
     }
   });
 
+  // Debugging...
   app.get('/photo/:env/:exerciseId', (req, res) => {
     const { env, exerciseId } = req.params;
     res.render('photo', { env, exerciseId });
@@ -57,7 +67,7 @@ module.exports = function (app) {
 
   app.use((req, res, next) => {  
     const user = req.session.user;
-    const isAdmin = !!(user && user.is_admin);
+    const isAdmin = !!(user && user.isAdmin);
     const isUnauthorised = (req.url.match('^\/admin') && !isAdmin)
       || (req.url === '/' && !user);
     const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
@@ -99,105 +109,98 @@ module.exports = function (app) {
     res.redirect('/login');
   });
 
-  app.get('/exercise/get', (req, res) => {
-    api.getExercises()
-      .then(data => {
-        res.sendJSON(data);
-      });
+  app.get('/exercise/get', async (req, res) => {
+    const data = await api.getExercises();
+    res.sendJSON(data);
   });
 
   /* post */
 
-  app.post('/login', (req, res) => {
-    api.login(req.body.email, req.body.password)
-      .then(user => {
-        if (user) {
-          req.session.user = user;
-          res.end();
-        } else {
-          res.status(401);
-          res.end();
-        }
-      });
+  app.post('/login', async (req, res) => {
+    const user = await api.login(req.body.email, req.body.password);
+    if (user) {
+      log('user found: ' + JSON.stringify(user), 'green');
+      req.session.user = user;
+    } else {
+      log('user not found', 'red');
+      res.status(401);
+    }
+    res.end();
   });
 
-  app.put('/exercise/photo', (req, res) => {
-    const exerciseId = req.body.exerciseId;
+  app.put('/exercise/photo', async (req, res) => {
+    const exerciseId = parseInt(req.body.exerciseId, 10);
     const image = req.files && req.files.photo;
-    return api.uploadPhoto(exerciseId, image)
-      .then(() => {
-        res.sendJSON({
-          id: exerciseId,
-          photo: image && image.name,
-        });
-      })
-      .catch(error => {
-        res.status(500);
-        res.sendJSON({ error });
+    try {
+      await api.uploadPhoto(exerciseId, image);
+      res.sendJSON({
+        id: exerciseId,
+        photo: image && image.name,
       });
+    } catch (error) {
+      res.send500(error);
+    }
   });
 
-  app.post('/exercise/add', (req, res) => {
+  app.post('/exercise/add', async (req, res) => {
     const name = req.body.name;
     const springs = req.body.springs;
     const description = req.body.description;
     const photo = req.files && req.files.photo;
     const video = req.body.video;
     const usage = JSON.parse(req.body.usage);
-    api.addExercise(
-      name,
-      springs,
-      description,
-      photo,
-      video,
-      usage,
-    ).then(exerciseId => {
+    try {
+      const exerciseId = await api.addExercise(
+        name,
+        springs,
+        description,
+        photo,
+        video,
+        usage,
+      );
       res.sendJSON({
         id: exerciseId,
         photo: photo && photo.name,
       });
-    }).catch(error => {
-      res.status(500);
-      res.sendJSON({ error });
-    });
+    } catch (error) {
+      res.send500(error);
+    }
   });
 
-  app.post('/exercise/edit', (req, res) => {
-    const exerciseId = req.body.id;
+  app.post('/exercise/edit', async (req, res) => {
+    const exerciseId = parseInt(req.body.id, 10);
     const name = req.body.name;
     const springs = req.body.springs;
     const description = req.body.description;
     const photo = req.files && req.files.photo;
     const video = req.body.video;
     const usage = JSON.parse(req.body.usage);
-    api.editExercise(
-      exerciseId,
-      name,
-      springs,
-      description,
-      photo,
-      video,
-      usage,
-    ).then(() => {
+    try {
+      await api.editExercise(
+        exerciseId,
+        name,
+        springs,
+        description,
+        photo,
+        video,
+        usage,
+      );
       res.sendJSON({
         id: exerciseId,
         photo: photo && photo.name,
       });
-    }).catch(error => {
-      res.status(500);
-      res.sendJSON({ error });
-    });
+    } catch (error) {
+      res.send500(error);
+    }
   });
 
-  app.post('/exercise/delete', (req, res) => {
+  app.post('/exercise/delete', async (req, res) => {
     const ids = req.body.ids;
-    api.deleteExercises(ids)
-      .then(() => {
-        res.end();
-      })
-      .catch(error => {
-        res.status(500);
-        res.sendJSON({ error });
-      });
+    try {
+      await api.deleteExercises(ids);
+      res.end();
+    } catch (error) {
+      res.send500(error);
+    }
   });
 };

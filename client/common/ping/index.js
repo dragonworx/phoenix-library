@@ -11,14 +11,17 @@ class PingStatus extends React.Component {
     isConnected: true,
   };
 
+  ping = () => {
+    axios.get('/ping').then(() => {
+      this.setState({ isConnected: true });
+    }).catch(() => {
+      this.setState({ isConnected: false });
+    });
+  };
+
   componentDidMount () {
-    this.interval = setInterval(() => {
-      axios.get('/ping').then(() => {
-        this.setState({ isConnected: true });
-      }).catch(() => {
-        this.setState({ isConnected: false });
-      });
-    }, 1000 * PING_INTERVAL_SECS);
+    this.ping();
+    this.interval = setInterval(this.ping, 1000 * PING_INTERVAL_SECS);
   }
 
   render () {

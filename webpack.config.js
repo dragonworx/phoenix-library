@@ -27,9 +27,9 @@ const defaultConfig = (entryFile, outputFile) => ({
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-    // alias: {
-    //   common: path.resolve(__dirname, 'client/common'),
-    // },
+    alias: {
+      // server: path.resolve(__dirname, 'server'),
+    },
   },
 });
 

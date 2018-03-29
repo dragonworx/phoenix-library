@@ -2,6 +2,7 @@ const Sequelize = require('sequelize');
 const Op = Sequelize.Op;
 const env = require('./environment');
 const log = require('./log');
+const models = require('./models');
 
 process.on('unhandledRejection', function (err) {
   log(err.stack ? err.stack : err, 'red');
@@ -35,7 +36,12 @@ module.exports = new Promise((resolve, reject) => {
   sql.authenticate()
   .then(() => {
     log(`Database connection esablished successfully: ${PHOENIX_USER}@${PHOENIX_DB}`, 'green');
-    resolve(sql);
+    log('Registering Models');
+    models.load(sql, Sequelize)
+      .then(() => {
+        log('Database ready', 'green');
+        resolve(sql);
+      });
   })
   .catch(err => {
     log('Database connection failed: ' + err, 'red');

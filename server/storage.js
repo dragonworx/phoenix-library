@@ -45,31 +45,23 @@ module.exports = {
       });
     });
   },
-  uploadImage (exerciseId, index, type, buffer, resizeOptions = {}) {
+  async uploadImage (exerciseId, index, type, buffer, resizeOptions = {}) {
     log(`Uploading #${exerciseId}/${index} type: ${type} ${buffer.length} bytes (options: ${JSON.stringify(resizeOptions)})`);
     const image = sharp(buffer);
-    return image
-      .metadata()
-      .then(metadata => {
-        const { width, height, minWidth, minHeight, maxWidth, maxHeight } = resizeOptions;
-        const { width: imgWidth, height: imgHeight } = metadata;
-        const rect = new Rect(imgWidth, imgHeight);
-        rect.ensureWidth(width);
-        rect.ensureHeight(height);
-        rect.ensureMaxWidth(maxWidth);
-        rect.ensureMaxHeight(maxHeight);
-        rect.ensureMinWidth(minWidth);
-        rect.ensureMinHeight(minHeight);
-        return image
-          .resize(rect.width, rect.height)
-          .png()
-          .toBuffer()
-          .then(pngBuffer => {
-            const imageKey = this.imageKey(exerciseId, type, index);
-            return this.upload(pngBuffer, imageKey)
-              .then(() => imageKey);
-          });
-      });
+    const metadata = await image.metadata();
+    const { width, height, minWidth, minHeight, maxWidth, maxHeight } = resizeOptions;
+    const { width: imgWidth, height: imgHeight } = metadata;
+    const rect = new Rect(imgWidth, imgHeight);
+    rect.ensureWidth(width);
+    rect.ensureHeight(height);
+    rect.ensureMaxWidth(maxWidth);
+    rect.ensureMaxHeight(maxHeight);
+    rect.ensureMinWidth(minWidth);
+    rect.ensureMinHeight(minHeight);
+    const pngBuffer = await image.resize(rect.width, rect.height).png().toBuffer();
+    const imageKey = this.imageKey(exerciseId, type, index);
+    await this.upload(pngBuffer, imageKey);
+    return imageKey;
   },
   deleteImages (exerciseId) {
     return new Promise((resolve, reject) => {

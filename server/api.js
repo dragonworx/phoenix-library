@@ -1,14 +1,9 @@
+const Sequelize = require('sequelize');
 const query = require('./query');
 const password = require('./password');
 const log = require('./log');
 const storage = require('./storage');
-
-const TABLE = {
-  USER: 'users',
-  EXERCISE: 'exercise',
-  LABEL: 'label',
-  EXERCISE_LABEL: 'exercise_label',
-};
+const models = require('./models');
 
 function hashById (rows) {
   const hash = {};
@@ -17,83 +12,86 @@ function hashById (rows) {
 }
 
 module.exports = {
-  ping () {
-    return query.raw('SELECT true;', false);
+  async ping () {
+    const Ping = models.Ping;
+    await Ping.destroy({ truncate: true });
+    Ping.create({ lastPing: Date.now() });
   },
-  clearExercises () {
-    return query.clear(TABLE.EXERCISE_LABEL)
-      .then(() => {
-        return query.clear(TABLE.EXERCISE);
-      });
+
+  async login (email, plainTextPassword) {
+    const Users = models.Users;
+    const user = await Users.findOne({ where: { email } });
+    if (user) {
+      const verified = await password.verify(plainTextPassword, user.password);
+      if (verified) {
+        user.lastLogin = Date.now();
+        user.save();
+        const userData = user.get({ plain: true });
+        delete userData.password;
+        return userData;
+      }
+    }
+    return null;
   },
-  login (email, plainTextPassword) {
-    return query.select(TABLE.USER, ['first_name', 'last_name', 'password', 'is_admin', 'is_super', 'is_designer', 'last_login'], { email })
-      .then(data => {
-        if (data.length) {
-          const user = data[0];
-          return password.verify(plainTextPassword, user.password).then(verified => {
-            if (verified) {
-              delete user.password;
-              user.success = true;
-              user.email = email;
-              return user;
-            } else {
-              return null;
-            }
-          });
-        } else {
-          return null;
+
+  async getExercises () {
+    const PLAIN = { plain: true };
+    const Exercises = models.Exercises;
+    const Label = models.Labels;
+    const ExerciseLabel = models.ExerciseLabels;
+
+    let exercises = await Exercises.findAll();
+    exercises = exercises.map(exercise => {
+      exercise = exercise.get(PLAIN);
+      exercise.genre = [];
+      exercise.movement = [];
+      exercise.usage = {};
+      return exercise;
+    });
+    const exerciseById = hashById(exercises);
+
+    let labels = await Label.findAll();
+    labels = labels.map(label => label.get(PLAIN));
+    const labelsById = hashById(labels);
+    const exerciseLabelsPerExercise = await Promise.all(exercises.map(
+      exercise => 
+        ExerciseLabel.findAll({ where: { exerciseId: exercise.id }})
+      )
+    );
+
+    exerciseLabelsPerExercise.forEach(exerciseLabels => {
+      exerciseLabels.forEach(exerciseLabel => {
+        const exercise = exerciseById[exerciseLabel.exerciseId];
+        const genre = labelsById[exerciseLabel.genreId];
+        const movement = labelsById[exerciseLabel.movementId];
+        exercise.genre.push(genre.name);
+        exercise.movement.push(movement.name);
+        if (!exercise.usage[genre.id]) {
+          exercise.usage[genre.id] = {};
         }
+        exercise.usage[genre.id][movement.id] = true;
       });
+    });
+
+    exercises.forEach(exercise => {
+      exercise.genre.sort();
+      exercise.movement.sort();
+    });
+    
+    return {
+      exercises,
+      labels
+    };
   },
-  getExercises () {
-    return query.select(TABLE.EXERCISE, ['id', 'name', 'springs', 'description', 'photo', 'video'])
-      .then(exercises => {
-        const exerciseById = hashById(exercises);
-        exercises.forEach(exercise => {
-          exercise.genre = [];
-          exercise.movement = [];
-          exercise.usage = {};
-        });
-        return this.getLabels()
-          .then(labels => {
-            const labelsById = hashById(labels);
-            return Promise.all(exercises.map(exercise => {
-              return query.select(TABLE.EXERCISE_LABEL, ['exercise_id', 'genre_id', 'movement_id'], { exercise_id: exercise.id });
-            }))
-              .then(exerciseLabelsPerExercise => {
-                exerciseLabelsPerExercise.forEach(exerciseLabels => {
-                  exerciseLabels.forEach(exerciseLabel => {
-                    const exercise = exerciseById[exerciseLabel.exercise_id];
-                    const genre = labelsById[exerciseLabel.genre_id];
-                    const movement = labelsById[exerciseLabel.movement_id];
-                    exercise.genre.push(genre.name);
-                    exercise.movement.push(movement.name);
-                    if (!exercise.usage[genre.id]) {
-                      exercise.usage[genre.id] = {};
-                    }
-                    exercise.usage[genre.id][movement.id] = true;
-                  });
-                });
-                exercises.forEach(exercise => {
-                  exercise.genre.sort();
-                  exercise.movement.sort();
-                });
-                return {
-                  exercises,
-                  labels
-                };
-              });
-          });
-      });
-  },
-  uploadPhoto (exerciseId, image) {
+
+  async uploadPhoto (exerciseId, image) {
     if (!image) {
       return Promise.resolve();
     }
 
     const name = image.name;
-    const uploads = [
+
+    await Promise.all([
       storage.uploadImage(exerciseId, 1, 'full', image.data, {
         maxWidth: 1000,
         maxHeight: 1000,
@@ -106,86 +104,96 @@ module.exports = {
         width: 100,
         maxHeight: 100,
       })
-    ];
+    ]);
 
-    return Promise.all(uploads)
-      .then(() => {
-        log(`Successfully uploaded image "${name}" for #${exerciseId}`, 'green');
-        return query.update(TABLE.EXERCISE, { photo: name }, { id: exerciseId })
-          .then(() => exerciseId);
-      });
+    log(`Successfully uploaded image "${name}" for #${exerciseId}`, 'green');
+    const Exercises = models.Exercises;
+    const exercise = await Exercises.findOne({ where: { id: exerciseId }});
+    exercise.photo = name;
+    exercise.save();
+    return Promise.resolve(exerciseId);
   },
-  addExercise (name, springs, description, photo, video, usage) {
-    return query.insert(TABLE.EXERCISE, { name, springs, description, video })
-      .then(exerciseId => {
-        log(usage);
-        return this.createExerciseLabels(exerciseId, usage)
-          .then(exerciseId => {
-            if (!photo) {
-              return exerciseId;
-            }
-            return this.uploadPhoto(exerciseId, photo)
-              .then(() => {
-                return query.update(TABLE.EXERCISE, { photo: photo.name }, { id: exerciseId })
-                  .then(() => exerciseId);
-              });
-          });
-      });
+
+  async addExercise (name, springs, description, photo, video, usage) {
+    const Exercises = models.Exercises;
+    const exercise = await Exercises.create({ name, springs, description, video });
+    const exerciseId = exercise.id;
+    await this.createExerciseLabels(exerciseId, usage);
+    if (!photo) {
+      return exerciseId;
+    }
+    await this.uploadPhoto(exerciseId, photo);
+    exercise.photo = photo.name;
+    return exerciseId;
   },
-  editExercise (exerciseId, name, springs, description, photo, video, usage) {
-    return query.update(TABLE.EXERCISE, { name, springs, description, video }, { id: exerciseId })
-      .then(() => {
-        return query.remove(TABLE.EXERCISE_LABEL, [exerciseId], 'exercise_id')
-          .then(() => {
-            log(usage);
-            return this.createExerciseLabels(exerciseId, usage)
-              .then(exerciseId => {
-                if (!photo) {
-                  return exerciseId;
-                }
-                return this.uploadPhoto(exerciseId, photo)
-                  .then(() => {
-                    return query.update(TABLE.EXERCISE, { photo: photo.name }, { id: exerciseId })
-                      .then(() => exerciseId);
-                  });
-              });
-          });
-      });
+
+  async editExercise (exerciseId, name, springs, description, photo, video, usage) {
+    const Exercises = models.Exercises;
+    const ExerciseLabels = models.ExerciseLabels;
+
+    // update exercise
+    const exercise = await Exercises.findOne({ where: { id: exerciseId }});
+    exercise.set({ name, springs, description, video });
+
+    // destroy labels, re-create
+    await ExerciseLabels.destroy({ where: { exerciseId }});
+    await this.createExerciseLabels(exerciseId, usage);
+
+    // save with no photo changes
+    if (!photo) {
+      exercise.save();
+      return exerciseId;
+    }
+
+    // save with photo changes
+    await this.uploadPhoto(exerciseId, photo);
+    exercise.photo = photo.name;
+    exercise.save();
+    return exerciseId;
   },
-  deleteExercises (ids) {
-    return query.remove(TABLE.EXERCISE, ids)
-      .then(() => {
-        return query.remove(TABLE.EXERCISE_LABEL, ids, 'exercise_id')
-          .then(() => {
-            return Promise.all(ids.map(exerciseId => storage.deleteImages(exerciseId)));
-          });
-      });
+
+  async deleteExercises (ids) {
+    const Op = Sequelize.Op;
+    const Exercises = models.Exercises;
+    const ExerciseLabels = models.ExerciseLabels;
+    await Exercises.destroy({
+      where: {
+        id: {
+          [Op.or]: ids
+        }
+      }
+    });
+    await ExerciseLabels.destroy({
+      where: {
+        exerciseId: {
+          [Op.or]: ids
+        }
+      }
+    });
+    await Promise.all(ids.map(exerciseId => storage.deleteImages(exerciseId)));
   },
-  createExerciseLabels (exerciseId, usage) {
+
+  async createExerciseLabels (exerciseId, usage) {
+    const ExerciseLabels = models.ExerciseLabels;
     const exerciseLabelData = [];
     Object.entries(usage).map(({ 0: genreId, 1: selectedMovementCategories }) => {
       Object.entries(selectedMovementCategories).forEach(({ 0: movementId, 1: isSelected }) => {
         log(movementId + ':' + isSelected);
         if (isSelected === true) {
           exerciseLabelData.push({
-            exercise_id: exerciseId,
-            genre_id: genreId,
-            movement_id: movementId
+            exerciseId: exerciseId,
+            genreId: genreId,
+            movementId: movementId
           });
         }
       });
     });
     if (exerciseLabelData.length) {
       log(`adding ${exerciseLabelData.length} exercise labels for #${exerciseId}`);
-      return query.inserts(TABLE.EXERCISE_LABEL, exerciseLabelData).then(() => {
-        return exerciseId;
-      });
+      await Promise.all(exerciseLabelData.map(settings => ExerciseLabels.create(settings)));
     } else {
       log(`adding no exercise labels for #${exerciseId}`);
-      return Promise.resolve(exerciseId);
     }
-  },
-  getLabels () {
-    return query.select(TABLE.LABEL, ['id', 'type', 'name', 'description', 'color']);
+    return Promise.resolve();
   },
 };

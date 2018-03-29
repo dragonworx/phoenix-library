@@ -1,0 +1,12 @@
+[{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":1, "type":0, "name":"Pump", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":2, "type":0, "name":"Jump", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":3, "type":0, "name":"Connect", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":4, "type":0, "name":"Freestyle", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":5, "type":0, "name":"Technique", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":6, "type":1, "name":"Warm Up", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":7, "type":1, "name":"Supine Legs", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":8, "type":1, "name":"Supine Arms & Abs", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":9, "type":1, "name":"Weight Bearing Arms", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":10, "type":1, "name":"Seated \/ Knealing", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":11, "type":1, "name":"Prone", "description":null, "color":null},
+{"createdAt":"2018-03-22 03:02:59", "updatedAt":"2018-03-22 03:02:59", "id":12, "type":1, "name":"Full Body \/ Standing", "description":null, "color":null}]

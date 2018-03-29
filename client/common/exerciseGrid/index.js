@@ -214,6 +214,7 @@ class ExerciseGrid extends React.PureComponent {
     row.video = savedRow.video;
     row.photo = savedRow.photo || row.photo;
     row.id = id;
+    row.usage = usage;
     this.updateRowLabels(row, usage);
     this.setState({ rows, editItem: null, selection: [] });
   };

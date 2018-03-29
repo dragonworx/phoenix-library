@@ -146,7 +146,7 @@ class AddEdit extends React.Component {
         }
       }, ACCEPT_DELAY);
     }).catch(() => {
-      this.setState({ error: ERROR.SAVE });
+      this.setState({ error: ERROR.SAVE, isSaving: false });
       return Promise.reject();
     });
   };

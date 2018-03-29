@@ -10,13 +10,13 @@ module.exports = class Rect {
   set width (value) {
     const ratio = value / this.width;
     this._width = value;
-    this._height = this._height * ratio;
+    this._height = Math.round(this._height * ratio);
   }
 
   set height (value) {
     const ratio = value / this.height;
     this._height = value;
-    this._width = this._width * ratio;
+    this._width = Math.round(this._width * ratio);
   }
 
   ensureWidth (value) {
