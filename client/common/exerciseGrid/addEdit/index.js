@@ -20,7 +20,6 @@ import axios from 'axios';
 import SaveButton from '../../saveButton';
 import ExerciseLabels from '../../../admin/exerciseLabels';
 import { clone, trimUsage } from '../../../common/util';
-import styles from './styles';
 
 const ERROR = {
   IMAGE_FORMAT: 'Invalid image, only use PNG or JPG',
@@ -191,6 +190,7 @@ class AddEdit extends React.Component {
           aria-labelledby="form-dialog-title"
           maxWidth="md"
           disableEscapeKeyDown={true}
+          disableBackdropClick={true}
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
@@ -293,4 +293,30 @@ class AddEdit extends React.Component {
   }
 }
 
-export default withStyles(styles)(AddEdit);
+export default withStyles(theme => ({
+  descLabel: {
+    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit,
+  },
+  editor: {
+    border: '1px solid #b2b2b2',
+    borderRadius: '5px',
+    padding: '5px',
+    fontSize: '80%',
+  },
+  flex: {
+    padding: theme.spacing.unit * 3,
+    flex: 1,
+  },
+  content: {
+    marginTop: theme.spacing.unit * 3,
+    flexGrow: 1,
+    width: 700,
+  },
+  snackbar: {
+    position: 'absolute',
+  },
+  snackbarContent: {
+    width: 360,
+  }
+}))(AddEdit);
