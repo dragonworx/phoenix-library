@@ -59,7 +59,7 @@ database.then(() => {
     log('Done');
   }
 
-  // installRoot ();
+  installRoot ();
   // installLabels();
   importExercises();
 });
