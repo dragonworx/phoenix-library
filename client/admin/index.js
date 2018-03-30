@@ -39,12 +39,12 @@ class Admin extends React.PureComponent {
           <AppBar position="absolute" className={classes.appBar}>
             <Toolbar>
               <Avatar
-                alt={`${user.first_name} ${user.last_name}`}
+                alt={`${user.firstName} ${user.lastName}`}
                 src="/img/icon/48x48.png"
                 className={classNames(classes.avatar, classes.bigAvatar)}
               />
               <Typography variant="title" color="inherit" noWrap>
-                {`Welcome${user.last_login ? ' back' : ''} ${user.first_name}`}
+                {`Welcome${user.lastLogin ? ' back' : ''} ${user.firstName}`}
               </Typography>
               <Tooltip title="Show / Hide Side Menu" placement="right">
                 <MenuIcon className={[classes.showHideMenuButton, showMenu ? classes.showHideMenuButtonOpen : classes.showHideMenuButtonClosed].join(' ')} onClick={this.onShowHideMenuClick} />

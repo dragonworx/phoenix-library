@@ -4,11 +4,11 @@ const api = require('./api');
 function encodedUser (req) {
   const sessionUser = req.session.user;
     const user = {
-      first_name: sessionUser.first_name,
-      last_name: sessionUser.first_name,
-      is_admin: sessionUser.is_designer,
-      is_super: sessionUser.is_super,
-      is_designer: sessionUser.is_designer,
+      firstName: sessionUser.firstName,
+      lastName: sessionUser.firstName,
+      isAdmin: sessionUser.isDesigner,
+      isSuper: sessionUser.isSuper,
+      isDesigner: sessionUser.isDesigner,
     };
     return Buffer.from(JSON.stringify(user)).toString('base64');
 }
@@ -51,7 +51,7 @@ module.exports = function (app) {
   app.get('/login', (req, res) => {
     const user = req.session.user;
     if (user) {
-      res.redirect(user.is_admin ? '/admin/land' : '/');
+      res.redirect(user.isAdmin ? '/admin/land' : '/');
     } else {
       res.render('login');
     }
