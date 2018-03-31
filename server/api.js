@@ -83,6 +83,11 @@ module.exports = {
     };
   },
 
+  getExerciseCount () {
+    const Exercises = models.Exercises;
+    return Exercises.count();
+  },
+
   async uploadPhoto (exerciseId, image) {
     if (!image) {
       return Promise.resolve();

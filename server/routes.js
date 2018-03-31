@@ -99,6 +99,11 @@ module.exports = function (app) {
     res.sendJSON(data);
   });
 
+  app.get('/exercise/count', async (req, res) => {
+    const length = await api.getExerciseCount();
+    res.sendJSON(length);
+  });
+
   /* post */
 
   app.post('/login', async (req, res) => {

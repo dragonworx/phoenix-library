@@ -39,6 +39,9 @@ const MODE = {
   CONFIRM_DELETE: 'confirm_delete',
 };
 
+const OPTION_KEY = 18;
+const ENTER_KEY = 13;
+
 const htmlNode = document.createElement('div');
 
 const NameFormatter = ({ row }) => {
@@ -90,6 +93,21 @@ const TooltipTypeProvider = props => (
   />
 );
 
+// const SpringFormatter = ({ value }) => {
+//   if (value) {
+//     const values = value.replace(/([1-9]) (red|blue|yellow)/i, '<img style="height:32px" src="/img/spring-blue.png" />');
+//     return <Tooltip title={values} placement="top"><span dangerouslySetInnerHTML={{ __html: values }}></span></Tooltip>;
+//   }
+//   return null;
+// };
+
+// const SpringTypeProvider = props => (
+//   <DataTypeProvider
+//     formatterComponent={SpringFormatter}
+//     {...props}
+//   />
+// );
+
 class ExerciseGrid extends React.PureComponent {
   state = {
     mode: MODE.LOADING,
@@ -119,6 +137,7 @@ class ExerciseGrid extends React.PureComponent {
     nameColumns: ['name'],
     photoColumns: ['photo'],
     htmlColumns: ['description'],
+    // springColumns: ['springs'],
     labelColumns: ['name', 'genre', 'movement', 'springs'],
     selection: [],
     editItem: null,
@@ -135,9 +154,35 @@ class ExerciseGrid extends React.PureComponent {
         this.setState({
           mode: MODE.READ,
           rows: exercises,
+          selection: [exercises[exercises.length - 1].id]
         });
       });
+    
+    this.isCommandDown = false;
+    window.addEventListener('keydown', this.onGlobalKeyDown);
+    window.addEventListener('keyup', this.onGlobalKeyUp);
   }
+
+  componentWillUnmount () {
+    window.removeEventListener('keydown', this.onGlobalKeyDown);
+    window.removeEventListener('keyup', this.onGlobalKeyUp);
+  }
+
+  onGlobalKeyDown = e => {
+    console.log(e.keyCode);
+    if (e.keyCode === OPTION_KEY) {
+      this.isCommandDown = true;
+    }
+  };
+
+  onGlobalKeyUp = e => {
+    if (e.keyCode === OPTION_KEY) {
+      this.isCommandDown = false;
+    } else if (e.keyCode === ENTER_KEY && this.state.selection.length === 1) {
+      const row = this.state.rows.find(row => row.id === this.state.selection[0]);
+      this.setState({ mode: MODE.EDIT, editItem: row });
+    }
+  };
 
   updateRowLabels (row, usage) {
     trimUsage(usage);
@@ -175,25 +220,30 @@ class ExerciseGrid extends React.PureComponent {
     this.setState({ mode: MODE.READ });
   };
 
-  onConfirmDeleteClose = didAccept => {
+  onConfirmDeleteClose = async didAccept => {
     if (didAccept) {
       const ids = this.state.selection;
-      axios.post('/exercise/delete', {
-        ids: ids
-      }).then(() => {
-        const rows = this.state.rows.filter(row => ids.indexOf(row.id) === -1);
-        this.setState({ rows, selection: [] });
-      });
+      await axios.post('/exercise/delete', { ids: ids });
+      const rows = this.state.rows.filter(row => ids.indexOf(row.id) === -1);
+      this.setState({ rows, selection: [] });
     }
     this.setState({ mode: MODE.READ });
   };
 
   onSelectionChange = selection => {
+    const { selection: selected } = this.state;
+    const { isCommandDown } = this;
     if (this.props.readOnly) {
-      const { selection: selected } = this.state;
       if (!selection.length) {
         return this.setState({ selection: selected });
       }
+      for (let i = 0; i < selection.length; i++) {
+        if (selected.indexOf(selection[i]) === -1) {
+          selection = [selection[i]];
+          break;
+        }
+      }
+    } else if (!isCommandDown) {
       for (let i = 0; i < selection.length; i++) {
         if (selected.indexOf(selection[i]) === -1) {
           selection = [selection[i]];
@@ -211,7 +261,7 @@ class ExerciseGrid extends React.PureComponent {
     ];
     addedRow.usage = usage;
     rows.push(addedRow);
-    this.setState({ rows });
+    this.setState({ rows, selection: [addedRow.id] });
   };
 
   onSaved = (savedRow, usage) => {
@@ -232,7 +282,7 @@ class ExerciseGrid extends React.PureComponent {
   };
 
   renderEditControls () {
-    const { selection, rows } = this.state;
+    const { selection } = this.state;
     const { classes, readOnly } = this.props;
 
     return (
@@ -254,7 +304,6 @@ class ExerciseGrid extends React.PureComponent {
             </span>
           )
       }
-        <span className={classes.count}>{`${rows.length} Exercise${rows.length === 1 ? '' : 's'}`}</span>
       </span>
     );
   }
@@ -269,6 +318,7 @@ class ExerciseGrid extends React.PureComponent {
       defaultColumnWidths,
       mode,
       htmlColumns,
+      // springColumns,
       labelColumns,
       nameColumns,
       photoColumns,

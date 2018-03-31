@@ -3,8 +3,8 @@ const path = require('path');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const log = require('./server/log');
-const package = require('./package.json');
-const PHOENIX_LIB_VERSION = package.version;
+const pkg = require('./package.json');
+const PHOENIX_LIB_VERSION = pkg.version;
 const PHOENIX_LIB_STORAGE = 'https://masstorage.sgp1.digitaloceanspaces.com/';
 
 log(`phoenix_lib v${PHOENIX_LIB_VERSION}`, 'cyan');
