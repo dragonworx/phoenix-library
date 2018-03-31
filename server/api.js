@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const query = require('./query');
 const password = require('./password');
 const log = require('./log');
 const storage = require('./storage');

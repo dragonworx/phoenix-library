@@ -10,7 +10,7 @@ import {
   Grid,
   VirtualTable, TableHeaderRow, TableFilterRow, TableSelection,
   DragDropProvider, TableColumnReordering, Toolbar, SearchPanel,
-  ColumnChooser, TableColumnVisibility, /*TableColumnResizing,*/
+  ColumnChooser, TableColumnVisibility, TableColumnResizing,
 } from '@devexpress/dx-react-grid-material-ui';
 import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
@@ -42,7 +42,7 @@ const MODE = {
 const htmlNode = document.createElement('div');
 
 const NameFormatter = ({ row }) => {
-  return <label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span>{row.name}</label>;
+  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span>{row.name}</label></Tooltip>;
 };
 
 const NameTypeProvider = props => (
@@ -108,13 +108,13 @@ class ExerciseGrid extends React.PureComponent {
     ],
     defaultHiddenColumnNames: ['video'],
     defaultColumnWidths: [
-      { columnName: 'photo', width: 50 },
-      { columnName: 'name', width: 50 },
-      { columnName: 'genre', width: 100 },
-      { columnName: 'movement', width: 100 },
-      { columnName: 'springs', width: 50 },
-      { columnName: 'description', width: 100 },
-      { columnName: 'video', width: 50 },
+      { columnName: 'photo', width: 70 },
+      { columnName: 'name', width: 300 },
+      { columnName: 'genre', width: 200 },
+      { columnName: 'movement', width: 200 },
+      { columnName: 'springs', width: 200 },
+      { columnName: 'description', width: 600 },
+      { columnName: 'video', width: 150 },
     ],
     nameColumns: ['name'],
     photoColumns: ['photo'],
@@ -246,7 +246,7 @@ class ExerciseGrid extends React.PureComponent {
       tableColumnExtensions, 
       filteringStateColumnExtensions,
       defaultHiddenColumnNames,
-      // defaultColumnWidths,
+      defaultColumnWidths,
       mode,
       htmlColumns,
       labelColumns,
@@ -290,9 +290,8 @@ class ExerciseGrid extends React.PureComponent {
           <IntegratedFiltering />
           <IntegratedSorting />
           { readOnly ? null : <IntegratedSelection /> }
-          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell}
-          />
-          {/*<TableColumnResizing defaultColumnWidths={defaultColumnWidths} />*/}
+          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={650} />
+          {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />

@@ -6,31 +6,21 @@ import {
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
-import Tooltip from 'material-ui/Tooltip';
 import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
-import MenuIcon from 'material-ui-icons/Storage';
 import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
-import SideNav from './sideNav';
 import { user } from '../common/session';
-import Exercises from './exercises';
+import TabsView from './tabs';
 
 const drawerWidth = 180;
 
 class Admin extends React.PureComponent {
   state = {
-    showMenu: true,
-  };
-
-  onShowHideMenuClick = () => {
-    this.setState({ showMenu: !this.state.showMenu });
   };
 
   render () {
-    const { showMenu } = this.state;
     const { classes } = this.props;
   
     return (
@@ -46,26 +36,12 @@ class Admin extends React.PureComponent {
               <Typography variant="title" color="inherit" noWrap>
                 {`Welcome${user.lastLogin ? ' back' : ''} ${user.firstName}`}
               </Typography>
-              <Tooltip title="Show / Hide Side Menu" placement="right">
-                <MenuIcon className={[classes.showHideMenuButton, showMenu ? classes.showHideMenuButtonOpen : classes.showHideMenuButtonClosed].join(' ')} onClick={this.onShowHideMenuClick} />
-              </Tooltip>
             </Toolbar>
             <PingStatus />
           </AppBar>
-          <Drawer
-            variant="permanent"
-            classes={{
-              paper: showMenu ? classes.drawerPaperOpen : classes.drawerPaperClosed,
-            }}
-          >
-            <div className={classes.toolbar} />
-            <SideNav />
-          </Drawer>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/admin/" render={() => <p>Coming soon!</p>}/>
-            <Route exact path="/admin/users" render={() => <p>Coming soon!</p>}/>
-            <Route exact path="/admin/exercises" component={Exercises}/>
+            <Route exact path="/admin" component={TabsView}/>
           </main>
         </div>
       </Router>
@@ -103,7 +79,6 @@ export default withStyles(theme => ({
   content: {
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
     minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,

@@ -89,15 +89,7 @@ module.exports = function (app) {
   });
 
   app.get('/admin/land', (req, res) => {
-    res.redirect('/admin/exercises');
-  });
-
-  app.get('/admin/users', (req, res) => {
-    res.render('admin', { user: encodedUser(req) });
-  });
-
-  app.get('/admin/exercises', (req, res) => {
-    res.render('admin', { user: encodedUser(req) });
+    res.redirect('/admin/');
   });
 
   app.get('/', (req, res) => {
