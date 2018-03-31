@@ -3,7 +3,6 @@ import { withStyles } from 'material-ui/styles';
 import List from 'material-ui/List';
 import { FormLabel } from 'material-ui/Form';
 import LabelGroup from './labelGroup';
-import styles from './styles';
 
 const LABEL = {
   ROOT: 0,
@@ -49,4 +48,26 @@ class ExerciseLabels extends React.Component {
   }
 }
 
-export default withStyles(styles)(ExerciseLabels);
+export default withStyles(theme => ({
+  root: {
+    paddingTop: theme.spacing.unit * 3.75,
+  },
+  container: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+    maxHeight: 275,
+    minHeight: 275,
+    minWidth: 300,
+    overflow: 'auto',
+    border: '1px solid #e7e7e7',
+    marginTop: 5,
+    borderRadius: 5,
+  },
+  nested: {
+    paddingLeft: theme.spacing.unit * 4,
+  },
+  red: {
+    backgroundColor: 'red'
+  }
+}))(ExerciseLabels);

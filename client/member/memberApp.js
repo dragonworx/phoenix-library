@@ -11,17 +11,25 @@ import Toolbar from 'material-ui/Toolbar';
 import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
-import { user } from '../common/session';
-import TabsView from './tabs';
+import TabsView from './tabView';
+import HamburgerMenu from '../common/hamburgerMenu';
+import { user } from './session';
+
+const userOptions = [ 'Logout' ];
 
 const drawerWidth = 180;
 
-class Admin extends React.PureComponent {
-  state = {
+class MemberApp extends React.PureComponent {
+  state = {};
+
+  onUserMenuSelect = ({ 1: option }) => {
+    if (option === 'Logout') {
+      location = '/logout';
+    }
   };
 
   render () {
-    const { classes } = this.props;
+    const { classes, isAdmin, isSuper, isDesigner } = this.props;
   
     return (
       <Router>
@@ -34,14 +42,15 @@ class Admin extends React.PureComponent {
                 className={classNames(classes.avatar, classes.bigAvatar)}
               />
               <Typography variant="title" color="inherit" noWrap>
-                {`Welcome${user.lastLogin ? ' back' : ''} ${user.firstName}`}
+                Phoenix Pilates Library ~ {user.firstName}
               </Typography>
+              <HamburgerMenu className={classes.menu} options={userOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
             <PingStatus />
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/admin" component={TabsView}/>
+            <Route exact path="/admin" component={() => <TabsView isAdmin={isAdmin} isSuper={isSuper} isDesigner={isDesigner} />}/>
           </main>
         </div>
       </Router>
@@ -49,7 +58,7 @@ class Admin extends React.PureComponent {
   }
 }
 
-Admin.propTypes = {
+MemberApp.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
@@ -101,4 +110,8 @@ export default withStyles(theme => ({
   showHideMenuButtonOpen: {
     opacity: 1
   },
-}))(Admin);
+  menu: {
+    position: 'absolute',
+    right: 0,
+  }
+}))(MemberApp);

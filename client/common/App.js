@@ -2,6 +2,23 @@ import React from "react";
 import ReactDOM from 'react-dom';
 import { MuiThemeProvider, createMuiTheme } from "material-ui/styles";
 
+// const theme = createMuiTheme({
+//   palette: {
+//     primary: {
+//       light: 'red',
+//       main: 'orange',
+//       dark: 'blue',
+//       contrastText: '#fff',
+//     },
+//     secondary: {
+//       light: '#ff7961',
+//       main: '#f44336',
+//       dark: '#ba000d',
+//       contrastText: '#000',
+//     },
+//   },
+// });
+
 class App extends React.Component {
   state = {
     error: null

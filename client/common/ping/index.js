@@ -47,8 +47,8 @@ class PingStatus extends React.Component {
 export default withStyles({
   root: {
     position: 'absolute',
-    bottom: 2,
-    right: 6,
+    bottom: 22,
+    right: 43,
   },
   online: {
     color: 'white',

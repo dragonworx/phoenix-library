@@ -23,7 +23,7 @@ module.exports = {
     if (user) {
       const verified = await password.verify(plainTextPassword, user.password);
       if (verified) {
-        user.lastLogin = Date.now();
+        user.lastLogin = new Date();
         user.save();
         const userData = user.get({ plain: true });
         delete userData.password;

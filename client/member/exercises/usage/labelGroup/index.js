@@ -12,8 +12,7 @@ import IconButton from 'material-ui/IconButton';
 import Checkbox from 'material-ui/Checkbox';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import Menu, { MenuItem } from 'material-ui/Menu';
-import { clone } from '../../../common/util';
-import styles from './styles';
+import { clone } from '../../../../common/util';
 
 const MENU_HEIGHT = 78;
 
@@ -111,4 +110,8 @@ class LabelGroup extends React.Component {
   }
 }
 
-export default withStyles(styles)(LabelGroup);
+export default withStyles({
+  subItem: {
+    maxHeight: 20,
+  }
+})(LabelGroup);

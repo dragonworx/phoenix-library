@@ -1,7 +1,7 @@
 import React from 'react';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
-import Exercises from '../exercises';
+import Exercises from './exercises';
 import { withStyles } from 'material-ui/styles';
 
 class TabsView extends React.Component {
@@ -14,7 +14,7 @@ class TabsView extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, isAdmin, isSuper, isDesigner } = this.props;
     const { value } = this.state;
 
     return (
@@ -25,7 +25,7 @@ class TabsView extends React.Component {
             <Tab label="Classes" />
           </Tabs>
         </AppBar>
-        {value === 0 && <Exercises />}
+        {value === 0 && <Exercises isSuper={isSuper} isAdmin={isAdmin} isDesigner={isDesigner} />}
         {value === 1 && <p>Classes</p>}
       </div>
     );

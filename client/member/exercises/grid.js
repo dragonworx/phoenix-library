@@ -108,7 +108,7 @@ class ExerciseGrid extends React.PureComponent {
     ],
     defaultHiddenColumnNames: ['video'],
     defaultColumnWidths: [
-      { columnName: 'photo', width: 70 },
+      { columnName: 'photo', width: 100 },
       { columnName: 'name', width: 300 },
       { columnName: 'genre', width: 200 },
       { columnName: 'movement', width: 200 },
@@ -189,6 +189,18 @@ class ExerciseGrid extends React.PureComponent {
   };
 
   onSelectionChange = selection => {
+    if (this.props.readOnly) {
+      const { selection: selected } = this.state;
+      if (!selection.length) {
+        return this.setState({ selection: selected });
+      }
+      for (let i = 0; i < selection.length; i++) {
+        if (selected.indexOf(selection[i]) === -1) {
+          selection = [selection[i]];
+          break;
+        }
+      }
+    }
     this.setState({ selection });
   };
 
@@ -221,21 +233,29 @@ class ExerciseGrid extends React.PureComponent {
 
   renderEditControls () {
     const { selection, rows } = this.state;
-    const { classes } = this.props;
+    const { classes, readOnly } = this.props;
 
     return (
-      <div className={classes.root}>
-        <Button variant="fab" color="primary" aria-label="add" className={classes.button} onClick={this.onAddClick}>
-          <AddIcon />
-        </Button>
-        <Button variant="fab" aria-label="edit" disabled={selection.length !== 1} className={classes.button} onClick={this.onEditClick}>
-          <EditIcon />
-        </Button>
-        <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
-          <DeleteIcon />
-        </Button>
-        <span className={classes.count}>{`You have ${rows.length} Exercise${rows.length === 1 ? '' : 's'} saved.`}</span>
-      </div>
+      <span className={classes.root}>
+      {
+        readOnly
+          ? null
+          : (
+            <span>
+              <Button variant="fab" color="primary" aria-label="add" className={classes.button} onClick={this.onAddClick}>
+                <AddIcon />
+              </Button>
+              <Button variant="fab" aria-label="edit" disabled={selection.length !== 1} className={classes.button} onClick={this.onEditClick}>
+                <EditIcon />
+              </Button>
+              <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
+                <DeleteIcon />
+              </Button>
+            </span>
+          )
+      }
+        <span className={classes.count}>{`${rows.length} Exercise${rows.length === 1 ? '' : 's'}`}</span>
+      </span>
     );
   }
 
@@ -268,7 +288,7 @@ class ExerciseGrid extends React.PureComponent {
 
     return (
       <Paper>
-        { readOnly ? null : this.renderEditControls() }
+        { this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
           <TooltipTypeProvider for={labelColumns} />
@@ -286,16 +306,16 @@ class ExerciseGrid extends React.PureComponent {
               { columnName: 'movement', direction: 'asc' },
             ]}
           />
-          { readOnly ? null : <SelectionState selection={selection} onSelectionChange={this.onSelectionChange} /> }
+          <SelectionState selection={selection} onSelectionChange={this.onSelectionChange} />
           <IntegratedFiltering />
           <IntegratedSorting />
-          { readOnly ? null : <IntegratedSelection /> }
+          <IntegratedSelection />
           <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={650} />
           {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
-          { readOnly ? null : <TableSelection showSelectAll /> }
+          <TableSelection showSelectAll={!readOnly} highlightRow selectByRowClick showSelectionColumn={!readOnly} />
           <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} />
           <Toolbar />
           <ColumnChooser />
@@ -328,6 +348,9 @@ export default withStyles(theme => ({
     position: 'absolute',
     zIndex: 1100,
   },
+  '&:tr': {
+    cursor: 'pointer',
+  },
   button: {
     margin: theme.spacing.unit,
   },
@@ -335,5 +358,8 @@ export default withStyles(theme => ({
     display: 'inline-block',
     marginLeft: 10,
     color: '#ccc',
+  },
+  pointer: {
+    cursor: 'pointer',
   }
 }))(ExerciseGrid);

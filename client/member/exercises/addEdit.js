@@ -17,9 +17,9 @@ import { stateFromHTML } from 'draft-js-import-html';
 import { withStyles } from "material-ui/styles";
 import { LinearProgress } from 'material-ui/Progress';
 import axios from 'axios';
-import SaveButton from '../../saveButton';
-import ExerciseLabels from '../../../admin/exerciseLabels';
-import { clone, trimUsage } from '../../../common/util';
+import SaveButton from '../../common/saveButton';
+import ExerciseLabels from './usage';
+import { clone, trimUsage } from '../../common/util';
 
 const ERROR = {
   IMAGE_FORMAT: 'Invalid image, only use PNG or JPG',

@@ -8,7 +8,8 @@ import HomeIcon from 'material-ui-icons/PlaylistAddCheck';
 import UsersIcon from 'material-ui-icons/Group';
 import ExercisesIcon from 'material-ui-icons/Accessibility';
 import LogoutIcon from 'material-ui-icons/Lock';
-import styles from './styles';
+
+const focusColor = '#ffc688';
 
 function menuItemClassName (url, classes, defaultClassName) {
   return (location.pathname === url ? classes.selected : '') + ' ' + classes[defaultClassName];
@@ -57,4 +58,29 @@ function SideNav(props) {
   );
 }
 
-export default withStyles(styles)(SideNav);
+export default withStyles(theme => ({
+  root: {
+    width: '100%',
+    maxWidth: 360,
+    backgroundColor: theme.palette.background.paper,
+  },
+  menuItem: {
+    '&:focus': {
+      backgroundColor: focusColor,
+      '& $primary, & $icon': {
+        color: theme.palette.common.white,
+      },
+    },
+  },
+  selected: {
+    backgroundColor: focusColor,
+    '& h3, & $icon': {
+      color: 'white',
+    }
+  },
+  link: {
+    textDecoration: 'none',
+  },
+  primary: {},
+  icon: {},
+}))(SideNav);

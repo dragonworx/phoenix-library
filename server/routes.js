@@ -3,14 +3,7 @@ const api = require('./api');
 
 function encodedUser (req) {
   const sessionUser = req.session.user;
-    const user = {
-      firstName: sessionUser.firstName,
-      lastName: sessionUser.firstName,
-      isAdmin: sessionUser.isDesigner,
-      isSuper: sessionUser.isSuper,
-      isDesigner: sessionUser.isDesigner,
-    };
-    return Buffer.from(JSON.stringify(user)).toString('base64');
+    return Buffer.from(JSON.stringify(sessionUser)).toString('base64');
 }
 
 module.exports = function (app) {
