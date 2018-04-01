@@ -7,7 +7,7 @@ import Badge from 'material-ui/Badge';
 
 class TabsView extends React.Component {
   state = {
-    exerciseCount: '.',
+    exerciseCount: '...',
     value: 0,
   };
 

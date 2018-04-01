@@ -89,7 +89,7 @@ export default withStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: '#f7efe8',
     minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,

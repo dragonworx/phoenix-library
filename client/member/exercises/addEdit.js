@@ -309,7 +309,6 @@ export default withStyles(theme => ({
     flex: 1,
   },
   content: {
-    marginTop: theme.spacing.unit * 3,
     flexGrow: 1,
     width: 700,
   },

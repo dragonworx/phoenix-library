@@ -23,8 +23,11 @@ import axios from 'axios';
 import AddEdit from './addEdit';
 import ViewExercise from './view';
 import Alert from '../../common/alert';
+import Thumbnail from '../../common/thumbnail';
 import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
+
+let ThumbnailRef = ThumbnailLink;
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -37,6 +40,7 @@ const MODE = {
   READ: 'read',
   ADD: 'add',
   EDIT: 'edit',
+  VIEW: 'view',
   CONFIRM_DELETE: 'confirm_delete',
 };
 
@@ -62,7 +66,7 @@ const NameTypeProvider = props => (
 );
 
 const ThumbnailFormatter = ({ row }) => {
-  return <ThumbnailLink row={row} />;
+  return <ThumbnailRef row={row} />;
 };
 
 const ThumbnailTypeProvider = props => (
@@ -99,22 +103,26 @@ const TooltipTypeProvider = props => (
   />
 );
 
+export const textToSprings = (value) => {
+  const regex = /([1-9]) (red|blue|yellow)/gi;
+  let results;
+  let sub = value;
+  while ((results = regex.exec(value)) !== null) {
+    const count = parseInt(results[1], 10);
+    const color = results[2];
+    const imgs = `#${color}`.repeat(count);
+    sub = sub.replace(results[0], imgs);
+  }
+  sub = sub
+    .replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />')
+    .toLowerCase()
+    .replace(/mat/gi, '<img style="height:32px" src="/img/mat.png" />');
+  return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
+};
+
 const SpringFormatter = ({ value }) => {
   if (value) {
-    const regex = /([1-9]) (red|blue|yellow)/gi;
-    let results;
-    let sub = value;
-    while ((results = regex.exec(value)) !== null) {
-      const count = parseInt(results[1], 10);
-      const color = results[2];
-      const imgs = `#${color}`.repeat(count);
-      sub = sub.replace(results[0], imgs);
-    }
-    sub = sub
-      .replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />')
-      .toLowerCase()
-      .replace(/mat/gi, '<img style="height:32px" src="/img/mat.png" />');
-    return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
+    return textToSprings(value);
   }
   return null;
 };
@@ -170,6 +178,13 @@ class ExerciseGrid extends React.PureComponent {
     viewItem: null,
   };
 
+  constructor (props) {
+    super(props);
+    if (props.readOnly) {
+      ThumbnailRef = Thumbnail;
+    }
+  }
+
   componentWillMount () {
     axios.get('/exercise/get')
       .then(res => {
@@ -181,7 +196,7 @@ class ExerciseGrid extends React.PureComponent {
         this.setState({
           mode: MODE.READ,
           rows: exercises,
-          selection: [exercises[exercises.length - 1].id],
+          selection: [],
         });
         this.props.onLoad(res.data);
       });
@@ -205,13 +220,18 @@ class ExerciseGrid extends React.PureComponent {
   onGlobalKeyUp = e => {
     const { keyCode } = e;
     const { selection, rows } = this.state;
+    const { readOnly } = this.props;
     const ids = rows.map(row => row.id);
     ids.sort();
     if (keyCode === KEYS.OPTION) {
       this.isCommandDown = false;
     } else if ((keyCode === KEYS.ENTER || keyCode === KEYS.SPACE) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
-      this.setState({ mode: MODE.EDIT, editItem: row });
+      if (readOnly) {
+        this.setState({ mode: MODE.VIEW, viewItem: row });
+      } else {
+        this.setState({ mode: MODE.EDIT, editItem: row });
+      }
     } else if (selection.length === 1 && keyCode === KEYS.UP) {
       const selectedRowIndex = ids.indexOf(selection[0]);
       if (selectedRowIndex > 0) {
@@ -261,6 +281,10 @@ class ExerciseGrid extends React.PureComponent {
     this.setState({ mode: MODE.READ });
   };
 
+  onViewClose = () => {
+    this.setState({ mode: MODE.READ, viewItem: null });
+  };
+
   onConfirmDeleteClose = async didAccept => {
     if (didAccept) {
       const ids = this.state.selection;
@@ -275,9 +299,11 @@ class ExerciseGrid extends React.PureComponent {
     const { selection: selected } = this.state;
     const { isCommandDown } = this;
     let viewItem;
+    let mode = MODE.READ;
     if (this.props.readOnly) {
       if (!selection.length) {
-        return this.setState({ selection: selected });
+        // return this.setState({ selection: selected });
+        selection = selected;
       }
       for (let i = 0; i < selection.length; i++) {
         if (selected.indexOf(selection[i]) === -1) {
@@ -286,6 +312,7 @@ class ExerciseGrid extends React.PureComponent {
         }
       }
       viewItem = this.state.rows.find(row => row.id === selection[0]);
+      mode = MODE.VIEW;
     } else if (!isCommandDown) {
       for (let i = 0; i < selection.length; i++) {
         if (selected.indexOf(selection[i]) === -1) {
@@ -294,7 +321,7 @@ class ExerciseGrid extends React.PureComponent {
         }
       }
     }
-    this.setState({ selection, viewItem });
+    this.setState({ selection, viewItem, mode });
   };
 
   onAdded = (addedRow, usage) => {
@@ -416,7 +443,7 @@ class ExerciseGrid extends React.PureComponent {
           <IntegratedFiltering />
           <IntegratedSorting />
           <IntegratedSelection />
-          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={540} />
+          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={615} />
           {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
@@ -432,7 +459,7 @@ class ExerciseGrid extends React.PureComponent {
           <AddEdit mode={mode} labels={labels} editItem={mode === MODE.EDIT && editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
         }
         {
-          viewItem ? <ViewExercise mode={mode} labels={labels} viewItem={viewItem} /> : null
+          mode === MODE.VIEW ? <ViewExercise viewItem={viewItem} onClose={this.onViewClose} /> : null
         }
         {
           mode === MODE.CONFIRM_DELETE ? 

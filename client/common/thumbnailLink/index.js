@@ -5,6 +5,7 @@ import green from 'material-ui/colors/green';
 import red from 'material-ui/colors/red';
 import axios from 'axios';
 import Lightbox from '../../common/lightbox';
+import ViewExercise from '../../member/exercises/view';
 import { multi } from '../../common/util';
 
 const DEFAULT_BORDER = '2px solid #b9b9b9';
@@ -14,9 +15,19 @@ class LightLink extends React.Component {
     open: false,
     isSaving: false,
     error: null,
+    preview: false,
   };
 
-  handleClick = () => this.setState({ open: true });
+  handleNoImageClick = () => {
+    this.setState({ open: true, preview: true });
+  }
+  handleClick = e => {
+    let preview = false;
+    if (e.altKey) {
+      preview = true;
+    }
+    this.setState({ open: true, preview });
+  }
   handleClose = () => this.setState({ open: false });
 
   onDrop = e => {
@@ -80,10 +91,13 @@ class LightLink extends React.Component {
 
   onDragEnter = e => e.target.style.border = '2px dashed #34c4cb';
   onDragLeave = e => e.target.style.border = DEFAULT_BORDER;
-  
+
+  onViewClose = () => {
+    this.setState({ open: false, preview: false });
+  };
 
   render () {
-    const { open, isSaving, error } = this.state;
+    const { open, isSaving, error, preview } = this.state;
     const { classes, row } = this.props;
     const { id, photo } = row;
     const cache = `?now=${Date.now()}`;
@@ -100,12 +114,17 @@ class LightLink extends React.Component {
             : photo
                 ? <img title={photo} className={multi(classes.dropZoneImg, classes.round)} src={`${thumbnailUrl}${cache}`} onClick={this.handleClick}
                      onDrop={this.onDrop} onDragOver={this.onDragOver} onDragEnter={this.onDragEnter} onDragLeave={this.onDragLeave} />
-                : <img title="No image set" className={multi(classes.dropZoneImg, classes.round)} src="/img/image-placeholder.png" 
+                : <img title="No image set" className={multi(classes.dropZoneImg, classes.round)} src="/img/image-placeholder.png" onClick={this.handleNoImageClick}
                      onDrop={this.onDrop} onDragOver={this.onDragOver} onDragEnter={this.onDragEnter} onDragLeave={this.onDragLeave} />
         }
         {
-          open
+          open && !preview
           ? <Lightbox name={photo} src={photoUrl} onClose={this.handleClose} />
+          : null
+        }
+        {
+          open && preview
+          ? <ViewExercise viewItem={row} onClose={this.onViewClose} />
           : null
         }
       </span>

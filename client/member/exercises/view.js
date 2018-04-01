@@ -1,301 +1,118 @@
 import React from 'react';
 import Button from 'material-ui/Button';
-import TextField from 'material-ui/TextField';
+import Paper from 'material-ui/Paper';
 import Dialog, {
   DialogActions,
   DialogContent,
 } from 'material-ui/Dialog';
 import { FormLabel } from 'material-ui/Form';
-import Input from 'material-ui/Input';
 import AppBar from 'material-ui/AppBar';
+import Chip from 'material-ui/Chip';
 import Typography from 'material-ui/Typography';
-import Snackbar from 'material-ui/Snackbar';
 import Grid from 'material-ui/Grid';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
-import { stateFromHTML } from 'draft-js-import-html';
 import { withStyles } from "material-ui/styles";
-import { LinearProgress } from 'material-ui/Progress';
-import axios from 'axios';
-import SaveButton from '../../common/saveButton';
-import ExerciseLabels from './usage';
-import { clone, trimUsage } from '../../common/util';
-
-const ERROR = {
-  IMAGE_FORMAT: 'Invalid image, only use PNG or JPG',
-  SAVE: 'An error occurred, could not save data'
-};
-
-const MODE = {
-  ADD: 'add',
-  EDIT: 'edit',
-};
-
-const ACCEPT_DELAY = 500;
+import { multi } from '../../common/util';
+import Lightbox from '../../common/lightbox';
+import { textToSprings } from '../exercises/grid';
 
 class ViewExercise extends React.Component {
   state = {
     open: true,
-    editorState: EditorState.createEmpty(),
-    error: null,
-    isSaving: false,
-  };
-
-  constructor (props) {
-    super(props);
-    this.usage = {};
-  }
-
-  componentWillMount () {
-    const { viewItem, labels } = this.props;
-    if (viewItem) {
-      const state = stateFromHTML(viewItem.description);
-      const usage = clone(viewItem.usage);
-      Object.entries(usage).forEach(({ 1: selections }) => {
-        Object.entries(selections).forEach(({ 0: movementId, 1: isSelected }) => {
-          const label = labels.find(label => label.id === parseInt(movementId, 10));
-          selections[movementId] = clone(label);
-          selections[movementId].selected = isSelected;
-        });
-      });
-      this.usage = usage;
-      this.setState({editorState: EditorState.createWithContent(state)});
-    }
-  }
-
-  get defaultItem () {
-    const { mode, viewItem } = this.props;
-    const item = {
-      name: '',
-      springs: '',
-      description: '',
-      video: '',
-    };
-    if (mode === MODE.EDIT && viewItem) {
-      item.name = viewItem.name;
-      item.springs = viewItem.springs;
-      item.name = viewItem.name;
-      item.description = viewItem.description;
-      item.video = viewItem.video;
-    }
-    return item;
-  }
-
-  get values () {
-    return {
-      name: document.getElementById('addEdit_name').value,
-      springs: document.getElementById('addEdit_springs').value,
-      description: stateToHTML(this.state.editorState.getCurrentContent()),
-      photo: document.getElementById('addEdit_photo').files[0],
-      video: document.getElementById('addEdit_video').value
-    };
-  }
-
-  getSelectedLabels () {
-    const usage = {};
-    Object.entries(this.usage).forEach(({ 0: rootLabelId, 1: subLabels }) => {
-      const selectedSubLabels = Object.entries(subLabels).filter(({ 1: subLabel }) => typeof subLabel.selected === 'boolean').map(kv => kv[1]);
-      const ids = {};
-      selectedSubLabels.map(subLabel => ids[subLabel.id] = subLabel.selected);
-      usage[rootLabelId] = ids;
-    });
-    trimUsage(usage);
-    return usage;
-  }
-
-  handleClickOpen = () => {
-    this.setState({ open: true });
+    lightboxOpen: false
   };
 
   handleClose = () => {
     this.setState({ open: false });
-    setTimeout(() => this.props.onClose(), ACCEPT_DELAY);
+    this.props.onClose();
   };
 
-  handleSave = () => {
-    const { mode, viewItem } = this.props;
-    const values = this.values;
-    const usage = this.getSelectedLabels();
-    trimUsage(usage);
-    const data = new FormData();
-    data.append('name', values.name);
-    data.append('springs', values.springs);
-    data.append('description', values.description);
-    data.append('photo', values.photo);
-    data.append('video', values.video);
-    data.append('usage', JSON.stringify(usage));
-    if (mode === MODE.EDIT && viewItem) {
-      data.append('id', viewItem.id);
-    }
-    this.setState({ isSaving: true });
-    return axios.post(`/exercise/${mode}`, data, {
-      headers: { 'content-type': 'multipart/form-data' }
-    }).then(res => {
-      setTimeout(() => {
-        values.id = res.data.id;
-        if (res.data.photo) {
-          values.photo = res.data.photo;
-        }
-        this.setState({ open: false, isSaving: false });
-        this.props.onClose();
-        if (mode === MODE.ADD) {
-          this.props.onAdded(values, usage);
-        } else {
-          this.props.onSaved(values, usage);
-        }
-      }, ACCEPT_DELAY);
-    }).catch(() => {
-      this.setState({ error: ERROR.SAVE, isSaving: false });
-      return Promise.reject();
-    });
+  handleImgClose = () => {
+    this.setState({ lightboxOpen: false });
   };
 
-  onChange = (editorState) => this.setState({editorState});
-
-  handleEditorKeyCommand = (command, editorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.onChange(newState);
-      return 'handled';
-    }
-    return 'not-handled';
-  };
-
-  handleFileUpload = e => {
-    const file = e.target.files[0];
-    const type = file.type;
-    if (type !== 'image/png' && type !== 'image/jpeg') {
-      e.target.value = '';
-      this.setState({ error: ERROR.IMAGE_FORMAT });
-    } else {
-      this.setState({ error: null });
-    }
-  };
-
-  handleCloseSnackbar = () => {
-    this.setState({ error: null });
-  };
-
-  handleExerciseLabelChange = (rootLabel, selections) => {
-    this.usage[rootLabel.id] = selections;
+  handleImgClick = () => {
+    this.setState({ lightboxOpen: true });
   };
 
   render () {
-    const { mode, classes } = this.props;
+    const { viewItem, classes } = this.props;
+    const { lightboxOpen } = this.state;
+    // eslint-disable-next-line no-undef
+    const photoUrl = `${PHOENIX_LIB_STORAGE}${viewItem.id}_1_full.png`;
 
     return (
-      <Dialog
+      <div>
+        <Dialog
           open={this.state.open}
           onClose={this.handleClose}
           aria-labelledby="form-dialog-title"
-          maxWidth="md"
-          disableEscapeKeyDown={true}
-          disableBackdropClick={true}
-        >
-        <AppBar position="static">
-          <Typography variant="title" color="inherit" className={classes.flex}>
-            {mode === MODE.ADD ? 'New' : 'Edit'} View Exercise
-          </Typography>
-        </AppBar>
-
-        { this.renderContent() }
-        
-      </Dialog>
-    );
-  }
-
-  renderLoading () {
-    const { classes } = this.props;
-
-    return (
-      <DialogContent className={classes.content}>
-        <LinearProgress />
-      </DialogContent>
+          maxWidth={false}
+          disableEscapeKeyDown={false}
+          disableBackdropClick={false}
+          >
+          <AppBar position="static">
+            <Typography variant="title" color="inherit" className={classes.flex}>
+              "{viewItem.name.trim()}"
+            </Typography>
+          </AppBar>
+          { this.renderContent() }
+        </Dialog>
+        {
+          lightboxOpen ? <Lightbox name={viewItem.photo} src={photoUrl} onClose={this.handleImgClose} /> : null
+        }
+      </div>
     );
   }
 
   renderContent () {
-    const { error, isSaving } = this.state;
-    const { classes, labels, viewItem } = this.props;
-    const hasError = !!error;
-    const defaultItem = this.defaultItem;
-    
+    const { classes, viewItem } = this.props;
+
+    // eslint-disable-next-line no-undef
+    const photoUrl = viewItem.photo ? `${PHOENIX_LIB_STORAGE}${viewItem.id}_1_preview.png` : '/img/image-placeholder.png';
+    const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
+    const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
+    let description = viewItem.description;
+    const blank = /<p><br><\/p>\n?$/;
+    while (description.match(blank)) {
+      description = description.replace(blank, '');
+    }
+    description = description.trim();
     return (
       <div>
         <DialogContent className={classes.content}>
         <Grid container spacing={24}>
           <Grid item xs={12} sm={6}>
-            <TextField
-                autoFocus
-                margin="dense"
-                id="addEdit_name"
-                label="Name"
-                type="text"
-                fullWidth
-                defaultValue={defaultItem.name}
-                onChange={this.handleChange}
-              />
-              <TextField
-                margin="dense"
-                id="addEdit_springs"
-                label="Springs"
-                type="text"
-                fullWidth
-                defaultValue={defaultItem.springs}
-              />
-              <FormLabel className={classes.descLabel} component="legend">Description</FormLabel>
-              <div className={classes.editor} >
-                <Editor
-                  editorState={this.state.editorState}
-                  handleKeyCommand={this.handleEditorKeyCommand}
-                  onChange={this.onChange} />
-              </div>
-              <FormLabel className={classes.descLabel} component="legend">Photo</FormLabel>
-              <Input id="addEdit_photo" type="file" onChange={this.handleFileUpload} error={error === ERROR.IMAGE_FORMAT} />
-              <TextField
-                margin="dense"
-                id="addEdit_video"
-                label="Video URL"
-                type="text"
-                fullWidth
-                defaultValue={defaultItem.video}
-              />
+            <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
+              <img className={classes.imgPreview} src={photoUrl} />
+              <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
+            </Paper>
+            <div className={classes.usage}>{ genres }</div>
+            <div>{ movements }</div>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <ExerciseLabels onChange={this.handleExerciseLabelChange} usage={viewItem && viewItem.usage} labels={labels} />
+            <Paper className={classes.description}>
+              <span dangerouslySetInnerHTML={{ __html: description }}></span>
+              { textToSprings(viewItem.springs) }
+            </Paper>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
-          Cancel
+        <Button onClick={this.handleClose} color="primary">
+          Close
         </Button>
-        <SaveButton onClick={this.handleSave} />
       </DialogActions>
-      <Snackbar
-          open={hasError}
-          autoHideDuration={5000}
-          onClose={this.handleCloseSnackbar}
-          SnackbarContentProps={{
-            'aria-describedby': 'snackbar-fab-message-id',
-            className: classes.snackbarContent,
-          }}
-          message={<span id="snackbar-fab-message-id">{error}</span>}
-          action={
-            <Button color="inherit" size="small" onClick={this.handleCloseSnackbar}>
-              Ok
-            </Button>
-          }
-          className={classes.snackbar}
-        />
       </div>
     );
   }
 }
 
 export default withStyles(theme => ({
+  usage: {
+    marginTop: theme.spacing.unit * 2
+  },
   descLabel: {
-    marginTop: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
   },
   editor: {
@@ -309,14 +126,32 @@ export default withStyles(theme => ({
     flex: 1,
   },
   content: {
-    marginTop: theme.spacing.unit * 3,
     flexGrow: 1,
     width: 700,
   },
-  snackbar: {
-    position: 'absolute',
+  imgPreview: {
+    maxWidth: 300,
+    maxHeight: 300,
+    borderRadius: 5,
   },
-  snackbarContent: {
-    width: 360,
-  }
+  chip: {
+    margin: theme.spacing.unit,
+  },
+  photoFrame: {
+    padding: theme.spacing.unit,
+    textAlign: 'center',
+    borderRadius: 10,
+    backgroundColor: '#e0e6f0',
+    cursor: 'pointer',
+  },
+  description: {
+    padding: theme.spacing.unit
+  },
+  genre: {
+    backgroundColor: 'orange',
+  },
+  movement: {
+    backgroundColor: '#3f51b5',
+    color: '#fff'
+  },
 }))(ViewExercise);
