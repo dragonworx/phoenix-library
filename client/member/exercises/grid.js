@@ -109,7 +109,7 @@ const SpringFormatter = ({ value }) => {
       const imgs = `#${color}`.repeat(count);
       sub = sub.replace(results[0], imgs);
     }
-    sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />');
+    sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />').toLowerCase();
     return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
   }
   return null;
