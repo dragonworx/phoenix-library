@@ -21,6 +21,7 @@ import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import AddEdit from './addEdit';
+import ViewExercise from './view';
 import Alert from '../../common/alert';
 import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
@@ -166,6 +167,7 @@ class ExerciseGrid extends React.PureComponent {
     labelColumns: ['name', 'genre', 'movement'],
     selection: [],
     editItem: null,
+    viewItem: null,
   };
 
   componentWillMount () {
@@ -272,6 +274,7 @@ class ExerciseGrid extends React.PureComponent {
   onSelectionChange = selection => {
     const { selection: selected } = this.state;
     const { isCommandDown } = this;
+    let viewItem;
     if (this.props.readOnly) {
       if (!selection.length) {
         return this.setState({ selection: selected });
@@ -282,6 +285,7 @@ class ExerciseGrid extends React.PureComponent {
           break;
         }
       }
+      viewItem = this.state.rows.find(row => row.id === selection[0]);
     } else if (!isCommandDown) {
       for (let i = 0; i < selection.length; i++) {
         if (selected.indexOf(selection[i]) === -1) {
@@ -290,7 +294,7 @@ class ExerciseGrid extends React.PureComponent {
         }
       }
     }
-    this.setState({ selection });
+    this.setState({ selection, viewItem });
   };
 
   onAdded = (addedRow, usage) => {
@@ -372,8 +376,11 @@ class ExerciseGrid extends React.PureComponent {
       photoColumns,
       selection,
       editItem,
+      viewItem,
     } = this.state;
+
     const { readOnly } = this.props;
+
     const labels = this.labels;
 
     if (mode === MODE.LOADING) {
@@ -423,6 +430,9 @@ class ExerciseGrid extends React.PureComponent {
         {
           mode === MODE.ADD || mode === MODE.EDIT ? 
           <AddEdit mode={mode} labels={labels} editItem={mode === MODE.EDIT && editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
+        }
+        {
+          viewItem ? <ViewExercise mode={mode} labels={labels} viewItem={viewItem} /> : null
         }
         {
           mode === MODE.CONFIRM_DELETE ? 

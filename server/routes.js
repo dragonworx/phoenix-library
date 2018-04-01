@@ -86,7 +86,7 @@ module.exports = function (app) {
   });
 
   app.get('/', (req, res) => {
-    res.render('index');
+    res.render('index', { user: encodedUser(req) });
   });
   
   app.get('/logout', (req, res) => {

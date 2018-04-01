@@ -15,21 +15,23 @@ import TabsView from './tabView';
 import HamburgerMenu from '../common/hamburgerMenu';
 import { user } from './session';
 
-const userOptions = [ 'Logout' ];
+const userOptions = [ 'Admin', 'Logout' ];
 
 const drawerWidth = 180;
 
-class MemberApp extends React.PureComponent {
+class PublicApp extends React.PureComponent {
   state = {};
 
   onUserMenuSelect = ({ 1: option }) => {
     if (option === 'Logout') {
       location = '/logout';
+    } else if (option === 'Admin') {
+      location = '/admin';
     }
   };
 
   render () {
-    const { classes, isAdmin, isSuper, isDesigner } = this.props;
+    const { classes } = this.props;
   
     return (
       <Router>
@@ -42,7 +44,7 @@ class MemberApp extends React.PureComponent {
                 className={classNames(classes.avatar, classes.bigAvatar)}
               /></a>
               <Typography variant="title" color="inherit" noWrap>
-                Phoenix Pilates Library Admin ~ {user.firstName}
+                Phoenix Pilates Library ~ {user.firstName}
               </Typography>
               <HamburgerMenu className={classes.menu} options={userOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
@@ -50,7 +52,7 @@ class MemberApp extends React.PureComponent {
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/admin" component={() => <TabsView isAdmin={isAdmin} isSuper={isSuper} isDesigner={isDesigner} />}/>
+            <Route exact path="/" component={() => <TabsView isAdmin={false} isSuper={false} />}/>
           </main>
         </div>
       </Router>
@@ -58,7 +60,7 @@ class MemberApp extends React.PureComponent {
   }
 }
 
-MemberApp.propTypes = {
+PublicApp.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
@@ -73,7 +75,7 @@ export default withStyles(theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: '#4089ff'
+    backgroundColor: 'orange'
   },
   drawerPaperOpen: {
     position: 'relative',
@@ -114,4 +116,4 @@ export default withStyles(theme => ({
     position: 'absolute',
     right: 0,
   }
-}))(MemberApp);
+}))(PublicApp);

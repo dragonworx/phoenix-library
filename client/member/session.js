@@ -1,4 +1,4 @@
-const user = JSON.parse(atob(document.getElementById('admin-bundle').getAttribute('data-session')));
+const user = JSON.parse(atob(document.getElementById('phoenix-bundle').getAttribute('data-session')));
 
 module.exports = {
   user

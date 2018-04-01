@@ -79,4 +79,6 @@ module.exports = [
   config('client/main_login.js', './login-bundle.js'),
   /* /admin */
   config('client/main_admin.js', './admin-bundle.js'),
+  /* /index */
+  config('client/main_index.js', './index-bundle.js'),
 ];
