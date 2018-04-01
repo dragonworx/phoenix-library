@@ -5,6 +5,6 @@ export default class Exercises extends React.Component {
   render () {
     const { isAdmin, isSuper } = this.props;
 
-    return <ExerciseGrid readOnly={!(isAdmin || isSuper)} />;
+    return <ExerciseGrid readOnly={!(isAdmin || isSuper)} onLoad={this.props.onLoad} />;
   }
 };

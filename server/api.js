@@ -79,7 +79,8 @@ module.exports = {
     
     return {
       exercises,
-      labels
+      labels,
+      count: exercises.length
     };
   },
 

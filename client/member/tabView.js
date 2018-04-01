@@ -4,7 +4,6 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import Exercises from './exercises';
 import { withStyles } from 'material-ui/styles';
 import Badge from 'material-ui/Badge';
-import axios from 'axios';
 
 class TabsView extends React.Component {
   state = {
@@ -12,13 +11,12 @@ class TabsView extends React.Component {
     value: 0,
   };
 
-  async componentDidMount () {
-    const { data: count } = await axios.get('/exercise/count');
-    this.setState({ exerciseCount: count });
-  }
-
   handleChange = (event, value) => {
     this.setState({ value });
+  };
+
+  onLoad = data => {
+    this.setState({ exerciseCount: data.count });
   };
 
   render() {
@@ -33,7 +31,7 @@ class TabsView extends React.Component {
             <Tab label="Classes" />
           </Tabs>
         </AppBar>
-        {value === 0 && <Exercises isSuper={isSuper} isAdmin={isAdmin} isDesigner={isDesigner} />}
+        {value === 0 && <Exercises isSuper={isSuper} isAdmin={isAdmin} isDesigner={isDesigner} onLoad={this.onLoad} />}
         {value === 1 && <p>Classes</p>}
       </div>
     );

@@ -176,8 +176,9 @@ class ExerciseGrid extends React.PureComponent {
         this.setState({
           mode: MODE.READ,
           rows: exercises,
-          selection: [exercises[exercises.length - 1].id]
+          selection: [exercises[exercises.length - 1].id],
         });
+        this.props.onLoad(res.data);
       });
     
     this.isCommandDown = false;
