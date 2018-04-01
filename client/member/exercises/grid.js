@@ -39,8 +39,13 @@ const MODE = {
   CONFIRM_DELETE: 'confirm_delete',
 };
 
-const OPTION_KEY = 18;
-const ENTER_KEY = 13;
+const KEYS = {
+  OPTION: 18,
+  ENTER: 13,
+  SPACE: 32,
+  UP: 38,
+  DOWN: 40,
+};
 
 const htmlNode = document.createElement('div');
 
@@ -93,20 +98,45 @@ const TooltipTypeProvider = props => (
   />
 );
 
-// const SpringFormatter = ({ value }) => {
-//   if (value) {
-//     const values = value.replace(/([1-9]) (red|blue|yellow)/i, '<img style="height:32px" src="/img/spring-blue.png" />');
-//     return <Tooltip title={values} placement="top"><span dangerouslySetInnerHTML={{ __html: values }}></span></Tooltip>;
-//   }
-//   return null;
-// };
+const SpringFormatter = ({ value }) => {
+  if (value) {
+    const regex = /([1-9]) (red|blue|yellow)/gi;
+    let results;
+    let sub = value;
+    while ((results = regex.exec(value)) !== null) {
+      const count = parseInt(results[1], 10);
+      const color = results[2];
+      const imgs = `#${color}`.repeat(count);
+      sub = sub.replace(results[0], imgs);
+    }
+    sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />');
+    return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
+  }
+  return null;
+};
 
-// const SpringTypeProvider = props => (
-//   <DataTypeProvider
-//     formatterComponent={SpringFormatter}
-//     {...props}
-//   />
-// );
+const SpringTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={SpringFormatter}
+    {...props}
+  />
+);
+
+let defaultColumnWidths = [
+  { columnName: 'photo', width: 100 },
+  { columnName: 'name', width: 300 },
+  { columnName: 'genre', width: 200 },
+  { columnName: 'movement', width: 200 },
+  { columnName: 'springs', width: 200 },
+  { columnName: 'description', width: 600 },
+  { columnName: 'video', width: 150 },
+];
+
+try {
+  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_1.columns']);
+} catch (e) {
+  console.warn('Could not load column widths: ' + String(e));
+}
 
 class ExerciseGrid extends React.PureComponent {
   state = {
@@ -125,20 +155,12 @@ class ExerciseGrid extends React.PureComponent {
       { columnName: 'photo', filteringEnabled: false },
     ],
     defaultHiddenColumnNames: ['video'],
-    defaultColumnWidths: [
-      { columnName: 'photo', width: 100 },
-      { columnName: 'name', width: 300 },
-      { columnName: 'genre', width: 200 },
-      { columnName: 'movement', width: 200 },
-      { columnName: 'springs', width: 200 },
-      { columnName: 'description', width: 600 },
-      { columnName: 'video', width: 150 },
-    ],
+    defaultColumnWidths,
     nameColumns: ['name'],
     photoColumns: ['photo'],
     htmlColumns: ['description'],
-    // springColumns: ['springs'],
-    labelColumns: ['name', 'genre', 'movement', 'springs'],
+    springColumns: ['springs'],
+    labelColumns: ['name', 'genre', 'movement'],
     selection: [],
     editItem: null,
   };
@@ -169,18 +191,31 @@ class ExerciseGrid extends React.PureComponent {
   }
 
   onGlobalKeyDown = e => {
-    console.log(e.keyCode);
-    if (e.keyCode === OPTION_KEY) {
+    if (e.keyCode === KEYS.OPTION) {
       this.isCommandDown = true;
     }
   };
 
   onGlobalKeyUp = e => {
-    if (e.keyCode === OPTION_KEY) {
+    const { keyCode } = e;
+    const { selection, rows } = this.state;
+    const ids = rows.map(row => row.id);
+    ids.sort();
+    if (keyCode === KEYS.OPTION) {
       this.isCommandDown = false;
-    } else if (e.keyCode === ENTER_KEY && this.state.selection.length === 1) {
+    } else if ((keyCode === KEYS.ENTER || keyCode === KEYS.SPACE) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
       this.setState({ mode: MODE.EDIT, editItem: row });
+    } else if (selection.length === 1 && keyCode === KEYS.UP) {
+      const selectedRowIndex = ids.indexOf(selection[0]);
+      if (selectedRowIndex > 0) {
+        this.setState({ selection: [ids[selectedRowIndex + 1]] });
+      }
+    } else if (selection.length === 1 && keyCode === KEYS.DOWN) {
+      const selectedRowIndex = ids.indexOf(selection[0]);
+      if (selectedRowIndex <= ids.length - 1) {
+        this.setState({ selection: [ids[selectedRowIndex - 1]] });
+      }
     }
   };
 
@@ -281,6 +316,15 @@ class ExerciseGrid extends React.PureComponent {
     this.setState({ rows, editItem: null, selection: [] });
   };
 
+  onColumnWidthsChange = nextColumnWidths => {
+    try {
+      const data = JSON.stringify(nextColumnWidths);
+      localStorage['phoenix_lib_1.columns'] = data;
+    } catch (e) {
+      // ?
+    }   
+  };
+
   renderEditControls () {
     const { selection } = this.state;
     const { classes, readOnly } = this.props;
@@ -318,7 +362,7 @@ class ExerciseGrid extends React.PureComponent {
       defaultColumnWidths,
       mode,
       htmlColumns,
-      // springColumns,
+      springColumns,
       labelColumns,
       nameColumns,
       photoColumns,
@@ -342,6 +386,7 @@ class ExerciseGrid extends React.PureComponent {
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
           <TooltipTypeProvider for={labelColumns} />
+          <SpringTypeProvider for={springColumns} />
           <NameTypeProvider for={nameColumns} />
           <ThumbnailTypeProvider for={photoColumns} />
           <DragDropProvider />
@@ -361,7 +406,7 @@ class ExerciseGrid extends React.PureComponent {
           <IntegratedSorting />
           <IntegratedSelection />
           <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={650} />
-          {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} />}
+          {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
