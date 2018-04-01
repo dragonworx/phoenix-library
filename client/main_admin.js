@@ -1,5 +1,5 @@
 import React from 'react';
-import App from './common/App';
+import App from './common/app';
 import MemberApp from './member/memberApp';
 // import { user } from './member/session';
 

@@ -109,7 +109,10 @@ const SpringFormatter = ({ value }) => {
       const imgs = `#${color}`.repeat(count);
       sub = sub.replace(results[0], imgs);
     }
-    sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />').toLowerCase();
+    sub = sub
+      .replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />')
+      .toLowerCase()
+      .replace(/mat/gi, '<img style="height:32px" src="/img/mat.png" />');
     return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
   }
   return null;
@@ -406,7 +409,7 @@ class ExerciseGrid extends React.PureComponent {
           <IntegratedFiltering />
           <IntegratedSorting />
           <IntegratedSelection />
-          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={650} />
+          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={540} />
           {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
