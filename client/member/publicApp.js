@@ -52,7 +52,9 @@ class PublicApp extends React.PureComponent {
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/" component={() => <TabsView isAdmin={false} isSuper={false} />}/>
+            <Route exact path="/" component={() => <TabsView readOnly={true} value={0} />}/>
+            <Route exact path="/exercises" component={() => <TabsView readOnly={true} value={0} />}/>
+            <Route exact path="/classes" component={() => <TabsView readOnly={true} value={1} />}/>
           </main>
         </div>
       </Router>

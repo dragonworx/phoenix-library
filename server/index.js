@@ -11,7 +11,10 @@ const log = require('./log');
 const env = require('./environment');
 const { PHOENIX_PASSWORD } = env(['PHOENIX_PASSWORD']);
 
+log('Starting phoenix_lib server...', 'cyan');
+
 database.then(() => {
+  log('Database ready', 'green');
   const app = express();
 
   app.set('view engine', 'ejs');

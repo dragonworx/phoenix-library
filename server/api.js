@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 const password = require('./password');
 const log = require('./log');
 const storage = require('./storage');
-const models = require('./models');
+const model = require('./model');
 
 function hashById (rows) {
   const hash = {};
@@ -12,14 +12,13 @@ function hashById (rows) {
 
 module.exports = {
   async ping () {
-    const Ping = models.Ping;
-    await Ping.destroy({ truncate: true });
-    Ping.create({ lastPing: Date.now() });
+    await model.Ping.destroy({ truncate: true });
+    model.Ping.create({ lastPing: Date.now() });
   },
 
   async login (email, plainTextPassword) {
-    const Users = models.Users;
-    const user = await Users.findOne({ where: { email } });
+    const user = await model.User.findOne({ where: { email } });
+
     if (user) {
       const verified = await password.verify(plainTextPassword, user.password);
       if (verified) {
@@ -30,16 +29,15 @@ module.exports = {
         return userData;
       }
     }
+
     return null;
   },
 
   async getExercises () {
     const PLAIN = { plain: true };
-    const Exercises = models.Exercises;
-    const Label = models.Labels;
-    const ExerciseLabel = models.ExerciseLabels;
+    
+    let exercises = await model.Exercise.findAll();
 
-    let exercises = await Exercises.findAll();
     exercises = exercises.map(exercise => {
       exercise = exercise.get(PLAIN);
       exercise.genre = [];
@@ -47,14 +45,15 @@ module.exports = {
       exercise.usage = {};
       return exercise;
     });
+
     const exerciseById = hashById(exercises);
 
-    let labels = await Label.findAll();
+    let labels = await model.Label.findAll();
     labels = labels.map(label => label.get(PLAIN));
     const labelsById = hashById(labels);
     const exerciseLabelsPerExercise = await Promise.all(exercises.map(
       exercise => 
-        ExerciseLabel.findAll({ where: { exerciseId: exercise.id }})
+      model.ExerciseLabel.findAll({ where: { exerciseId: exercise.id }})
       )
     );
 
@@ -84,9 +83,18 @@ module.exports = {
     };
   },
 
-  getExerciseCount () {
-    const Exercises = models.Exercises;
-    return Exercises.count();
+  async getClasses () {
+    let classes = await model.Class.findAll();
+    return classes;
+  },
+
+  async getCounts () {
+    const exercises = await model.Exercise.count();
+    const classes = await model.Class.count();
+    return {
+      exercises,
+      classes,
+    };
   },
 
   async uploadPhoto (exerciseId, image) {
@@ -101,47 +109,49 @@ module.exports = {
         maxWidth: 1000,
         maxHeight: 1000,
       }),
+
       storage.uploadImage(exerciseId, 1, 'preview', image.data, {
         width: 600,
         maxHeight: 600,
       }),
+
       storage.uploadImage(exerciseId, 1, 'thumb', image.data, {
         width: 100,
         maxHeight: 100,
-      })
+      }),
     ]);
 
     log(`Successfully uploaded image "${name}" for #${exerciseId}`, 'green');
-    const Exercises = models.Exercises;
-    const exercise = await Exercises.findOne({ where: { id: exerciseId }});
+    const exercise = await model.Exercise.findOne({ where: { id: exerciseId }});
     exercise.photo = name;
     exercise.save();
+    
     return Promise.resolve(exerciseId);
   },
 
   async addExercise (name, springs, description, photo, video, usage) {
-    const Exercises = models.Exercises;
-    const exercise = await Exercises.create({ name, springs, description, video });
+    const exercise = await model.Exercise.create({ name, springs, description, video });
     const exerciseId = exercise.id;
+    
     await this.createExerciseLabels(exerciseId, usage);
+    
     if (!photo) {
       return exerciseId;
     }
+
     await this.uploadPhoto(exerciseId, photo);
     exercise.photo = photo.name;
+
     return exerciseId;
   },
 
   async editExercise (exerciseId, name, springs, description, photo, video, usage) {
-    const Exercises = models.Exercises;
-    const ExerciseLabels = models.ExerciseLabels;
-
     // update exercise
-    const exercise = await Exercises.findOne({ where: { id: exerciseId }});
+    const exercise = await model.Exercise.findOne({ where: { id: exerciseId }});
     exercise.set({ name, springs, description, video });
 
     // destroy labels, re-create
-    await ExerciseLabels.destroy({ where: { exerciseId }});
+    await model.destroy({ where: { exerciseId }});
     await this.createExerciseLabels(exerciseId, usage);
 
     // save with no photo changes
@@ -154,33 +164,35 @@ module.exports = {
     await this.uploadPhoto(exerciseId, photo);
     exercise.photo = photo.name;
     exercise.save();
+
     return exerciseId;
   },
 
   async deleteExercises (ids) {
     const Op = Sequelize.Op;
-    const Exercises = models.Exercises;
-    const ExerciseLabels = models.ExerciseLabels;
-    await Exercises.destroy({
+
+    await model.Exercise.destroy({
       where: {
         id: {
           [Op.or]: ids
         }
       }
     });
-    await ExerciseLabels.destroy({
+
+    await model.ExerciseLabel.destroy({
       where: {
         exerciseId: {
           [Op.or]: ids
         }
       }
     });
+
     await Promise.all(ids.map(exerciseId => storage.deleteImages(exerciseId)));
   },
 
   async createExerciseLabels (exerciseId, usage) {
-    const ExerciseLabels = models.ExerciseLabels;
     const exerciseLabelData = [];
+
     Object.entries(usage).map(({ 0: genreId, 1: selectedMovementCategories }) => {
       Object.entries(selectedMovementCategories).forEach(({ 0: movementId, 1: isSelected }) => {
         log(movementId + ':' + isSelected);
@@ -193,12 +205,14 @@ module.exports = {
         }
       });
     });
+
     if (exerciseLabelData.length) {
       log(`adding ${exerciseLabelData.length} exercise labels for #${exerciseId}`);
-      await Promise.all(exerciseLabelData.map(settings => ExerciseLabels.create(settings)));
+      await Promise.all(exerciseLabelData.map(settings => model.ExerciseLabel.create(settings)));
     } else {
       log(`adding no exercise labels for #${exerciseId}`);
     }
+
     return Promise.resolve();
   },
 };

@@ -13,7 +13,7 @@ import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
 import TabsView from './tabView';
 import HamburgerMenu from '../common/hamburgerMenu';
-import { user } from './session';
+import { user, permissions } from './session';
 
 const userOptions = [ 'Logout' ];
 
@@ -29,7 +29,7 @@ class MemberApp extends React.PureComponent {
   };
 
   render () {
-    const { classes, isAdmin, isSuper, isDesigner } = this.props;
+    const { classes } = this.props;
   
     return (
       <Router>
@@ -50,7 +50,9 @@ class MemberApp extends React.PureComponent {
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/admin" component={() => <TabsView isAdmin={isAdmin} isSuper={isSuper} isDesigner={isDesigner} />}/>
+            <Route exact path="/admin" component={() => <TabsView readOnly={false} value={0} />}/>
+            <Route exact path="/admin/exercises" component={() => <TabsView readOnly={false} value={0} />}/>
+            <Route exact path="/admin/classes" component={() => <TabsView  readOnly={false}value={1} />}/>
           </main>
         </div>
       </Router>

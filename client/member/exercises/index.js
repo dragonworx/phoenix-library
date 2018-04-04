@@ -1,10 +1,9 @@
 import React from 'react';
 import ExerciseGrid from './grid';
+import { permissions } from '../session';
 
 export default class Exercises extends React.Component {
   render () {
-    const { isAdmin, isSuper } = this.props;
-
-    return <ExerciseGrid readOnly={!(isAdmin || isSuper)} onLoad={this.props.onLoad} />;
+    return <ExerciseGrid readOnly={!permissions.exercises} />;
   }
 };

@@ -65,25 +65,14 @@ const NameTypeProvider = props => (
   />
 );
 
-const ThumbnailFormatter = ({ row }) => {
-  return <ThumbnailRef row={row} />;
-};
-
-const ThumbnailTypeProvider = props => (
-  <DataTypeProvider
-    formatterComponent={ThumbnailFormatter}
-    {...props}
-  />
-);
-
-const DescriptionFormatter = ({ value }) => {
+const HTMLFormatter = ({ value }) => {
   htmlNode.innerHTML = value;
   return <Tooltip title={htmlNode.textContent} placement="top"><span>{htmlNode.textContent}</span></Tooltip>;
 };
 
-const DescriptionTypeProvider = props => (
+const HTMLTypeProvider = props => (
   <DataTypeProvider
-    formatterComponent={DescriptionFormatter}
+    formatterComponent={HTMLFormatter}
     {...props}
   />
 );
@@ -103,76 +92,39 @@ const TooltipTypeProvider = props => (
   />
 );
 
-export const textToSprings = (value) => {
-  const regex = /([1-9]) (red|blue|yellow)/gi;
-  let results;
-  let sub = value;
-  while ((results = regex.exec(value)) !== null) {
-    const count = parseInt(results[1], 10);
-    const color = results[2];
-    const imgs = `#${color}`.repeat(count);
-    sub = sub.replace(results[0], imgs);
-  }
-  sub = sub
-    .replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />')
-    .toLowerCase()
-    .replace(/mat/gi, '<img style="height:32px" src="/img/mat.png" />');
-  return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
-};
-
-const SpringFormatter = ({ value }) => {
-  if (value) {
-    return textToSprings(value);
-  }
-  return null;
-};
-
-const SpringTypeProvider = props => (
-  <DataTypeProvider
-    formatterComponent={SpringFormatter}
-    {...props}
-  />
-);
-
 let defaultColumnWidths = [
-  { columnName: 'photo', width: 100 },
   { columnName: 'name', width: 300 },
-  { columnName: 'genre', width: 200 },
-  { columnName: 'movement', width: 200 },
-  { columnName: 'springs', width: 200 },
-  { columnName: 'description', width: 600 },
-  { columnName: 'video', width: 150 },
+  { columnName: 'status', width: 300 },
+  { columnName: 'genre', width: 100 },
+  { columnName: 'designer', width: 200 },
+  { columnName: 'notes', width: 200 },
 ];
 
 try {
-  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_1.columns']);
+  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_2.columns']);
 } catch (e) {
   console.warn('Could not load column widths: ' + String(e));
 }
 
-class ExerciseGrid extends React.PureComponent {
+class ClassesGrid extends React.PureComponent {
   state = {
     mode: MODE.LOADING,
     columns: [
-      { name: 'photo', title: 'Photo' },
       { name: 'name', title: 'Name' },
       { name: 'genre', title: 'Genre' },
-      { name: 'movement', title: 'Movement Cat.' },
-      { name: 'springs', title: 'Springs' },
-      { name: 'description', title: 'Description' },
-      { name: 'video', title: 'Video URL' },
+      { name: 'designer', title: 'Designer' },
+      { name: 'notes', title: 'Notes' },
+      { name: 'status', title: 'Status' },
     ],
     rows: [],
     filteringStateColumnExtensions: [
-      { columnName: 'photo', filteringEnabled: false },
+      // { columnName: 'photo', filteringEnabled: false },
     ],
-    defaultHiddenColumnNames: ['video'],
+    defaultHiddenColumnNames: ['notes'],
     defaultColumnWidths,
     nameColumns: ['name'],
-    photoColumns: ['photo'],
-    htmlColumns: ['description'],
-    springColumns: ['springs'],
-    labelColumns: ['name', 'genre', 'movement'],
+    tooltipColumns: ['status', 'genre', 'designer'],
+    htmlColumns: ['nodes'],
     selection: [],
     editItem: null,
     viewItem: null,
@@ -186,16 +138,12 @@ class ExerciseGrid extends React.PureComponent {
   }
 
   componentWillMount () {
-    axios.get('/exercise/get')
+    axios.get('/classes/get')
       .then(res => {
-        const { exercises, labels } = res.data;
-        this.labels = labels;
-        exercises.forEach(exercise => {
-          this.updateRowLabels(exercise, exercise.usage);
-        });
+        const classes = res.data;
         this.setState({
           mode: MODE.READ,
-          rows: exercises,
+          rows: classes,
           selection: [],
         });
       });
@@ -353,7 +301,7 @@ class ExerciseGrid extends React.PureComponent {
   onColumnWidthsChange = nextColumnWidths => {
     try {
       const data = JSON.stringify(nextColumnWidths);
-      localStorage['phoenix_lib_1.columns'] = data;
+      localStorage['phoenix_lib_2.columns'] = data;
     } catch (e) {
       // ?
     }   
@@ -396,10 +344,8 @@ class ExerciseGrid extends React.PureComponent {
       defaultColumnWidths,
       mode,
       htmlColumns,
-      springColumns,
-      labelColumns,
+      tooltipColumns,
       nameColumns,
-      photoColumns,
       selection,
       editItem,
       viewItem,
@@ -421,11 +367,9 @@ class ExerciseGrid extends React.PureComponent {
       <Paper>
         { this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
-          <DescriptionTypeProvider for={htmlColumns} />
-          <TooltipTypeProvider for={labelColumns} />
-          <SpringTypeProvider for={springColumns} />
           <NameTypeProvider for={nameColumns} />
-          <ThumbnailTypeProvider for={photoColumns} />
+          <TooltipTypeProvider for={tooltipColumns} />
+          <HTMLTypeProvider for={htmlColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />
@@ -433,9 +377,9 @@ class ExerciseGrid extends React.PureComponent {
             defaultSorting={[
               { columnName: 'id', direction: 'desc' },
               { columnName: 'name', direction: 'asc' },
-              { columnName: 'springs', direction: 'asc' },
+              { columnName: 'status', direction: 'asc' },
               { columnName: 'genre', direction: 'asc' },
-              { columnName: 'movement', direction: 'asc' },
+              { columnName: 'designer', direction: 'asc' },
             ]}
           />
           <SelectionState selection={selection} onSelectionChange={this.onSelectionChange} />
@@ -474,7 +418,7 @@ class ExerciseGrid extends React.PureComponent {
   }
 }
 
-ExerciseGrid.propTypes = {
+ClassesGrid.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
@@ -497,4 +441,4 @@ export default withStyles(theme => ({
   pointer: {
     cursor: 'pointer',
   }
-}))(ExerciseGrid);
+}))(ClassesGrid);

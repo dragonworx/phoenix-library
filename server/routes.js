@@ -1,5 +1,6 @@
 const log = require('./log');
 const api = require('./api');
+const readPermissions = require('../common/permissions');
 
 function encodedUser (req) {
   const sessionUser = req.session.user;
@@ -44,7 +45,8 @@ module.exports = function (app) {
   app.get('/login', (req, res) => {
     const user = req.session.user;
     if (user) {
-      res.redirect(user.isAdmin ? '/admin/land' : '/');
+      const permissions = readPermissions(user.permissions);
+      res.redirect(permissions.admin ? '/admin/land' : '/');
     } else {
       res.render('login');
     }
@@ -60,7 +62,7 @@ module.exports = function (app) {
 
   app.use((req, res, next) => {  
     const user = req.session.user;
-    const isAdmin = !!(user && user.isAdmin);
+    const isAdmin = !!(user && readPermissions(user.permissions).admin);
     const isUnauthorised = (req.url.match('^\/admin') && !isAdmin)
       || (req.url === '/' && !user);
     const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
@@ -81,11 +83,27 @@ module.exports = function (app) {
     res.render('admin', { user: encodedUser(req) });
   });
 
+  app.get('/admin/exercises', (req, res) => {
+    res.render('admin', { user: encodedUser(req) });
+  });
+
+  app.get('/admin/classes', (req, res) => {
+    res.render('admin', { user: encodedUser(req) });
+  });
+
   app.get('/admin/land', (req, res) => {
     res.redirect('/admin/');
   });
 
   app.get('/', (req, res) => {
+    res.render('index', { user: encodedUser(req) });
+  });
+
+  app.get('/exercises', (req, res) => {
+    res.render('index', { user: encodedUser(req) });
+  });
+
+  app.get('/classes', (req, res) => {
     res.render('index', { user: encodedUser(req) });
   });
   
@@ -99,9 +117,14 @@ module.exports = function (app) {
     res.sendJSON(data);
   });
 
-  app.get('/exercise/count', async (req, res) => {
-    const length = await api.getExerciseCount();
-    res.sendJSON(length);
+  app.get('/counts', async (req, res) => {
+    const data = await api.getCounts();
+    res.sendJSON(data);
+  });
+
+  app.get('/classes/get', async (req, res) => {
+    const data = await api.getClasses();
+    res.sendJSON(data);
   });
 
   /* post */
