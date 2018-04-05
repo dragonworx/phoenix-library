@@ -4,7 +4,7 @@ const readPermissions = require('../common/permissions');
 
 function encodedUser (req) {
   const sessionUser = req.session.user;
-    return Buffer.from(JSON.stringify(sessionUser)).toString('base64');
+  return sessionUser ? Buffer.from(JSON.stringify(sessionUser)).toString('base64') : undefined;
 }
 
 module.exports = function (app) {
@@ -57,19 +57,33 @@ module.exports = function (app) {
     const { env, exerciseId } = req.params;
     res.render('photo', { env, exerciseId });
   });
+
+  app.post('/login', async (req, res) => {
+    const user = await api.login(req.body.email, req.body.password);
+    if (user) {
+      log('user found: ' + JSON.stringify(user), 'green');
+      req.session.user = user;
+    } else {
+      log('user not found', 'red');
+      res.status(401);
+    }
+    res.end();
+  });
   
   /* authenticate */
 
   app.use((req, res, next) => {  
     const user = req.session.user;
     const isAdmin = !!(user && readPermissions(user.permissions).admin);
-    const isUnauthorised = (req.url.match('^\/admin') && !isAdmin)
+    const isUnauthorised = (req.url.match('^\/admin') && !isAdmin) || !user
       || (req.url === '/' && !user);
     const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
   
     log({
       authenticate: req.url,
       user,
+      isAdmin,
+      isUnauthorised
     }, isUnauthorised ? 'red' : 'green');
   
     if (isUnauthorised && !isAssetUrl) {
@@ -129,17 +143,7 @@ module.exports = function (app) {
 
   /* post */
 
-  app.post('/login', async (req, res) => {
-    const user = await api.login(req.body.email, req.body.password);
-    if (user) {
-      log('user found: ' + JSON.stringify(user), 'green');
-      req.session.user = user;
-    } else {
-      log('user not found', 'red');
-      res.status(401);
-    }
-    res.end();
-  });
+  
 
   app.put('/exercise/photo', async (req, res) => {
     const exerciseId = parseInt(req.body.exerciseId, 10);
