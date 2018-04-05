@@ -19,7 +19,7 @@ class SaveButton extends React.Component {
         loading: true,
       }, () => {
         this.props.onClick()
-          .then(() => this.setState({ loading: false, mode: 1 }))
+          .then(shouldHalt => !shouldHalt && this.setState({ loading: false, mode: 1 }))
           .catch(() => this.setState({ loading: false, mode: -1 }));
       });
     }
@@ -27,7 +27,8 @@ class SaveButton extends React.Component {
 
   render() {
     const { loading, mode } = this.state;
-    const { classes } = this.props;
+    const { classes, title = 'save' } = this.props;
+
     let buttonClassname = '';
     if (mode === -1) {
       buttonClassname = classes.buttonFail;
@@ -44,7 +45,7 @@ class SaveButton extends React.Component {
           disabled={loading}
           onClick={this.handleButtonClick}
         >
-          Save
+          {title}
           <SaveIcon className={classes.rightIcon}>save</SaveIcon>
         </Button>
         {loading && <CircularProgress size={24} className={classes.buttonProgress} />}

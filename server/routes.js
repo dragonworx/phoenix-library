@@ -45,8 +45,7 @@ module.exports = function (app) {
   app.get('/login', (req, res) => {
     const user = req.session.user;
     if (user) {
-      const permissions = readPermissions(user.permissions);
-      res.redirect(permissions.admin ? '/admin/land' : '/');
+      res.redirect(readPermissions(user.permissions).isAdmin ? '/admin/land' : '/');
     } else {
       res.render('login');
     }
@@ -70,11 +69,11 @@ module.exports = function (app) {
     res.end();
   });
   
-  /* authenticate */
+  /* authenticated */
 
   app.use((req, res, next) => {  
     const user = req.session.user;
-    const isAdmin = !!(user && readPermissions(user.permissions).admin);
+    const isAdmin = !!(user && readPermissions(user.permissions).isAdmin);
     const isUnauthorised = (req.url.match('^\/admin') && !isAdmin) || !user
       || (req.url === '/' && !user);
     const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
@@ -106,7 +105,7 @@ module.exports = function (app) {
   });
 
   app.get('/admin/land', (req, res) => {
-    res.redirect('/admin/');
+    res.redirect('/admin/classes');
   });
 
   app.get('/', (req, res) => {
@@ -141,10 +140,19 @@ module.exports = function (app) {
     res.sendJSON(data);
   });
 
+  app.get('/template/:genreId', async (req, res) => {
+    const { genreId } = req.params;
+    const data = await api.getTemplate(genreId);
+    res.sendJSON(data);
+  });
+
+  app.get('/label/get/:type', async (req, res) => {
+    const data = await api.getLabels(req.params.type);
+    res.sendJSON(data);
+  });
+
   /* post */
-
   
-
   app.put('/exercise/photo', async (req, res) => {
     const exerciseId = parseInt(req.body.exerciseId, 10);
     const image = req.files && req.files.photo;

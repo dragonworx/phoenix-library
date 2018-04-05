@@ -60,7 +60,7 @@ class LabelGroup extends React.Component {
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
-          <ListItemText inset primary={rootLabel.id + ':' + rootLabel.name} />
+          <ListItemText inset primary={rootLabel.name} />
           <ListItemSecondaryAction>
             <IconButton
               aria-label="More"
@@ -86,7 +86,7 @@ class LabelGroup extends React.Component {
                 labels.map(label => (
                   <MenuItem key={`menu_${label.id}`} onClick={() => this.handleMenuClick(label)}>
                     <Checkbox checked={label.selected === true} value={String(label.id)} />
-                    <ListItemText primary={label.id + ':' + label.name} />
+                    <ListItemText primary={label.name} />
                   </MenuItem>
                 ))
               }
@@ -100,7 +100,7 @@ class LabelGroup extends React.Component {
                   <ListItemIcon>
                     <CheckIcon />
                   </ListItemIcon>
-                  <ListItemText inset secondary={label.id + ':' + label.name} />
+                  <ListItemText inset secondary={label.name} />
                 </ListItem>
               : null
           ))

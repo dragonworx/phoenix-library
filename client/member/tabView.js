@@ -7,7 +7,6 @@ import Badge from 'material-ui/Badge';
 import axios from 'axios';
 import Exercises from './exercises';
 import Classes from './classes';
-// import { permissions } from './session';
 
 class TabsView extends React.Component {
   state = {

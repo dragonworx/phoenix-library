@@ -7,10 +7,3 @@ module.exports = (sql, SQL) => sql.define('user', {
   permissions: { type: SQL.TEXT },
   lastLogin: { type: SQL.DATE },
 });
-
-/*
-permissions:
-  exercises: 0/1
-  classes: 0/1
-  users: 0/1
-*/

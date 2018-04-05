@@ -17,17 +17,18 @@ import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
 import Tooltip from 'material-ui/Tooltip';
-import { LinearProgress } from 'material-ui/Progress';
+// import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
+import AddSelect from './addSelect';
 import AddEdit from './addEdit';
-import ViewExercise from './view';
+import ViewClass from './view';
 import Alert from '../../common/alert';
-import Thumbnail from '../../common/thumbnail';
-import ThumbnailLink from '../../common/thumbnailLink';
+// import Thumbnail from '../../common/thumbnail';
+// import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
 
-let ThumbnailRef = ThumbnailLink;
+// let ThumbnailRef = ThumbnailLink;
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -38,6 +39,7 @@ const getRowId = row => row.id;
 const MODE = {
   LOADING: 'loading',
   READ: 'read',
+  ADD_SELECT: 'add_select',
   ADD: 'add',
   EDIT: 'edit',
   VIEW: 'view',
@@ -128,12 +130,13 @@ class ClassesGrid extends React.PureComponent {
     selection: [],
     editItem: null,
     viewItem: null,
+    selectedGenre: null,
   };
 
   constructor (props) {
     super(props);
     if (props.readOnly) {
-      ThumbnailRef = Thumbnail;
+      // ThumbnailRef = Thumbnail;
     }
   }
 
@@ -209,7 +212,9 @@ class ClassesGrid extends React.PureComponent {
   }
 
   onAddClick = () => {
-    this.setState({ mode: MODE.ADD });
+    axios.get('/label/get/0').then(response => {
+      this.setState({ genres: response.data, mode: MODE.ADD_SELECT });
+    });
   };
 
   onEditClick = () => {
@@ -226,6 +231,22 @@ class ClassesGrid extends React.PureComponent {
 
   onAddEditClose = () => {
     this.setState({ mode: MODE.READ });
+  };
+
+  onAddSelectClose = async value => {
+    if (value) {
+      const { data: template } = await axios.get(`/template/${value}`);
+      this.setState({
+        selectedGenre: {
+          id: value,
+          name: this.state.genres.find(genre => genre.id === value).name,
+        },
+        mode: MODE.ADD,
+        program: template,
+      });
+    } else {
+      this.setState({ mode: MODE.READ });
+    }
   };
 
   onViewClose = () => {
@@ -347,21 +368,13 @@ class ClassesGrid extends React.PureComponent {
       tooltipColumns,
       nameColumns,
       selection,
-      editItem,
+      program,
       viewItem,
+      genres,
+      selectedGenre,
     } = this.state;
 
     const { readOnly } = this.props;
-
-    const labels = this.labels;
-
-    if (mode === MODE.LOADING) {
-      return (
-        <Paper>
-          <LinearProgress />
-        </Paper>
-      );
-    };
 
     return (
       <Paper>
@@ -398,20 +411,29 @@ class ClassesGrid extends React.PureComponent {
           <SearchPanel />
         </Grid>
         {
-          mode === MODE.ADD || mode === MODE.EDIT ? 
-          <AddEdit mode={mode} labels={labels} editItem={mode === MODE.EDIT && editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
+          mode === MODE.ADD_SELECT
+            ? <AddSelect genres={genres} onClose={this.onAddSelectClose} />
+            : null
         }
         {
-          mode === MODE.VIEW ? <ViewExercise viewItem={viewItem} onClose={this.onViewClose} /> : null
+          mode === MODE.ADD || mode === MODE.EDIT
+            ? <AddEdit mode={mode} genre={selectedGenre} program={program} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
+            : null
         }
         {
-          mode === MODE.CONFIRM_DELETE ? 
-          <Alert 
-            title="Confirm Delete" 
-            message={`Do you really want to delete ${selection.length === 1 ? 'this exercise' : 'these ' + selection.length + ' exercises'}?`}
-            submitText="Delete" 
-            onClose={this.onConfirmDeleteClose} 
-          /> : null
+          mode === MODE.VIEW
+            ? <ViewClass viewItem={viewItem} onClose={this.onViewClose} />
+            : null
+        }
+        {
+          mode === MODE.CONFIRM_DELETE
+          ? <Alert 
+              title="Confirm Delete" 
+              message={`Do you really want to delete ${selection.length === 1 ? 'this class' : 'these ' + selection.length + ' classes'}?`}
+              submitText="Delete" 
+              onClose={this.onConfirmDeleteClose} 
+            />
+          : null
         }
       </Paper>
     );

@@ -88,6 +88,11 @@ module.exports = {
     return classes;
   },
 
+  async getLabels (type) {
+    let labels = await model.Label.findAll({ where: { type } });
+    return labels;
+  },
+
   async getCounts () {
     const exercises = await model.Exercise.count();
     const classes = await model.Class.count();
@@ -215,4 +220,14 @@ module.exports = {
 
     return Promise.resolve();
   },
+
+  async getTemplate (genreId) {
+    const { templateId } = await model.ClassTemplate.findOne({ where: { genreId } });
+    const { categories } = await model.Template.findOne({ where: { id: templateId } });
+    const labels = await this.getLabels(1);
+    const labelsById = {};
+    labels.forEach(label => labelsById[label.id] = label);
+    const ids = categories.split(',').map(id => parseInt(id, 10));
+    return ids.map(id => ({ labelId: id, name: labelsById[id].name }));
+  }
 };

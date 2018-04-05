@@ -4,6 +4,6 @@ import { permissions } from '../session';
 
 export default class Classes extends React.Component {
   render () {
-    return <ClassesGrid readOnly={!permissions.exercises} />;
+    return <ClassesGrid readOnly={permissions.isClassReadOnly} />;
   }
 };

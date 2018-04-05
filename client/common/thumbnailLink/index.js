@@ -141,13 +141,14 @@ export default withStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
+    cursor: 'pointer',
   },
   dropZoneImg: {
     maxWidth: 48,
     maxHeight: 48,    
     cursor: 'pointer',
     boxShadow: '1px 8px 10px -4px rgba(0,0,0,0.3)',
-    border: DEFAULT_BORDER
+    border: 'red',
   },
   round: {
     borderRadius: 5,

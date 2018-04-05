@@ -13,7 +13,7 @@ import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
 import TabsView from './tabView';
 import HamburgerMenu from '../common/hamburgerMenu';
-import { user, permissions } from './session';
+import { user } from './session';
 
 const userOptions = [ 'Logout' ];
 

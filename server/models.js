@@ -1,5 +1,4 @@
 // load definitions
-const log = require('./log');
 const Ping = require('./model/ping');
 const User = require('./model/user');
 const Label = require('./model/label');
@@ -8,6 +7,9 @@ const ExerciseLabel = require('./model/exerciseLabel');
 const Class = require('./model/class');
 const ClassExerciseGroup = require('./model/ClassExerciseGroup');
 const ClassGroupExercise = require('./model/classGroupExercise');
+const Template = require('./model/template');
+const ClassTemplate = require('./model/classTemplate');
+
 const model = require('./model');
 
 // create model map
@@ -20,6 +22,8 @@ const Models = {
   Class,
   ClassExerciseGroup,
   ClassGroupExercise,
+  Template,
+  ClassTemplate
 };
 
 module.exports = {
