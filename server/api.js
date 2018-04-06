@@ -93,6 +93,11 @@ module.exports = {
     return labels;
   },
 
+  async getAllLabels () {
+    let labels = await model.Label.findAll();
+    return labels;
+  },
+
   async getCounts () {
     const exercises = await model.Exercise.count();
     const classes = await model.Class.count();

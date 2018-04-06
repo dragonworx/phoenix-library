@@ -1,10 +1,18 @@
 import React from 'react';
 import Button from 'material-ui/Button';
 import Paper from 'material-ui/Paper';
+import FolderIcon from 'material-ui-icons/Folder';
+import CheckIcon from 'material-ui-icons/Done';
 import Dialog, {
   DialogActions,
   DialogContent,
 } from 'material-ui/Dialog';
+import List, {
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  ListItemText,
+} from 'material-ui/List';
 import { FormLabel } from 'material-ui/Form';
 import AppBar from 'material-ui/AppBar';
 import Chip from 'material-ui/Chip';
@@ -14,12 +22,21 @@ import { withStyles } from "material-ui/styles";
 import { multi } from '../../common/util';
 import Lightbox from '../../common/lightbox';
 import { textToSprings } from '../exercises/grid';
+import axios from 'axios';
 
 class ViewExercise extends React.Component {
   state = {
-    open: true,
-    lightboxOpen: false
+    open: false,
+    lightboxOpen: false,
+    labels: null,
   };
+
+  async componentWillMount () {
+    const { data: labels } = await axios.get('/labels/get');
+    const labelsById = {};
+    labels.forEach(label => labelsById[label.id] = label);
+    this.setState({ open: true, labels: labelsById });
+  }
 
   handleClose = () => {
     this.setState({ open: false });
@@ -65,23 +82,60 @@ class ViewExercise extends React.Component {
   }
 
   renderContent () {
+    const { labels } = this.state;
     const { classes, viewItem } = this.props;
 
     // eslint-disable-next-line no-undef
     const photoUrl = viewItem.photo ? `${PHOENIX_LIB_STORAGE}${viewItem.id}_1_preview.png` : '/img/image-placeholder.png';
-    const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
-    const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
-    let description = viewItem.description;
+
+    // const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
+    // const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
+
+    const categorisation = [];
+    if (labels) {
+      const usage = viewItem.usage;
+    
+      for (let genreId in usage) {
+        const genreName = labels[genreId].name;
+        categorisation.push((
+          <Chip key={`genre_${genreId}`} label={genreName} className={multi(classes.chip, classes.genre)} classes={{ root: classes.chipRoot}} />
+        ));
+        
+        const categories = usage[genreId];
+        for (let movementId in categories) {
+          const movementName = labels[movementId].name;
+          categorisation.push((
+            <Chip key={`movement_${genreId}_${movementId}`} label={movementName} className={multi(classes.chip, classes.movement)} classes={{ root: classes.chipRoot}} />
+          ));
+        }
+      }
+    }
+
     const blank = /<p><br><\/p>\n?$/;
+
+    let description = viewItem.description;
+
     while (description.match(blank)) {
       description = description.replace(blank, '');
     }
     description = description.trim();
+
     return (
       <div>
         <DialogContent className={classes.content}>
         <Grid container spacing={24}>
-          <Grid item xs={12} sm={6}>
+          <Grid item sm={2}>
+          {
+            categorisation.length
+            ? (
+              <List id="exercise-usage">
+                { categorisation }
+              </List>
+            )
+            : null
+          }
+          </Grid>
+          <Grid item sm={5}>
             <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
               <img className={classes.imgPreview} src={photoUrl} />
               <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
@@ -89,10 +143,8 @@ class ViewExercise extends React.Component {
                 { textToSprings(viewItem.springs) }
               </Paper>
             </Paper>
-            <div className={classes.genres}>{ genres }</div>
-            <div className={classes.movements}>{ movements }</div>
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item sm={5}>
             <span id="exercise-description" className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></span>
           </Grid>
         </Grid>
@@ -132,7 +184,8 @@ export default withStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    width: 700,
+    width: 900,
+    overflow: 'hidden',
   },
   imgPreview: {
     maxWidth: 300,
@@ -152,17 +205,23 @@ export default withStyles(theme => ({
     marginTop: 5,
     position: 'relative',
     border: '2px dashed #fffdb3',
+    minHeight: 220,
   },
   description: {
-    padding: theme.spacing.unit,
+    padding: 0,
     display: 'inline-table',
+    marginLeft: 5,
   },
   genre: {
     backgroundColor: 'orange',
+    marginTop: 0,
   },
   movement: {
     backgroundColor: '#3f51b5',
-    color: '#fff'
+    color: '#fff',
+    marginTop: 0,
+    fontSize: '70%',
+    marginLeft: 10,
   },
   springs: {
     right: 10,
@@ -173,5 +232,11 @@ export default withStyles(theme => ({
     color: '#999',
     fontSize: '80%',
     backgroundColor: 'rgba(255,255,255,0.95)',
+  },
+  noPad: {
+    padding: 0,
+  },
+  chipRoot: {
+    height: 25,
   }
 }))(ViewExercise);

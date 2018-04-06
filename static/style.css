@@ -1,3 +1,15 @@
 #exercise-description p {
   margin: 5px 0;
 }
+
+#exercise-usage li {
+  padding: 0;
+}
+
+#exercise-usage li svg {
+  margin-right: 0;
+}
+
+#exercise-usage h3 {
+  font-size: 50%;
+}

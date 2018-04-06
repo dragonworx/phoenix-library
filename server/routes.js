@@ -125,6 +125,11 @@ module.exports = function (app) {
     res.sendJSON(data);
   });
 
+  app.get('/labels/get', async (req, res) => {
+    const labels = await api.getAllLabels();
+    res.sendJSON(labels);
+  });
+
   app.get('/counts', async (req, res) => {
     const data = await api.getCounts();
     res.sendJSON(data);
