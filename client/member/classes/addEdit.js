@@ -89,14 +89,15 @@ class AddEdit extends React.Component {
 
   renderContent () {
     const { } = this.state;
-    const { classes, program } = this.props;
+    const { classes, program, genre } = this.props;
     
     return (
       <Fragment>
         <DialogContent className={classes.content}>
           <Grid container spacing={24}>
             <Grid item xs={12}>
-              <Program program={program} />
+              <FormLabel className={classes.descLabel} component="legend">Program</FormLabel>
+              <Program genreId={genre.id} program={program} />
             </Grid>
             <Grid item xs={12}>
               <FormLabel className={classes.descLabel} component="legend">Notes</FormLabel>
@@ -129,7 +130,7 @@ export default withStyles(theme => ({
     borderRadius: 5,
     padding: 5,
     fontSize: '80%',
-    height: 56,
+    height: 46,
     overflow: 'auto'
   },
   descLabel: {

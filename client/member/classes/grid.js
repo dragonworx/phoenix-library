@@ -52,6 +52,7 @@ const KEYS = {
   SPACE: 32,
   UP: 38,
   DOWN: 40,
+  TILDA: 192,
 };
 
 const htmlNode = document.createElement('div');
@@ -131,6 +132,7 @@ class ClassesGrid extends React.PureComponent {
     editItem: null,
     viewItem: null,
     selectedGenre: null,
+    program: null,
   };
 
   constructor (props) {
@@ -175,7 +177,7 @@ class ClassesGrid extends React.PureComponent {
     ids.sort();
     if (keyCode === KEYS.OPTION) {
       this.isCommandDown = false;
-    } else if ((keyCode === KEYS.ENTER || keyCode === KEYS.SPACE) && this.state.selection.length === 1) {
+    } else if ((keyCode === KEYS.TILDA) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
       if (readOnly) {
         this.setState({ mode: MODE.VIEW, viewItem: row });

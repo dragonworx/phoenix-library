@@ -78,12 +78,7 @@ module.exports = function (app) {
       || (req.url === '/' && !user);
     const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
   
-    log({
-      authenticate: req.url,
-      user,
-      isAdmin,
-      isUnauthorised
-    }, isUnauthorised ? 'red' : 'green');
+    log(req.url, isUnauthorised ? 'red' : 'green');
   
     if (isUnauthorised && !isAssetUrl) {
       return res.redirect('/login');
@@ -148,6 +143,13 @@ module.exports = function (app) {
 
   app.get('/label/get/:type', async (req, res) => {
     const data = await api.getLabels(req.params.type);
+    res.sendJSON(data);
+  });
+
+  app.get('/class/category/exercises/:genreId/:movementId', async (req, res) => {
+    const genreId = parseInt(req.params.genreId, 10);
+    const movementId = parseInt(req.params.movementId, 10);
+    const data = await api.getClassCategoryExercises(genreId, movementId);
     res.sendJSON(data);
   });
 

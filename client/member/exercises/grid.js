@@ -16,6 +16,7 @@ import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
+import ViewIcon from 'material-ui-icons/Visibility';
 import Tooltip from 'material-ui/Tooltip';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
@@ -50,6 +51,7 @@ const KEYS = {
   SPACE: 32,
   UP: 38,
   DOWN: 40,
+  TILDA: 192,
 };
 
 const htmlNode = document.createElement('div');
@@ -217,19 +219,18 @@ class ExerciseGrid extends React.PureComponent {
   };
 
   onGlobalKeyUp = e => {
-    const { keyCode } = e;
+    const { keyCode, altKey } = e;
     const { selection, rows } = this.state;
-    const { readOnly } = this.props;
     const ids = rows.map(row => row.id);
     ids.sort();
     if (keyCode === KEYS.OPTION) {
       this.isCommandDown = false;
-    } else if ((keyCode === KEYS.ENTER || keyCode === KEYS.SPACE) && this.state.selection.length === 1) {
+    } else if (keyCode === KEYS.TILDA && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
-      if (readOnly) {
-        this.setState({ mode: MODE.VIEW, viewItem: row });
-      } else {
+      if (altKey) {
         this.setState({ mode: MODE.EDIT, editItem: row });
+      } else {
+        this.setState({ mode: MODE.VIEW, viewItem: row });
       }
     } else if (selection.length === 1 && keyCode === KEYS.UP) {
       const selectedRowIndex = ids.indexOf(selection[0]);
@@ -274,6 +275,14 @@ class ExerciseGrid extends React.PureComponent {
 
   onDeleteClick = () => {
     this.setState({ mode: MODE.CONFIRM_DELETE });
+  };
+
+  onViewClick = () => {
+    const selection = this.state.selection;
+    this.setState({
+      viewItem: this.state.rows.find(row => row.id === selection[0]),
+      mode: MODE.VIEW
+    });
   };
 
   onAddEditClose = () => {
@@ -378,6 +387,9 @@ class ExerciseGrid extends React.PureComponent {
               </Button>
               <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
                 <DeleteIcon />
+              </Button>
+              <Button variant="fab" disabled={selection.length === 0} aria-label="view" className={classes.button} onClick={this.onViewClick}>
+                <ViewIcon />
               </Button>
             </span>
           )

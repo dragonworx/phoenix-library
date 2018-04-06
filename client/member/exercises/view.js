@@ -52,7 +52,7 @@ class ViewExercise extends React.Component {
           >
           <AppBar position="static">
             <Typography variant="title" color="inherit" className={classes.flex}>
-              "{viewItem.name.trim()}"
+              {viewItem.name.trim()}
             </Typography>
           </AppBar>
           { this.renderContent() }
@@ -85,15 +85,15 @@ class ViewExercise extends React.Component {
             <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
               <img className={classes.imgPreview} src={photoUrl} />
               <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
+              <Paper className={classes.springs}>
+                { textToSprings(viewItem.springs) }
+              </Paper>
             </Paper>
-            <div className={classes.usage}>{ genres }</div>
-            <div>{ movements }</div>
+            <div className={classes.genres}>{ genres }</div>
+            <div className={classes.movements}>{ movements }</div>
           </Grid>
           <Grid item xs={12} sm={6}>
-            <Paper className={classes.description}>
-              <span dangerouslySetInnerHTML={{ __html: description }}></span>
-              { textToSprings(viewItem.springs) }
-            </Paper>
+            <span id="exercise-description" className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></span>
           </Grid>
         </Grid>
       </DialogContent>
@@ -108,12 +108,17 @@ class ViewExercise extends React.Component {
 }
 
 export default withStyles(theme => ({
-  usage: {
-    marginTop: theme.spacing.unit * 2
+  genres: {
+    marginTop: theme.spacing.unit * 2,
+    textAlign: 'center',
+  },
+  movements: {
+    textAlign: 'center',
   },
   descLabel: {
     marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
+    color: 'rgba(39, 62, 111, 0.54)',
   },
   editor: {
     border: '1px solid #b2b2b2',
@@ -135,17 +140,22 @@ export default withStyles(theme => ({
     borderRadius: 5,
   },
   chip: {
-    margin: theme.spacing.unit,
+    margin: 5,
+    marginLeft: 0,
   },
   photoFrame: {
     padding: theme.spacing.unit,
     textAlign: 'center',
     borderRadius: 10,
-    backgroundColor: '#e0e6f0',
+    backgroundColor: '#e3e8f2',
     cursor: 'pointer',
+    marginTop: 5,
+    position: 'relative',
+    border: '2px dashed #fffdb3',
   },
   description: {
-    padding: theme.spacing.unit
+    padding: theme.spacing.unit,
+    display: 'inline-table',
   },
   genre: {
     backgroundColor: 'orange',
@@ -154,4 +164,14 @@ export default withStyles(theme => ({
     backgroundColor: '#3f51b5',
     color: '#fff'
   },
+  springs: {
+    right: 10,
+    bottom: 10,
+    position: 'absolute',
+    padding: 4,
+    borderRadius: 5,
+    color: '#999',
+    fontSize: '80%',
+    backgroundColor: 'rgba(255,255,255,0.95)',
+  }
 }))(ViewExercise);

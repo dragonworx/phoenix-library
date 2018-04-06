@@ -4,5 +4,6 @@ module.exports = (sql, SQL) => sql.define('classGroupExercise', {
   classId: { type: SQL.INTEGER },
   groupId: { type: SQL.INTEGER },
   notes: { type: SQL.TEXT },
+  duration: { type: SQL.INTEGER },
   repetitions: { type: SQL.INTEGER },
 });

@@ -228,6 +228,27 @@ module.exports = {
     const labelsById = {};
     labels.forEach(label => labelsById[label.id] = label);
     const ids = categories.split(',').map(id => parseInt(id, 10));
-    return ids.map(id => ({ labelId: id, name: labelsById[id].name }));
+    return ids.map((id, i) => ({ labelId: id, name: labelsById[id].name, index: i, exercises: [] }));
+  },
+
+  async getClassCategoryExercises (genreId, movementId) {
+    const ids = {};
+    const labels = await model.ExerciseLabel.findAll({
+      where: {
+        genreId,
+        movementId,
+      }
+    });
+    labels.forEach(label => ids[label.exerciseId] = true);
+    const Op = Sequelize.Op;
+    const idsArray = Object.keys(ids);
+    const exercises = await model.Exercise.findAll({
+      where: {
+        id: {
+          [Op.in]: idsArray
+        }
+      }
+    });
+    return exercises;
   }
 };
