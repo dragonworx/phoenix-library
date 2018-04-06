@@ -124,6 +124,15 @@ class ViewExercise extends React.Component {
       <div>
         <DialogContent className={classes.content}>
         <Grid container spacing={24}>
+          <Grid item sm={5}>
+            <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
+              <img className={classes.imgPreview} src={photoUrl} />
+              <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
+              <Paper className={classes.springs}>
+                { textToSprings(viewItem.springs) }
+              </Paper>
+            </Paper>
+          </Grid>
           <Grid item sm={2}>
           {
             categorisation.length
@@ -134,15 +143,6 @@ class ViewExercise extends React.Component {
             )
             : null
           }
-          </Grid>
-          <Grid item sm={5}>
-            <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
-              <img className={classes.imgPreview} src={photoUrl} />
-              <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
-              <Paper className={classes.springs}>
-                { textToSprings(viewItem.springs) }
-              </Paper>
-            </Paper>
           </Grid>
           <Grid item sm={5}>
             <span id="exercise-description" className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></span>
@@ -214,14 +214,17 @@ export default withStyles(theme => ({
   },
   genre: {
     backgroundColor: 'orange',
-    marginTop: 0,
+    marginTop: 3,
+    fontSize: '100%',
+    color: '#fff',
+    width: '100%',
   },
   movement: {
     backgroundColor: '#3f51b5',
     color: '#fff',
     marginTop: 0,
-    fontSize: '70%',
-    marginLeft: 10,
+    fontSize: '80%',
+    width: '100%',
   },
   springs: {
     right: 10,

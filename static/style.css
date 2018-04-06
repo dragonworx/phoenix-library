@@ -2,6 +2,10 @@
   margin: 5px 0;
 }
 
+#exercise-usage {
+  text-align: center;
+}
+
 #exercise-usage li {
   padding: 0;
 }
