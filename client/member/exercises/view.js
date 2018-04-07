@@ -124,15 +124,6 @@ class ViewExercise extends React.Component {
       <div>
         <DialogContent className={classes.content}>
         <Grid container spacing={24}>
-          <Grid item sm={5}>
-            <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
-              <img className={classes.imgPreview} src={photoUrl} />
-              <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
-              <Paper className={classes.springs}>
-                { textToSprings(viewItem.springs) }
-              </Paper>
-            </Paper>
-          </Grid>
           <Grid item sm={2}>
           {
             categorisation.length
@@ -144,8 +135,17 @@ class ViewExercise extends React.Component {
             : null
           }
           </Grid>
-          <Grid item sm={5}>
+          <Grid item sm={4}>
             <span id="exercise-description" className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></span>
+          </Grid>
+          <Grid item sm={6}>
+            <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
+              <img className={classes.imgPreview} src={photoUrl} />
+              <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
+              <Paper className={classes.springs}>
+                { textToSprings(viewItem.springs) }
+              </Paper>
+            </Paper>
           </Grid>
         </Grid>
       </DialogContent>
@@ -184,7 +184,7 @@ export default withStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    width: 900,
+    width: 800,
     overflow: 'hidden',
   },
   imgPreview: {
@@ -215,7 +215,7 @@ export default withStyles(theme => ({
   genre: {
     backgroundColor: 'orange',
     marginTop: 3,
-    fontSize: '100%',
+    fontSize: '80%',
     color: '#fff',
     width: '100%',
   },
@@ -223,11 +223,11 @@ export default withStyles(theme => ({
     backgroundColor: '#3f51b5',
     color: '#fff',
     marginTop: 0,
-    fontSize: '80%',
+    fontSize: '70%',
     width: '100%',
   },
   springs: {
-    right: 10,
+    left: 10,
     bottom: 10,
     position: 'absolute',
     padding: 4,

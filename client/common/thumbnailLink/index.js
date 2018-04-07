@@ -22,9 +22,9 @@ class LightLink extends React.Component {
     this.setState({ open: true, preview: true });
   }
   handleClick = e => {
-    let preview = false;
+    let preview = true;
     if (e.altKey) {
-      preview = true;
+      preview = false;
     }
     this.setState({ open: true, preview });
   }

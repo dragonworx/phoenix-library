@@ -1,42 +1,46 @@
 import React from 'react';
 import ProgramGroup from './programGroup';
 import { withStyles } from 'material-ui/styles';
-import axios from 'axios';
 
-class ClassProgram extends React.Component {
-  onMoveUpClick = () => {
-
+class ClassProgram extends React.PureComponent {
+  state = {
+    hover: null,
   };
 
-  onMoveDownClick = () => {
-
-  };
-
-  onAddClick = async movementId => {
-    debugger
-    const { genreId } = this.props;
-    const result = await axios.get(`/class/category/exercises/${genreId}/${movementId}`);
-    debugger;
-  };
-
-  onRemoveClick = () => {
-
+  onMouseMove = e => {
+    const target = e.target;
+    if (target.getAttribute('data-type') === 'program') {
+      this.setState({ hover: null });
+    } else {
+      try {
+        let obj = target;
+        while (obj && obj.getAttribute('data-type') !== 'program') {
+          if (obj.getAttribute('data-type') === 'program-group') {
+            this.setState({ hover: parseInt(obj.getAttribute('data-index'), 10) });
+          }
+          obj = obj.parentNode;
+        }
+      } catch (e) {
+        
+      }
+    }
   };
 
   render () {
-    const { classes, program } = this.props;
+    const { hover } = this.state;
+    const { classes, program, genreId } = this.props;
 
     return (
-      <div className={classes.root}>
+      <div className={classes.root} onMouseMove={this.onMouseMove} data-type="program">
         {
-          program.map(category => <ProgramGroup 
-            key={`category_${category.labelId}`} 
-            category={category} 
-            onMoveUpClick={this.onMoveUpClick} 
-            onMoveDownClick={this.onMoveDownClick}
-            onAddClick={movementId => this.onAddClick(movementId)}
-            onRemoveClick={this.onRemoveClick}
-          />)
+          program.map(category => (
+            <ProgramGroup 
+              key={`category_${category.labelId}`} 
+              genreId={genreId}
+              category={category} 
+              hover={hover}
+            />
+          ))
         }
       </div>
     );
@@ -50,5 +54,6 @@ export default withStyles(theme => ({
     border: '1px solid #ccc',
     borderRadius: 5,
     paddingBottom: theme.spacing.unit * 3,
+    backgroundColor: 'fcfcfc',
   }),
 }))(ClassProgram);

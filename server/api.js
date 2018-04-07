@@ -84,7 +84,9 @@ module.exports = {
   },
 
   async getClasses () {
-    let classes = await model.Class.findAll();
+    let classes = await model.Class.findAll({
+      order: Sequelize.col('id')
+    });
     return classes;
   },
 
@@ -94,7 +96,9 @@ module.exports = {
   },
 
   async getAllLabels () {
-    let labels = await model.Label.findAll();
+    let labels = await model.Label.findAll({
+      order: Sequelize.col('id')
+    });
     return labels;
   },
 
@@ -252,7 +256,8 @@ module.exports = {
         id: {
           [Op.in]: idsArray
         }
-      }
+      },
+      order: Sequelize.col('id'),
     });
     return exercises;
   }

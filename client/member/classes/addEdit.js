@@ -131,7 +131,8 @@ export default withStyles(theme => ({
     padding: 5,
     fontSize: '80%',
     height: 46,
-    overflow: 'auto'
+    overflow: 'auto',
+    backgroundColor: 'fcfcfc',
   },
   descLabel: {
     marginTop: theme.spacing.unit * 3,
