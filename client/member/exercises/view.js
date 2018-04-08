@@ -142,9 +142,6 @@ class ViewExercise extends React.Component {
             <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
               <img className={classes.imgPreview} src={photoUrl} />
               <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
-              <Paper className={classes.springs}>
-                { textToSprings(viewItem.springs) }
-              </Paper>
             </Paper>
           </Grid>
         </Grid>
@@ -153,6 +150,9 @@ class ViewExercise extends React.Component {
         <Button onClick={this.handleClose} color="primary">
           Close
         </Button>
+        <Paper className={classes.springs}>
+          { textToSprings(viewItem.springs) }
+        </Paper>
       </DialogActions>
       </div>
     );

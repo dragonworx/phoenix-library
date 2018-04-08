@@ -115,7 +115,7 @@ class SelectExercises extends React.Component {
                   : <ImageIcon />
                 }
                 </Avatar>
-                <ListItemText primary={exercise.name} onClick={() => this.handleAvatarClick(exercise)} />
+                <ListItemText primary={exercise.name} />
               </ListItem>
             ))}
             </List>

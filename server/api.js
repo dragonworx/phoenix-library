@@ -3,6 +3,7 @@ const password = require('./password');
 const log = require('./log');
 const storage = require('./storage');
 const model = require('./model');
+const { clone } = require('../client/common/util');
 
 const PLAIN = { plain: true };
 
@@ -279,13 +280,20 @@ module.exports = {
     labels.forEach(label => ids[label.exerciseId] = true);
     const Op = Sequelize.Op;
     const idsArray = Object.keys(ids);
-    const exercises = await model.Exercise.findAll({
+    let exercises = await model.Exercise.findAll({
       where: {
         id: {
           [Op.in]: idsArray
         }
       },
       order: Sequelize.col('id'),
+    });
+    exercises = exercises.map((exercise, i) => {
+      exercise = clone(exercise);
+      exercise.index = i;
+      exercise.repetitions = 1;
+      exercise.duration = 1;
+      return exercise;
     });
     return exercises;
   }

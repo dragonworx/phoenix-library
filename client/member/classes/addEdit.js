@@ -76,7 +76,7 @@ class AddEdit extends React.Component {
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            {mode === MODE.ADD ? 'Create' : 'Edit'} {genre.name} Class
+            {mode === MODE.ADD ? 'New' : 'Edit'} {genre.name} Class
           </Typography>
         </AppBar>
 
