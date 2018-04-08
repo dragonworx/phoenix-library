@@ -1,28 +1,75 @@
 import React from 'react';
 import ProgramGroup from './programGroup';
 import { withStyles } from 'material-ui/styles';
+import Button from "material-ui/Button";
+import AddIcon from "material-ui-icons/AddCircle";
 import HoverGroup from '../../common/hover';
 
 class ClassProgram extends React.Component {
+  onMoveUp = category => {
+    const { program } = this.props;
+    const index = program.indexOf(category);
+    program.splice(index, 1);
+    program.splice(index - 1, 0, category);
+    program.forEach((category, i) => category.index = i);
+    this.hover.setState({ hover: category.index });
+    this.setState({ program });
+  };
+
+  onMoveDown = category => {
+    const { program } = this.props;
+    const index = program.indexOf(category);
+    program.splice(index, 1);
+    program.splice(index + 1, 0, category);
+    program.forEach((category, i) => category.index = i);
+    this.hover.setState({ hover: category.index });
+    this.setState({ program });
+  };
+
+  handleHoverRef = el => {
+    this.hover = el;
+  };
+
+  handleAddCatClick = () => {
+
+  };
+
   render () {
     const { classes, program, genreId } = this.props;
 
     return (
-      <HoverGroup className={classes.root} render={
-        hover => program.map(category => (
-              <ProgramGroup 
-                key={`category_${category.labelId}`}
-                genreId={genreId}
-                category={category}
-                hasHover={hover === category.index}
-              />
-            ))
-      } />
+      <div className={classes.container}>
+        <HoverGroup ref={this.handleHoverRef} className={classes.root} render={
+          hover => (
+            <div>
+              {
+                program.map(category => (
+                  <ProgramGroup 
+                    key={`category_${category.labelId}`}
+                    genreId={genreId}
+                    program={program}
+                    category={category}
+                    hasHover={hover === category.index}
+                    onMoveUp={this.onMoveUp}
+                    onMoveDown={this.onMoveDown}
+                  />
+                ))
+              }
+              <Button variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
+                <AddIcon />
+              </Button>
+            </div>
+          )
+        } />
+      </div>
     );
   }
 };
 
 export default withStyles(theme => ({
+  container: {
+    position: 'relative',
+  },
   root: theme.mixins.gutters({
     height: 400,
     overflow: 'auto',
@@ -32,4 +79,7 @@ export default withStyles(theme => ({
     paddingBottom: theme.spacing.unit * 2,
     backgroundColor: 'fcfcfc',
   }),
+  addCat: {
+    margin: '10px 5px',
+  },
 }))(ClassProgram);

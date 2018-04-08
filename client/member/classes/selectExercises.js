@@ -96,10 +96,11 @@ class SelectExercises extends React.Component {
       >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            {count} Available Exercise{count === 1 ? '' : 's'}
+            {count === 0 ? 'No Exercises Available' : `${count} Exercise${count === 1 ? '' : 's'} Available`}
           </Typography>
         </AppBar>
         <DialogContent className={classes.content}>
+        { count === 0 ? <span className={classes.empty}>This movement category is currently empty.</span> : null}
         <List>
             {exercises.map(exercise => (
               <ListItem key={exercise.id} className={classes.item}>
@@ -114,7 +115,7 @@ class SelectExercises extends React.Component {
                   : <ImageIcon />
                 }
                 </Avatar>
-                <ListItemText primary={exercise.name} />
+                <ListItemText primary={exercise.name} onClick={() => this.handleAvatarClick(exercise)} />
               </ListItem>
             ))}
             </List>
@@ -126,7 +127,7 @@ class SelectExercises extends React.Component {
           <Button onClick={this.handleOk} color="primary">
             Ok
           </Button>
-          <div className={classes.selectAll} >
+          <div className={classes.selectAll} style={{ display: count === 0 ? 'none' : 'block' }}>
             <label><Checkbox onChange={this.handleSelectAllChange} checked={selectAll} /> Select All</label>
           </div>
         </DialogActions>
@@ -149,6 +150,7 @@ export default withStyles(theme => ({
     backgroundColor: '#f7feff',
     borderTop: '1px solid #ccc',
     borderBottom: '1px solid #ccc',
+    textAlign: 'center',
   },
   item: {
     cursor: 'pointer',
@@ -160,10 +162,17 @@ export default withStyles(theme => ({
   selectAll: {
     position: 'absolute',
     bottom: -5,
-    left: 16
+    left: 16,
+    fontSize: '90%',
   },
   flex: {
     padding: theme.spacing.unit * 3,
     flex: 1,
   },
+  empty: {
+    color: '#ccc',
+    display: 'inline-block',
+    position: 'relative',
+    top: 20,
+  }
 }))(SelectExercises);

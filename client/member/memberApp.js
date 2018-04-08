@@ -42,7 +42,7 @@ class MemberApp extends React.PureComponent {
                 className={classNames(classes.avatar, classes.bigAvatar)}
               /></a>
               <Typography variant="title" color="inherit" noWrap>
-                Phoenix Pilates Library Admin ~ {user.firstName}
+                Phoenix Pilates Library ~ {user.firstName}
               </Typography>
               <HamburgerMenu className={classes.menu} options={userOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
