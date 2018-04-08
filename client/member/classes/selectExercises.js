@@ -5,10 +5,14 @@ import PropTypes from 'prop-types';
 import Button from 'material-ui/Button';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
-import Dialog, { DialogActions, DialogContent, DialogTitle } from 'material-ui/Dialog';
+import Dialog, { DialogActions, DialogContent } from 'material-ui/Dialog';
+import AppBar from 'material-ui/AppBar';
+import Typography from 'material-ui/Typography';
 import ImageIcon from 'material-ui-icons/Image';
 import Checkbox from 'material-ui/Checkbox';
 import { withStyles } from 'material-ui/styles';
+import ViewExercise from '../exercises/view';
+import axios from 'axios';
 
 class SelectExercises extends React.Component {
   constructor(props, context) {
@@ -18,7 +22,9 @@ class SelectExercises extends React.Component {
   }
 
   state = {
-    selection: {}
+    selection: {},
+    selectAll: false,
+    viewItem: null,
   };
 
   componentWillReceiveProps(nextProps) {
@@ -38,17 +44,45 @@ class SelectExercises extends React.Component {
   };
 
   handleChange = (event, value) => {
+    const { exercises } = this.props;
     const selection = this.state.selection;
     if (selection[value]) {
       delete selection[value];
     } else {
       selection[value] = true;
     }
-    this.setState({ selection });
+    const selectAll = !!(selectAll && Object.keys(selection).length === exercises.length);
+    this.setState({ selectAll, selection });
+  };
+
+  handleSelectAllChange = (event, value) => {
+    const { exercises } = this.props;
+    if (value) {
+      const selection = {};
+      exercises.forEach(exercise => selection[exercise.id] = true);
+      this.setState({ selectAll: true, selection });
+    } else {
+      this.setState({ selectAll: false, selection: {} });
+    }
+  };
+
+  onViewClose = () => {
+    this.setState({
+      viewItem: null
+    });
+  };
+
+  handleAvatarClick = async exercise => {
+    const { data: exerciseWithUsage } = await axios.post('/exercise/usage', {
+      exercise
+    });
+    this.setState({
+      viewItem: exerciseWithUsage
+    });
   };
 
   render() {
-    const { selection } = this.state;
+    const { selection, selectAll, viewItem } = this.state;
     const { exercises, classes, ...other } = this.props;
     const count = exercises.length;
     // eslint-disable-next-line no-undef
@@ -56,22 +90,24 @@ class SelectExercises extends React.Component {
 
     return (
       <Dialog
-        disableBackdropClick
-        disableEscapeKeyDown
         maxWidth="md"
         aria-labelledby="confirmation-dialog-title"
         {...other}
       >
-        <DialogTitle id="confirmation-dialog-title">{count} Available Exercise{count === 1 ? '' : 's'}</DialogTitle>
+        <AppBar position="static">
+          <Typography variant="title" color="inherit" className={classes.flex}>
+            {count} Available Exercise{count === 1 ? '' : 's'}
+          </Typography>
+        </AppBar>
         <DialogContent className={classes.content}>
         <List>
             {exercises.map(exercise => (
-              <ListItem key={exercise.id} onClick={e => this.handleChange(e, exercise.id)} className={classes.pointer}>
+              <ListItem key={exercise.id} className={classes.item}>
               <Checkbox
                   checked={!!selection[exercise.id]}
-                  
+                  onClick={e => this.handleChange(e, exercise.id)}
                 />
-                <Avatar>
+                <Avatar style={{ cursor: 'pointer' }} onClick={() => this.handleAvatarClick(exercise)}>
                 {
                   exercise.photo
                   ? <img src={thumbnailUrl.replace('%', exercise.id)} />
@@ -83,14 +119,20 @@ class SelectExercises extends React.Component {
             ))}
             </List>
         </DialogContent>
-        <DialogActions>
+        <DialogActions className={classes.relative}>
           <Button onClick={this.handleCancel} color="primary">
             Cancel
           </Button>
           <Button onClick={this.handleOk} color="primary">
             Ok
           </Button>
+          <div className={classes.selectAll} >
+            <label><Checkbox onChange={this.handleSelectAllChange} checked={selectAll} /> Select All</label>
+          </div>
         </DialogActions>
+        {
+          viewItem ? <ViewExercise viewItem={viewItem} onClose={this.onViewClose} /> : null
+        }
       </Dialog>
     );
   }
@@ -101,14 +143,27 @@ SelectExercises.propTypes = {
   value: PropTypes.string,
 };
 
-export default withStyles(() => ({
+export default withStyles(theme => ({
   content: {
     maxHeight: 350,
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#f7feff',
     borderTop: '1px solid #ccc',
     borderBottom: '1px solid #ccc',
   },
-  pointer: {
-    cursor: 'pointer'
-  }
+  item: {
+    cursor: 'pointer',
+    padding: 0,
+  },
+  relative: {
+    position: 'relative',
+  },
+  selectAll: {
+    position: 'absolute',
+    bottom: -5,
+    left: 16
+  },
+  flex: {
+    padding: theme.spacing.unit * 3,
+    flex: 1,
+  },
 }))(SelectExercises);

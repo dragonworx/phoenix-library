@@ -4,6 +4,8 @@ const log = require('./log');
 const storage = require('./storage');
 const model = require('./model');
 
+const PLAIN = { plain: true };
+
 function hashById (rows) {
   const hash = {};
   rows.forEach(row => hash[row.id] = row);
@@ -33,9 +35,7 @@ module.exports = {
     return null;
   },
 
-  async getExercises () {
-    const PLAIN = { plain: true };
-    
+  async getExercises () { 
     let exercises = await model.Exercise.findAll();
 
     exercises = exercises.map(exercise => {
@@ -52,8 +52,7 @@ module.exports = {
     labels = labels.map(label => label.get(PLAIN));
     const labelsById = hashById(labels);
     const exerciseLabelsPerExercise = await Promise.all(exercises.map(
-      exercise => 
-      model.ExerciseLabel.findAll({ where: { exerciseId: exercise.id }})
+        exercise => model.ExerciseLabel.findAll({ where: { exerciseId: exercise.id }})
       )
     );
 
@@ -81,6 +80,35 @@ module.exports = {
       labels,
       count: exercises.length
     };
+  },
+
+  async getExerciseUsage (exercise) {
+    exercise.genre = [];
+    exercise.movement = [];
+    exercise.usage = {};
+
+    let labels = await model.Label.findAll();
+    labels = labels.map(label => label.get(PLAIN));
+    const labelsById = hashById(labels);
+    const exerciseLabels = await model.ExerciseLabel.findAll({ where: { exerciseId: exercise.id }});
+
+    exerciseLabels.forEach(
+      exerciseLabel => {
+        const genre = labelsById[exerciseLabel.genreId];
+        const movement = labelsById[exerciseLabel.movementId];
+        exercise.genre.push(genre.name);
+        exercise.movement.push(movement.name);
+        if (!exercise.usage[genre.id]) {
+          exercise.usage[genre.id] = {};
+        }
+        exercise.usage[genre.id][movement.id] = true;
+      }
+    );
+
+    exercise.genre.sort();
+    exercise.movement.sort();
+
+    return exercise;
   },
 
   async getClasses () {

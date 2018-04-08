@@ -10,13 +10,13 @@ class ClassProgram extends React.Component {
     return (
       <HoverGroup className={classes.root} render={
         hover => program.map(category => (
-            <ProgramGroup 
-              key={`category_${category.labelId}`}
-              genreId={genreId}
-              category={category}
-              hasHover={hover === category.index}
-            />
-          ))
+              <ProgramGroup 
+                key={`category_${category.labelId}`}
+                genreId={genreId}
+                category={category}
+                hasHover={hover === category.index}
+              />
+            ))
       } />
     );
   }
@@ -28,7 +28,8 @@ export default withStyles(theme => ({
     overflow: 'auto',
     border: '1px solid #ccc',
     borderRadius: 5,
-    paddingBottom: theme.spacing.unit * 3,
+    paddingTop: theme.spacing.unit * 2,
+    paddingBottom: theme.spacing.unit * 2,
     backgroundColor: 'fcfcfc',
   }),
 }))(ClassProgram);

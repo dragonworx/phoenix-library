@@ -14,9 +14,9 @@ export default class HoverGroup extends React.Component {
     } else {
       try {
         let obj = target;
-        const dataType = target.getAttribute('data-type');
-        const hoverValue = target.getAttribute('hover-value');
         while (obj && dataType !== 'hover-group') {
+          const dataType = obj.getAttribute('data-type');
+          const hoverValue = obj.getAttribute('hover-value');
           if (dataType === 'hover-item') {
             this.setState({ hover: parseInt(hoverValue, 10) });
           }

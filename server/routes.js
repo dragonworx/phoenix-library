@@ -158,6 +158,12 @@ module.exports = function (app) {
     res.sendJSON(data);
   });
 
+  app.post('/exercise/usage', async (req, res) => {
+    const exercise = req.body.exercise;
+    await api.getExerciseUsage(exercise);
+    res.sendJSON(exercise);
+  });
+
   /* post */
   
   app.put('/exercise/photo', async (req, res) => {

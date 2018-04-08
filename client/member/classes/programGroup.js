@@ -1,7 +1,8 @@
 import React from "react";
 import { withStyles } from 'material-ui/styles';
-import Paper from "material-ui/Paper";
-import Typography from "material-ui/Typography";
+import { ListItem, ListItemText } from 'material-ui/List';
+import Avatar from 'material-ui/Avatar';
+import ImageIcon from 'material-ui-icons/Image';
 import UpIcon from "material-ui-icons/KeyboardArrowUp";
 import DownIcon from "material-ui-icons/KeyboardArrowDown";
 import AddIcon from "material-ui-icons/AddCircle";
@@ -30,9 +31,10 @@ class ProgramGroup extends React.PureComponent {
   state = {
     showSelectExercise: false,
     selectableExercises: null,
+    expanded: false,
   };
 
-  onAddClick = async movementId => {
+  onAddClick = async (e, movementId) => {
     const { genreId } = this.props;
     const { data: selectableExercises } = await axios.get(`/class/category/exercises/${genreId}/${movementId}`);
     this.setState({ showSelectExercise: true, selectableExercises });
@@ -44,54 +46,67 @@ class ProgramGroup extends React.PureComponent {
       const exercises = this.state.selectableExercises.filter(exercise => exerciseIds.indexOf(exercise.id) > -1);
       category.exercises.push.apply(category.exercises, exercises);
     }
-    this.setState({ showSelectExercise: false });
+    this.setState({ expanded: true, showSelectExercise: false });
+  };
+
+  handleExpandClick = () => {
+    this.setState({ expanded: !this.state.expanded });
   };
 
   render() {
-    const { showSelectExercise, selectableExercises } = this.state;
+    const { showSelectExercise, selectableExercises, expanded } = this.state;
     const { classes, genreId, category, hasHover } = this.props;
-    const { exercises } = category;
+    const { name, exercises, labelId } = category;
     const index = category.index + 1;
     const ord = toOrdinal(index);
 
     return (
-      <Paper 
+      <ExpansionPanel
         id={`class-exercise-group-${genreId + '-' + category.labelId}`} 
-        className={classes.root} elevation={4} 
-        onMouseOver={this.onMouseOver} 
-        onMouseOut={this.onMouseOut} 
+        className={classes.root}
         data-type="hover-item"
         hover-value={category.index}
+        expanded={expanded}
       >
-        <Typography variant="title" component="p">
-          <span className={classes.ordinal}>{index}{ord}.</span> {category.name}
-        </Typography>
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>{exercises.length} Exercise{exercises.length === 1 ? '' : 's'}</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-          {
-            exercises.map(exercise => <p key={exercise.name}>{exercise.name}</p>)
-          }
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-        <Visible show={hasHover}>
-          <div className={classes.toolbar}>
-            <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddClick(category.labelId)}>
-              <AddIcon />
-            </IconButton>
-            <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => this.onMoveUpClick(category.labelId)}>
-              <UpIcon />
-            </IconButton>
-            <IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => this.onMoveDownClick(category.labelId)}>
-              <DownIcon />
-            </IconButton>
-            <IconButton variant="fab" color="primary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveClick(category.labelId)}>
-              <RemoveIcon />
-            </IconButton>
-          </div>
-        </Visible>
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon onClick={this.handleExpandClick} />}>
+              <ListItemText primary={`${index}${ord}. ${name}`} secondary={exercises.length === 0 ? 'Empty' : `${exercises.length} Exercise${exercises.length === 1 ? '' : 's'}`} />
+              <Visible show={hasHover}>
+                <div className={classes.toolbar}>
+                  <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={e => this.onAddClick(e, labelId)}>
+                    <AddIcon />
+                  </IconButton>
+                  <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => this.onMoveUpClick(labelId)}>
+                    <UpIcon />
+                  </IconButton>
+                  <IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => this.onMoveDownClick(labelId)}>
+                    <DownIcon />
+                  </IconButton>
+                  <IconButton variant="fab" color="primary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveClick(labelId)}>
+                    <RemoveIcon />
+                  </IconButton>
+                </div>
+              </Visible>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.details}>
+        {
+          exercises.map((exercise, i) => {
+            // eslint-disable-next-line no-undef
+            const thumbnailUrl = `${PHOENIX_LIB_STORAGE}%_1_thumb.png`;
+            return (
+              <ListItem key={i + exercise.name} className={classes.item}>
+                  <Avatar>
+                  {
+                    exercise.photo
+                    ? <img src={thumbnailUrl.replace('%', exercise.id)} />
+                    : <ImageIcon />
+                  }
+                  </Avatar>
+                  <ListItemText primary={exercise.name} />
+                </ListItem>
+            );
+          })
+        }
+        </ExpansionPanelDetails>
         <Visible show={showSelectExercise}>
           <SelectExercise
               open={true}
@@ -99,29 +114,36 @@ class ProgramGroup extends React.PureComponent {
               exercises={selectableExercises}
             />
         </Visible>
-      </Paper>
+      </ExpansionPanel>
     );
   }
 }
 
 export default withStyles(theme => ({
   root: theme.mixins.gutters({
-    paddingTop: 16,
-    paddingBottom: 16,
-    marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit,
     position: 'relative',
     borderRadius: 5,
+    cursor: 'default',
   }),
   button: {
     // margin: theme.spacing.unit,
   },
   toolbar: {
     position: "absolute",
-    right: 0,
-    top: 5
+    right: 28,
+    top: 11
   },
   ordinal: {
     color: '#aaa',
     fontSize: '80%'
-  }
+  },
+  details: {
+    display: 'block'
+  },
+  item: {
+    cursor: 'pointer',
+    padding: 0,
+    marginBottom: theme.spacing.unit * 2
+  },
 }))(ProgramGroup);
