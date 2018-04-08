@@ -22,5 +22,22 @@ module.exports = {
   },
   multi (...args) {
     return [...args].join(' ');
+  },
+  toOrdinal (number) {
+    const s = String(number),
+      len = s.length,
+      end  = s.substr(len - 1, 1),
+      teen = len > 1 && s.substr(len - 2, 1) === '1';
+    let ord = 'th';
+
+    if (end === "1" && !teen) {
+      ord = "st";
+    } else if (end === "2" && !teen) {
+      ord = "nd";
+    } else if (end === "3" && !teen) {
+      ord = "rd";
+    }
+
+    return ord;
   }
 };

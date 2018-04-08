@@ -7,9 +7,14 @@ import DownIcon from "material-ui-icons/KeyboardArrowDown";
 import AddIcon from "material-ui-icons/AddCircle";
 import RemoveIcon from "material-ui-icons/Cancel";
 import IconButton from "material-ui/IconButton";
-// import Tooltip from "material-ui/Tooltip";
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import ExpansionPanel, {
+  ExpansionPanelSummary,
+  ExpansionPanelDetails,
+} from 'material-ui/ExpansionPanel';
 import axios from 'axios';
 import SelectExercise from './selectExercises';
+import { toOrdinal } from '../../common/util';
 
 class Visible extends React.PureComponent {
   render () {
@@ -44,22 +49,10 @@ class ProgramGroup extends React.PureComponent {
 
   render() {
     const { showSelectExercise, selectableExercises } = this.state;
-    const { classes, genreId, category, hover } = this.props;
+    const { classes, genreId, category, hasHover } = this.props;
+    const { exercises } = category;
     const index = category.index + 1;
-    
-    const s = String(index),
-      len = s.length,
-      end  = s.substr(len - 1, 1),
-      teen = len > 1 && s.substr(len - 2, 1) === '1';
-    let ord = 'th';
-
-    if (end === "1" && !teen) {
-      ord = "st";
-    } else if (end === "2" && !teen) {
-      ord = "nd";
-    } else if (end === "3" && !teen) {
-      ord = "rd";
-    }
+    const ord = toOrdinal(index);
 
     return (
       <Paper 
@@ -67,16 +60,23 @@ class ProgramGroup extends React.PureComponent {
         className={classes.root} elevation={4} 
         onMouseOver={this.onMouseOver} 
         onMouseOut={this.onMouseOut} 
-        data-type="program-group"
-        data-index={category.index}
+        data-type="hover-item"
+        hover-value={category.index}
       >
         <Typography variant="title" component="p">
-          {index}{ord}. {category.name}
+          <span className={classes.ordinal}>{index}{ord}.</span> {category.name}
         </Typography>
-        {
-          category.exercises.map(exercise => <p key={exercise.id}>{exercise.name}</p>)
-        }
-        <Visible show={hover === category.index}>
+        <ExpansionPanel>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography className={classes.heading}>{exercises.length} Exercise{exercises.length === 1 ? '' : 's'}</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails>
+          {
+            exercises.map(exercise => <p key={exercise.name}>{exercise.name}</p>)
+          }
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+        <Visible show={hasHover}>
           <div className={classes.toolbar}>
             <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddClick(category.labelId)}>
               <AddIcon />
@@ -119,5 +119,9 @@ export default withStyles(theme => ({
     position: "absolute",
     right: 0,
     top: 5
+  },
+  ordinal: {
+    color: '#aaa',
+    fontSize: '80%'
   }
 }))(ProgramGroup);

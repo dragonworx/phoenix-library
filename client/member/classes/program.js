@@ -1,48 +1,23 @@
 import React from 'react';
 import ProgramGroup from './programGroup';
 import { withStyles } from 'material-ui/styles';
+import HoverGroup from '../../common/hover';
 
-class ClassProgram extends React.PureComponent {
-  state = {
-    hover: null,
-  };
-
-  onMouseMove = e => {
-    const target = e.target;
-    if (target.getAttribute('data-type') === 'program') {
-      this.setState({ hover: null });
-    } else {
-      try {
-        let obj = target;
-        while (obj && obj.getAttribute('data-type') !== 'program') {
-          if (obj.getAttribute('data-type') === 'program-group') {
-            this.setState({ hover: parseInt(obj.getAttribute('data-index'), 10) });
-          }
-          obj = obj.parentNode;
-        }
-      } catch (e) {
-        
-      }
-    }
-  };
-
+class ClassProgram extends React.Component {
   render () {
-    const { hover } = this.state;
     const { classes, program, genreId } = this.props;
 
     return (
-      <div className={classes.root} onMouseMove={this.onMouseMove} data-type="program">
-        {
-          program.map(category => (
+      <HoverGroup className={classes.root} render={
+        hover => program.map(category => (
             <ProgramGroup 
-              key={`category_${category.labelId}`} 
+              key={`category_${category.labelId}`}
               genreId={genreId}
-              category={category} 
-              hover={hover}
+              category={category}
+              hasHover={hover === category.index}
             />
           ))
-        }
-      </div>
+      } />
     );
   }
 };

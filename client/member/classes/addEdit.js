@@ -35,7 +35,6 @@ class AddEdit extends React.Component {
   constructor (props) {
     super(props);
     this.state.program = props.program;
-    console.log(props.program);
   }
 
   handleSave = () => {
