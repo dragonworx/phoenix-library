@@ -289,31 +289,33 @@ class ClassesGrid extends React.PureComponent {
     this.setState({ selection, viewItem, mode });
   };
 
-  onAdded = (addedRow, usage) => {
-    this.updateRowLabels(addedRow, usage);
-    const rows = [
-      ...this.state.rows,
-    ];
-    addedRow.usage = usage;
-    rows.push(addedRow);
-    this.setState({ rows, selection: [addedRow.id] });
+  onAdded = (cls) => {
+    // this.updateRowLabels(addedRow, usage);
+    // const rows = [
+    //   ...this.state.rows,
+    // ];
+    // addedRow.usage = usage;
+    // rows.push(addedRow);
+    // this.setState({ rows, selection: [addedRow.id] });
+    this.setState({ mode: MODE.READ });
   };
 
-  onSaved = (savedRow, usage) => {
-    const rows = [
-      ...this.state.rows,
-    ];
-    const id = this.state.editItem.id;
-    const row = rows.find(row => row.id === id);
-    row.name = savedRow.name;
-    row.springs = savedRow.springs;
-    row.description = savedRow.description;
-    row.video = savedRow.video;
-    row.photo = savedRow.photo || row.photo;
-    row.id = id;
-    row.usage = usage;
-    this.updateRowLabels(row, usage);
-    this.setState({ rows, editItem: null, selection: [] });
+  onSaved = (cls) => {
+    // const rows = [
+    //   ...this.state.rows,
+    // ];
+    // const id = this.state.editItem.id;
+    // const row = rows.find(row => row.id === id);
+    // row.name = savedRow.name;
+    // row.springs = savedRow.springs;
+    // row.description = savedRow.description;
+    // row.video = savedRow.video;
+    // row.photo = savedRow.photo || row.photo;
+    // row.id = id;
+    // row.usage = usage;
+    // this.updateRowLabels(row, usage);
+    // this.setState({ rows, editItem: null, selection: [], mode: MODE.READ });
+    this.setState({ mode: MODE.READ });
   };
 
   onColumnWidthsChange = nextColumnWidths => {

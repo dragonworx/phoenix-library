@@ -2,6 +2,8 @@ import React, { Fragment } from 'react';
 import Button from 'material-ui/Button';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import { Editor, EditorState, RichUtils } from 'draft-js';
+import { stateToHTML } from 'draft-js-export-html';
+import { stateFromHTML } from 'draft-js-import-html';
 import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/AddCircle";
 import Dialog, {
@@ -9,6 +11,7 @@ import Dialog, {
   DialogContent,
 } from 'material-ui/Dialog';
 import { FormLabel } from 'material-ui/Form';
+import Input from 'material-ui/Input';
 import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
@@ -32,16 +35,42 @@ class AddEdit extends React.Component {
     program: null,
     addCategories: null,
     addCategoriesTarget: null,
+    className: null,
   };
 
   constructor (props) {
     super(props);
     this.state.program = props.program;
+    this.state.className = props.className;
   }
 
-  handleSave = () => {
-    this.props.onClose(this.state.value);
-    return Promise.resolve(true);
+  handleSave = async () => {
+    const { editorState, program, className: name } = this.state;
+    const notes = stateToHTML(editorState.getCurrentContent());
+    const cls = {
+      name,
+      program,
+      notes,
+    };
+
+    const close = () => {
+      setTimeout(() => {
+        if (this.props.mode === MODE.ADD) {
+          this.props.onAdded(cls);
+        } else {
+          this.props.onSaved(cls);
+        }
+      }, 0);
+      return Promise.resolve();
+    };
+
+    try {
+      await axios.post('/class/add', { cls });
+    } catch (e) {
+      debugger
+    }
+
+    return close();
   };
 
   handleClose = () => {
@@ -92,8 +121,13 @@ class AddEdit extends React.Component {
     }
   };
 
+  handleNameChange = e => {
+    this.setState({ className: e.target.value });
+  };
+
   render () {
     const { classes, mode, genre } = this.props;
+    const { className } = this.state;
 
     return (
       <Dialog
@@ -106,7 +140,7 @@ class AddEdit extends React.Component {
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            {mode === MODE.ADD ? 'New' : 'Edit'} {genre.name} Class
+            <Input fullWidth={true} defaultValue={mode === MODE.ADD ? `New ${genre.name} Class` : className} classes={{ root: classes.title }} onChange={this.handleNameChange} />
           </Typography>
         </AppBar>
 
@@ -125,7 +159,7 @@ class AddEdit extends React.Component {
         <DialogContent className={classes.content}>
           <Grid container spacing={24}>
             <Grid item xs={12} style={{ position: 'relative' }}>
-              <FormLabel className={classes.descLabel} component="legend">Program</FormLabel>
+              <FormLabel className={classes.primaryDescLabel} component="legend">Program</FormLabel>
               <ClassProgram genreId={genre.id} program={program} onDeleteCategory={this.onDeleteCategory} />
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
                 <AddIcon />
@@ -179,8 +213,11 @@ export default withStyles(theme => ({
     overflow: 'auto',
     backgroundColor: 'fcfcfc',
   },
-  descLabel: {
+  primaryDescLabel: {
     marginTop: theme.spacing.unit * 3,
+    marginBottom: theme.spacing.unit,
+  },
+  descLabel: {
     marginBottom: theme.spacing.unit,
   },
   flex: {
@@ -196,4 +233,9 @@ export default withStyles(theme => ({
     top: 20,
     left: 70,
   },
+  title: {
+    fontSize: '100%',
+    flexGrow: 1,
+    color: '#fff',
+  }
 }))(AddEdit);

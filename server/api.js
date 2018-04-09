@@ -196,7 +196,7 @@ module.exports = {
     exercise.set({ name, springs, description, video });
 
     // destroy labels, re-create
-    await model.destroy({ where: { exerciseId }});
+    await model.ExerciseLabel.destroy({ where: { exerciseId }});
     await this.createExerciseLabels(exerciseId, usage);
 
     // save with no photo changes
