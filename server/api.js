@@ -293,6 +293,7 @@ module.exports = {
       exercise.index = i;
       exercise.repetitions = 1;
       exercise.duration = 1;
+      exercise.notes = 'Notes...';
       return exercise;
     });
     return exercises;

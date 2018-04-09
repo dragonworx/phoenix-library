@@ -22,7 +22,7 @@ import ExpansionPanel, {
 } from 'material-ui/ExpansionPanel';
 import axios from 'axios';
 import SelectExercise from './selectExercises';
-import { toOrdinal } from '../../common/util';
+import { toOrdinal, combineCss } from '../../common/util';
 import ViewExercise from '../exercises/view';
 import HoverGroup from '../../common/hover';
 
@@ -107,6 +107,22 @@ class ProgramGroup extends React.Component {
     this.hover = el;
   };
 
+  handleRepsChange = (e, exercise) => {
+    exercise.repetitions = parseInt(e.target.value, 10);
+    this.setState({ category: this.state.category });
+  };
+
+  handleDurationChange = (e, exercise) => {
+    exercise.duration = parseInt(e.target.value, 10);
+    this.setState({ category: this.state.category });
+  };
+
+  handleNotesChange = (e, exercise) => {
+    const html = e.target.innerHTML;
+    exercise.notes = html;
+    this.setState({ category: this.state.category });
+  };
+
   render() {
     const { showSelectExercise, selectableExercises, expanded, loading, viewItem } = this.state;
     const { classes, genreId, category, program, hasHover, onMoveUp, onMoveDown } = this.props;
@@ -130,9 +146,9 @@ class ProgramGroup extends React.Component {
               }
               <Visible show={hasHover}>
                 <div className={classes.toolbar}>
-                  <Button variant="fab" mini color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddClick(labelId)}>
+                  <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddClick(labelId)}>
                     <AddIcon />
-                  </Button>
+                  </IconButton>
                   <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
                     <UpIcon />
                   </IconButton>
@@ -168,34 +184,40 @@ class ProgramGroup extends React.Component {
                         : <ImageIcon />
                       }
                       </Avatar>
-                      <div className={classes.listTextContainer}>
+                      <div className={combineCss(classes.listTextContainer, classes.title)}>
                         <h3 className={classes.listTextH3}>
-                          { exercise.name } x
-                          <FormControl className={classes.formControl}>
-                          <InputLabel htmlFor="age-simple">Repetitions</InputLabel>
-                          <Select
-                            value={exercise.repetitions}
-                            onChange={this.handleChange}
-                            inputProps={{
-                              name: 'age',
-                              id: 'age-simple',
-                            }}
-                          >
-                            <MenuItem value={1}>1</MenuItem>
-                            <MenuItem value={3}>3</MenuItem>
-                            <MenuItem value={5}>5</MenuItem>
-                          </Select>
-                        </FormControl>
+                          { exercise.name }
                         </h3>
-                        <p className={classes.listTextP} contentEditable="true" suppressContentEditableWarning={true}>
+                        <p className={classes.listTextP} contentEditable="true" suppressContentEditableWarning={true} onInput={e => this.handleNotesChange(e, exercise)}>
                           Notes...
                         </p>
                       </div>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-simple">Reps.</InputLabel>
+                        <Select
+                          value={exercise.repetitions}
+                          onChange={e => this.handleRepsChange(e, exercise)}
+                          classes={{selectMenu: classes.selectMenu}}
+                        >
+                          <MenuItem value={1}>1</MenuItem>
+                          <MenuItem value={3}>3</MenuItem>
+                          <MenuItem value={5}>5</MenuItem>
+                        </Select>
+                      </FormControl>
+                      <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="age-simple">Dur.</InputLabel>
+                        <Select
+                          value={exercise.duration}
+                          onChange={e => this.handleDurationChange(e, exercise)}
+                          classes={{selectMenu: classes.selectMenu}}
+                        >
+                          <MenuItem value={1}>1</MenuItem>
+                          <MenuItem value={3}>3</MenuItem>
+                          <MenuItem value={5}>5</MenuItem>
+                        </Select>
+                      </FormControl>
                       <Visible show={hover === exercise.id}>
                         <div className={classes.subToolbar}>
-                          <IconButton variant="raised"  color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onEditClick(labelId)}>
-                            <EditIcon />
-                          </IconButton>
                           <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => this.onMoveUpExercise(exercise)} disabled={exercise.index === 0}>
                             <UpIcon />
                           </IconButton>
@@ -219,7 +241,6 @@ class ProgramGroup extends React.Component {
         </ExpansionPanelDetails>
         <Visible show={showSelectExercise}>
           <SelectExercise
-              open={true}
               onClose={this.handleCloseSelectExercise}
               exercises={selectableExercises}
             />
@@ -248,8 +269,8 @@ export default withStyles(theme => ({
   },
   subToolbar: {
     position: "absolute",
-    right: theme.spacing.unit * -2,
-    top: theme.spacing.unit * -2
+    top: -14,
+    right: 93,
   },
   ordinal: {
     color: '#375ace',
@@ -259,7 +280,7 @@ export default withStyles(theme => ({
   },
   details: {
     display: 'block',
-    backgroundColor: '#f7f7f7',
+    backgroundColor: '#fbfdff',
     borderRadius: 10,
     padding: 10,
     border: '1px solid #eee',
@@ -299,11 +320,11 @@ export default withStyles(theme => ({
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     lineGeight: '1.46429em',
     margin: 0,
-    backgroundColor: '#e9f0f1',
+    backgroundColor: '#f5f8f8',
     padding: 3,
     borderRadius: 5,
     borderTop: '1px solid #b1cbdc',
-    color: '6889a3',
+    color: '#a4c0d5',
   },
   badge: {
     marginLeft: 10,
@@ -312,7 +333,12 @@ export default withStyles(theme => ({
   formControl: {
     margin: 8,
     marginLeft: 5,
-    width: 62,
-    height: 10,
+    width: 32,
   },
+  title: {
+    maxWidth: '80%'
+  },
+  selectMenu: {
+    minWidth: 0,
+  }
 }))(ProgramGroup);

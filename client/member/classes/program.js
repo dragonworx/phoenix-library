@@ -2,6 +2,7 @@ import React from 'react';
 import ProgramGroup from './programGroup';
 import { withStyles } from 'material-ui/styles';
 import Button from "material-ui/Button";
+import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/AddCircle";
 import HoverGroup from '../../common/hover';
 
@@ -55,12 +56,12 @@ class ClassProgram extends React.Component {
                   />
                 ))
               }
-              <Button variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
-                <AddIcon />
-              </Button>
             </div>
           )
         } />
+        <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
+          <AddIcon />
+        </IconButton>
       </div>
     );
   }
@@ -77,9 +78,11 @@ export default withStyles(theme => ({
     borderRadius: 5,
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
-    backgroundColor: 'fcfcfc',
+    backgroundColor: '#f8f8f8',
   }),
   addCat: {
-    margin: '10px 5px',
+    position: 'absolute',
+    top: -40,
+    left: 61,
   },
 }))(ClassProgram);

@@ -14,19 +14,29 @@ export default class HoverGroup extends React.Component {
     hover: null,
   };
 
+  mouseDown = false;
+
   componentWillMount () {
     hovers.push(this);
   }
 
-  componentDidlMount () {
+  componentWillUnmount () {
     hovers.splice(hovers.indexOf(this), 1);
   }
 
   onMouseMove = async e => {
+    if (this.mouseDown) {
+      return;
+    }
+    
+    const hover = this.state.hover;
     const target = e.target;
     const dataType = target.getAttribute('data-hover-type');
 
     if (dataType === 'group') {
+      if (hover === null) {
+        return;
+      }
       await HoverGroup.resetAll();
       this.setState({ hover: null });
     } else {
@@ -36,8 +46,12 @@ export default class HoverGroup extends React.Component {
           const dataType = obj.getAttribute('data-hover-type');
           const hoverValue = obj.getAttribute('data-hover-value');
           if (dataType === 'item') {
+            const newHover = parseInt(hoverValue, 10);
+            if (hover === newHover) {
+              return;
+            }
             await HoverGroup.resetAll();
-            this.setState({ hover: parseInt(hoverValue, 10) });
+            this.setState({ hover: newHover });
             return;
           }
           obj = obj.parentNode;
@@ -48,11 +62,21 @@ export default class HoverGroup extends React.Component {
     }
   };
 
+  onMouseDown = () => {
+    this.mouseDown = true;
+    this.timeout = setTimeout(this.onMouseUp, 1000);
+  };
+
+  onMouseUp = () => {
+    this.mouseDown = false;
+    clearTimeout(this.timeout);
+  };
+
   render () {
     const { render, ...others } = this.props;
 
     return (
-      <div {...others} onMouseMove={this.onMouseMove} data-hover-type="group" style={{ position: 'relative' }}>
+      <div {...others} onMouseMove={this.onMouseMove} onMouseDown={this.onMouseDown} data-hover-type="group" style={{ position: 'relative' }}>
         { render(this.state.hover) }
       </div>
     );

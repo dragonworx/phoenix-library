@@ -83,16 +83,17 @@ class SelectExercises extends React.Component {
 
   render() {
     const { selection, selectAll, viewItem } = this.state;
-    const { exercises, classes, ...other } = this.props;
+    const { exercises, classes } = this.props;
     const count = exercises.length;
     // eslint-disable-next-line no-undef
     const thumbnailUrl = `${PHOENIX_LIB_STORAGE}%_1_thumb.png`;
 
     return (
       <Dialog
+        open={true}
         maxWidth="md"
         aria-labelledby="confirmation-dialog-title"
-        {...other}
+        onClose={() => this.handleCancel()}
       >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>

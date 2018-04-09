@@ -41,3 +41,5 @@ module.exports = {
     return ord;
   }
 };
+
+module.exports.combineCss = module.exports.multi;
