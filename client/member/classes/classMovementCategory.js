@@ -1,12 +1,12 @@
-import React from "react";
+import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { ListItemText } from 'material-ui/List';
-import UpIcon from "material-ui-icons/KeyboardArrowUp";
-import DownIcon from "material-ui-icons/KeyboardArrowDown";
-import AddIcon from "material-ui-icons/AddCircle";
-import RemoveIcon from "material-ui-icons/Cancel";
+import UpIcon from 'material-ui-icons/KeyboardArrowUp';
+import DownIcon from 'material-ui-icons/KeyboardArrowDown';
+import AddIcon from 'material-ui-icons/AddCircle';
+import RemoveIcon from 'material-ui-icons/Cancel';
 import { CircularProgress } from 'material-ui/Progress';
-import IconButton from "material-ui/IconButton";
+import IconButton from 'material-ui/IconButton';
 import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
 import ExpansionPanel, {
   ExpansionPanelSummary,
@@ -16,10 +16,10 @@ import axios from 'axios';
 import SelectExercise from './selectExercises';
 import { toOrdinal } from '../../common/util';
 import HoverGroup from '../../common/hover';
-import ProgramExercise from './programExercise';
-import Visible from '../../common/visible';
+import ClassExercise from './classExercise';
+import If from '../../common/if';
 
-class ProgramGroup extends React.Component {
+class ClassMovementCategory extends React.Component {
   state = {
     showSelectExercise: false,
     selectableExercises: null,
@@ -63,7 +63,9 @@ class ProgramGroup extends React.Component {
   };
 
   onDeleteExercise = () => {
-    this.setState({ loading: false });
+    const { category } = this.props;
+    category.exercises.forEach((exercise, i) => exercise.index = i);
+    this.setState({ category, loading: false });
   };
 
   handleCloseSelectExercise = exerciseIds => {
@@ -71,6 +73,7 @@ class ProgramGroup extends React.Component {
       const { category } = this.props;
       const exercises = this.state.selectableExercises.filter(exercise => exerciseIds.indexOf(exercise.id) > -1);
       category.exercises.push.apply(category.exercises, exercises);
+      category.exercises.forEach((exercise, i) => exercise.index = i);
     }
     let expanded = this.state.expanded;
     if (exerciseIds && exerciseIds.length) {
@@ -104,52 +107,56 @@ class ProgramGroup extends React.Component {
         style={expanded ? { paddingBottom: 32 } : {}}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon onClick={this.handleExpandClick} style={{minHeight: 50}} />}>
-              <ListItemText primary={<span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}</span>} />
-              {
-                loading ? <CircularProgress className={classes.progress} thickness={7} /> : null
-              }
-              <Visible show={hasHover}>
-                <div className={classes.toolbar}>
-                  <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddExercisesClick(category)}>
-                    <AddIcon />
-                  </IconButton>
-                  <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
-                    <UpIcon />
-                  </IconButton>
-                  <IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDown(category)} disabled={category.index === program.length - 1}>
-                    <DownIcon />
-                  </IconButton>
-                  <IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveCategoryClick(category)}>
-                    <RemoveIcon />
-                  </IconButton>
-                </div>
-              </Visible>
+          <ListItemText primary={<span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}</span>} />
+          {
+            loading ? <CircularProgress className={classes.progress} thickness={3} /> : null
+          }
+          <If test={hasHover}>
+            <div className={classes.toolbar}>
+              <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddExercisesClick(category)}>
+                <AddIcon />
+              </IconButton>
+              <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
+                <UpIcon />
+              </IconButton>
+              <IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDown(category)} disabled={category.index === program.length - 1}>
+                <DownIcon />
+              </IconButton>
+              <IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveCategoryClick(category)}>
+                <RemoveIcon />
+              </IconButton>
+            </div>
+          </If>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.details}>
-        <HoverGroup ref={this.handleHoverRef} render={
-          hover => (
-            <div>
-              {
-                exercises.map(exercise =>
-                <ProgramExercise 
-                  key={category.index + exercise.index + exercise.name} 
-                  exercise={exercise} 
-                  hover={hover} 
-                  category={category} 
-                  onMoveUpExercise={this.onMoveUpExercise}
-                  onMoveDownExercise={this.onMoveDownExercise}
-                  onDeleteExercise={this.onDeleteExercise}
-                />)
-              }
-            </div>
-          )} />
+          {
+            exercises.length === 0
+            ? <span className={classes.empty}>No exercises available.</span>
+            : <HoverGroup ref={this.handleHoverRef} render={
+            hover => (
+              <div>
+                {
+                  exercises.map(exercise =>
+                    <ClassExercise 
+                      key={category.index + exercise.index + exercise.name} 
+                      exercise={exercise} 
+                      hover={hover} 
+                      category={category} 
+                      onMoveUpExercise={this.onMoveUpExercise}
+                      onMoveDownExercise={this.onMoveDownExercise}
+                      onDeleteExercise={this.onDeleteExercise}
+                    />)
+                }
+              </div>
+            )} />
+          }
         </ExpansionPanelDetails>
-        <Visible show={showSelectExercise}>
+        <If test={showSelectExercise}>
           <SelectExercise
               onClose={this.handleCloseSelectExercise}
               exercises={selectableExercises}
             />
-        </Visible>
+        </If>
       </ExpansionPanel>
     );
   }
@@ -194,7 +201,10 @@ export default withStyles(theme => ({
   },
   progress: {
     position: 'absolute',
-    top: 15,
+    top: 5,
     left: -20,
   },
-}))(ProgramGroup);
+  empty: {
+    color: '#d5d5d5',
+  }
+}))(ClassMovementCategory);

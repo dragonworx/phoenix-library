@@ -1,10 +1,7 @@
 import React, { Fragment } from 'react';
 import Button from 'material-ui/Button';
-import Select from 'material-ui/Select';
-import { MenuItem } from 'material-ui/Menu';
+import Menu, { MenuItem } from 'material-ui/Menu';
 import { Editor, EditorState, RichUtils } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
-import { stateFromHTML } from 'draft-js-import-html';
 import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/AddCircle";
 import Dialog, {
@@ -17,7 +14,8 @@ import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import { withStyles } from "material-ui/styles";
 import SaveButton from '../../common/saveButton';
-import Program from './program';
+import ClassProgram from './classProgram';
+import axios from 'axios';
 
 const ACCEPT_DELAY = 500;
 
@@ -32,6 +30,8 @@ class AddEdit extends React.Component {
     editorState: EditorState.createEmpty(),
     value: 1,
     program: null,
+    addCategories: null,
+    addCategoriesTarget: null,
   };
 
   constructor (props) {
@@ -57,6 +57,7 @@ class AddEdit extends React.Component {
 
   onDeleteCategory = () => {
     const program = this.props.program;
+    program.forEach((category, i) => category.index = i);
     this.setState({ program });
   };
 
@@ -69,8 +70,26 @@ class AddEdit extends React.Component {
     return 'not-handled';
   };
 
-  handleAddCatClick = () => {
+  handleAddCatClick = async e => {
+    const target = e.target;
+    const { data: addCategories } = await axios.get(`/class/categories/${this.props.genre.id}`);
+    this.setState({ addCategories, addCategoriesTarget: target });
+  };
 
+  handleCloseAddCategories = category => {
+    if (category) {
+      const program = this.state.program;
+      const movementCat = {
+        labelId: category.id, 
+        name: category.name, 
+        index: program.length, 
+        exercises: [],
+      };
+      program.push(movementCat);
+      this.setState({ program, addCategories: null, addCategoriesTarget: null });
+    } else {
+      this.setState({ addCategories: null, addCategoriesTarget: null });
+    }
   };
 
   render () {
@@ -98,7 +117,7 @@ class AddEdit extends React.Component {
   }
 
   renderContent () {
-    const { } = this.state;
+    const { addCategories, addCategoriesTarget } = this.state;
     const { classes, program, genre } = this.props;
 
     return (
@@ -107,10 +126,23 @@ class AddEdit extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12} style={{ position: 'relative' }}>
               <FormLabel className={classes.descLabel} component="legend">Program</FormLabel>
-              <Program genreId={genre.id} program={program} onDeleteCategory={this.onDeleteCategory} />
+              <ClassProgram genreId={genre.id} program={program} onDeleteCategory={this.onDeleteCategory} />
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
                 <AddIcon />
               </IconButton>
+              {
+                addCategories
+                  ? <Menu
+                      anchorEl={addCategoriesTarget}
+                      open={true}
+                      onClose={() => this.handleCloseAddCategories()}
+                    >
+                      {
+                        addCategories.map(category => <MenuItem key={`add-cat-${category.id}`} onClick={() => this.handleCloseAddCategories(category)}>{category.name}</MenuItem>)
+                      }
+                    </Menu>
+                  : null
+              }
             </Grid>
             <Grid item xs={12}>
               <FormLabel className={classes.descLabel} component="legend">Notes</FormLabel>

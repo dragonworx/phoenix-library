@@ -5,6 +5,8 @@ const storage = require('./storage');
 const model = require('./model');
 const { clone } = require('../client/common/util');
 
+const Op = Sequelize.Op;
+
 const PLAIN = { plain: true };
 
 function hashById (rows) {
@@ -212,8 +214,6 @@ module.exports = {
   },
 
   async deleteExercises (ids) {
-    const Op = Sequelize.Op;
-
     await model.Exercise.destroy({
       where: {
         id: {
@@ -278,7 +278,6 @@ module.exports = {
       }
     });
     labels.forEach(label => ids[label.exerciseId] = true);
-    const Op = Sequelize.Op;
     const idsArray = Object.keys(ids);
     let exercises = await model.Exercise.findAll({
       where: {
@@ -290,7 +289,6 @@ module.exports = {
     });
     exercises = exercises.map((exercise, i) => {
       exercise = clone(exercise);
-      exercise.index = i;
       exercise.repetitions = 1;
       exercise.duration = 1;
       exercise.notes = 'Notes...';
@@ -304,6 +302,26 @@ module.exports = {
       }
       return 0;
     });
+    exercises.forEach((exercise, i) => exercise.index = i);
     return exercises;
+  },
+
+  async getClassCategories (genreId) {
+    const exerciseLabels = await model.ExerciseLabel.findAll({
+      where: {
+        genreId
+      },
+      attributes: ['movementId']
+    });
+    const labelIds = exerciseLabels.map(label => label.movementId);
+    let labels = await model.Label.findAll({
+      where: {
+        id: {
+          [Op.in]: labelIds
+        }
+      },
+      order: Sequelize.col('id'),
+    });
+    return labels;
   }
 };

@@ -159,9 +159,16 @@ module.exports = function (app) {
   });
 
   app.post('/exercise/usage', async (req, res) => {
+    // decorate the given exercise with usage, genre, movementId...get ready class usage
     const exercise = req.body.exercise;
     await api.getExerciseUsage(exercise);
     res.sendJSON(exercise);
+  });
+
+  app.get('/class/categories/:genreId', async (req, res) => {
+    const genreId = parseInt(req.params.genreId, 10);
+    const data = await api.getClassCategories(genreId);
+    res.sendJSON(data);
   });
 
   /* post */

@@ -5,8 +5,8 @@ const Label = require('./model/label');
 const Exercise = require('./model/exercise');
 const ExerciseLabel = require('./model/exerciseLabel');
 const Class = require('./model/class');
-const ClassExerciseGroup = require('./model/ClassExerciseGroup');
-const ClassGroupExercise = require('./model/classGroupExercise');
+const ClassMovementCategory = require('./model/classMovementCategory');
+const ClassExercise = require('./model/classExercise');
 const Template = require('./model/template');
 const ClassTemplate = require('./model/classTemplate');
 
@@ -20,8 +20,8 @@ const Models = {
   Exercise,
   ExerciseLabel,
   Class,
-  ClassExerciseGroup,
-  ClassGroupExercise,
+  ClassMovementCategory,
+  ClassExercise,
   Template,
   ClassTemplate
 };

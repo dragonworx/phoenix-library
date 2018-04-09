@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default class Visible extends React.Component {
+export default class If extends React.Component {
   render () {
-    const { show, children } = this.props;
-    if (!show) {
+    const { test, children } = this.props;
+    if (!test) {
       return null;
     }
     return <React.Fragment>{ children }</React.Fragment>;

@@ -11,8 +11,9 @@ import Typography from 'material-ui/Typography';
 import ImageIcon from 'material-ui-icons/Image';
 import Checkbox from 'material-ui/Checkbox';
 import { withStyles } from 'material-ui/styles';
-import ViewExercise from '../exercises/view';
 import axios from 'axios';
+import ViewExercise from '../exercises/view';
+import If from '../../common/if';
 
 class SelectExercises extends React.Component {
   constructor(props, context) {
@@ -116,15 +117,17 @@ class SelectExercises extends React.Component {
                   : <ImageIcon />
                 }
                 </Avatar>
-                <ListItemText primary={exercise.name} />
+                <ListItemText primary={exercise.name} onClick={e => this.handleChange(e, exercise.id)} />
               </ListItem>
             ))}
             </List>
         </DialogContent>
         <DialogActions className={classes.relative}>
-          <Button onClick={this.handleCancel} color="primary">
-            Cancel
-          </Button>
+          <If test={count > 0}>
+            <Button onClick={this.handleCancel} color="primary">
+              Cancel
+            </Button>
+          </If>
           <Button onClick={this.handleOk} color="primary">
             Ok
           </Button>

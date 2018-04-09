@@ -1,5 +1,5 @@
 import React from 'react';
-import ProgramGroup from './programGroup';
+import ClassMovementCategory from './classMovementCategory';
 import { withStyles } from 'material-ui/styles';
 import HoverGroup from '../../common/hover';
 
@@ -25,7 +25,9 @@ class ClassProgram extends React.Component {
   };
 
   onDeleteCategory = () => {
+    const { program } = this.props;
     this.props.onDeleteCategory();
+    program.forEach((category, i) => category.index = i);
   };
 
   handleHoverRef = el => {
@@ -42,8 +44,8 @@ class ClassProgram extends React.Component {
             <div>
               {
                 program.map(category => (
-                  <ProgramGroup 
-                    key={`category_${category.labelId}`}
+                  <ClassMovementCategory 
+                    key={`category_${category.index}-${category.labelId}`}
                     genreId={genreId}
                     program={program}
                     category={category}
@@ -68,7 +70,7 @@ export default withStyles(theme => ({
   },
   root: theme.mixins.gutters({
     height: 400,
-    overflow: 'auto',
+    overflowY: 'scroll',
     border: '1px solid #ccc',
     borderRadius: 5,
     paddingTop: theme.spacing.unit * 2,

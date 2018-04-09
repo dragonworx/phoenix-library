@@ -17,18 +17,13 @@ import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
 import Tooltip from 'material-ui/Tooltip';
-// import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import AddSelect from './addSelect';
 import AddEdit from './addEdit';
 import ViewClass from './view';
 import Alert from '../../common/alert';
-// import Thumbnail from '../../common/thumbnail';
-// import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
-
-// let ThumbnailRef = ThumbnailLink;
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;

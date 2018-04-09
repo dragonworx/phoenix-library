@@ -1,25 +1,26 @@
-import React from "react";
+import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import ImageIcon from 'material-ui-icons/Image';
-import UpIcon from "material-ui-icons/KeyboardArrowUp";
-import DownIcon from "material-ui-icons/KeyboardArrowDown";
-import RemoveIcon from "material-ui-icons/Cancel";
+import UpIcon from 'material-ui-icons/KeyboardArrowUp';
+import DownIcon from 'material-ui-icons/KeyboardArrowDown';
+import RemoveIcon from 'material-ui-icons/Cancel';
 import Select from 'material-ui/Select';
-import IconButton from "material-ui/IconButton";
+import IconButton from 'material-ui/IconButton';
 import { FormControl } from 'material-ui/Form';
-import axios from 'axios';
 import { InputLabel } from 'material-ui/Input';
-import ViewExercise from '../exercises/view';
 import { MenuItem } from 'material-ui/Menu';
+import axios from 'axios';
+import ViewExercise from '../exercises/view';
 import { toOrdinal, combineCss } from '../../common/util';
-import Visible from '../../common/visible';
+import If from '../../common/if';
 
-class ProgramExercise extends React.Component {
+class ClassExercise extends React.Component {
   state = {
     viewItem: null,
     exercise: null,
+    noteEditValue: null,
   };
 
   constructor (props) {
@@ -56,6 +57,14 @@ class ProgramExercise extends React.Component {
     this.setState({ exercise });
   };
 
+  handleNotesFocus = e => {
+    this.setState({ noteEditValue: e.target.innerHTML });
+  };
+
+  handleNotesBlur = () => {
+    this.setState({ noteEditValue: null });
+  };
+
   onRemoveExercise = (exercise) => {
     const { category, onDeleteExercise } = this.props;
     const exercises = category.exercises;
@@ -65,7 +74,7 @@ class ProgramExercise extends React.Component {
   };
 
   render () {
-    const { viewItem, exercise } = this.state;
+    const { viewItem, exercise, noteEditValue } = this.state;
     const { classes, hover, category, onMoveUpExercise, onMoveDownExercise } = this.props;
     const { exercises } = category;
     // eslint-disable-next-line no-undef
@@ -90,9 +99,14 @@ class ProgramExercise extends React.Component {
           <h3 className={classes.listTextH3}>
             <span className={classes.ordinal}>{exercise.index + 1}{toOrdinal(exercise.index + 1)}</span>{ exercise.name }
           </h3>
-          <p className={classes.listTextP} contentEditable="true" suppressContentEditableWarning={true} onInput={e => this.handleNotesChange(e, exercise)}>
-            Notes...
-          </p>
+          <p className={classes.listTextP} 
+            contentEditable="true" 
+            suppressContentEditableWarning={true} 
+            onInput={e => this.handleNotesChange(e, exercise)}
+            onFocus={this.handleNotesFocus}
+            onBlur={this.handleNotesBlur}
+            dangerouslySetInnerHTML={{__html: noteEditValue ? noteEditValue : exercise.notes}}
+          />
         </div>
         <FormControl className={classes.formControl}>
           <InputLabel htmlFor="age-simple">Reps.</InputLabel>
@@ -118,7 +132,7 @@ class ProgramExercise extends React.Component {
             <MenuItem value={5}>5</MenuItem>
           </Select>
         </FormControl>
-        <Visible show={hover === exercise.id}>
+        <If test={hover === exercise.id}>
           <div className={classes.subToolbar}>
             <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUpExercise(exercise)} disabled={exercise.index === 0}>
               <UpIcon />
@@ -130,7 +144,7 @@ class ProgramExercise extends React.Component {
               <RemoveIcon />
             </IconButton>
           </div>
-        </Visible>
+        </If>
         {
           viewItem ? <ViewExercise viewItem={viewItem} onClose={this.handleViewClose} /> : null
         }
@@ -159,7 +173,7 @@ export default withStyles(theme => ({
     padding: 0,
     paddingBottom: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
-    borderBottom: '1px dashed #ccc',
+    borderBottom: '1px dashed #e4e4e4',
   },
   listTextContainer: {
     flex: '1 1 auto',
@@ -197,4 +211,4 @@ export default withStyles(theme => ({
   title: {
     maxWidth: '80%'
   },
-}))(ProgramExercise);
+}))(ClassExercise);
