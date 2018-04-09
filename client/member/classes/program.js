@@ -1,9 +1,6 @@
 import React from 'react';
 import ProgramGroup from './programGroup';
 import { withStyles } from 'material-ui/styles';
-import Button from "material-ui/Button";
-import IconButton from "material-ui/IconButton";
-import AddIcon from "material-ui-icons/AddCircle";
 import HoverGroup from '../../common/hover';
 
 class ClassProgram extends React.Component {
@@ -27,12 +24,12 @@ class ClassProgram extends React.Component {
     this.setState({ program });
   };
 
-  handleHoverRef = el => {
-    this.hover = el;
+  onDeleteCategory = () => {
+    this.props.onDeleteCategory();
   };
 
-  handleAddCatClick = () => {
-
+  handleHoverRef = el => {
+    this.hover = el;
   };
 
   render () {
@@ -53,15 +50,13 @@ class ClassProgram extends React.Component {
                     hasHover={hover === category.index}
                     onMoveUp={this.onMoveUp}
                     onMoveDown={this.onMoveDown}
+                    onDeleteCategory={this.onDeleteCategory}
                   />
                 ))
               }
             </div>
           )
         } />
-        <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
-          <AddIcon />
-        </IconButton>
       </div>
     );
   }
@@ -80,9 +75,4 @@ export default withStyles(theme => ({
     paddingBottom: theme.spacing.unit * 2,
     backgroundColor: '#f8f8f8',
   }),
-  addCat: {
-    position: 'absolute',
-    top: -40,
-    left: 61,
-  },
 }))(ClassProgram);

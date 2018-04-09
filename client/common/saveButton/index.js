@@ -27,7 +27,7 @@ class SaveButton extends React.Component {
 
   render() {
     const { loading, mode } = this.state;
-    const { classes, title = 'save' } = this.props;
+    const { classes, title = 'save', disabled = false } = this.props;
 
     let buttonClassname = '';
     if (mode === -1) {
@@ -42,7 +42,7 @@ class SaveButton extends React.Component {
           variant="raised"
           color="primary"
           className={buttonClassname}
-          disabled={loading}
+          disabled={disabled || loading}
           onClick={this.handleButtonClick}
         >
           {title}

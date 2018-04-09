@@ -64,7 +64,7 @@ export default class HoverGroup extends React.Component {
 
   onMouseDown = () => {
     this.mouseDown = true;
-    this.timeout = setTimeout(this.onMouseUp, 1000);
+    this.timeout = setTimeout(this.onMouseUp, 250);
   };
 
   onMouseUp = () => {

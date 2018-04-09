@@ -5,6 +5,8 @@ import { MenuItem } from 'material-ui/Menu';
 import { Editor, EditorState, RichUtils } from 'draft-js';
 import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
+import IconButton from "material-ui/IconButton";
+import AddIcon from "material-ui-icons/AddCircle";
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -53,6 +55,11 @@ class AddEdit extends React.Component {
 
   onChange = (editorState) => this.setState({editorState});
 
+  onDeleteCategory = () => {
+    const program = this.props.program;
+    this.setState({ program });
+  };
+
   handleEditorKeyCommand = (command, editorState) => {
     const newState = RichUtils.handleKeyCommand(editorState, command);
     if (newState) {
@@ -60,6 +67,10 @@ class AddEdit extends React.Component {
       return 'handled';
     }
     return 'not-handled';
+  };
+
+  handleAddCatClick = () => {
+
   };
 
   render () {
@@ -89,14 +100,17 @@ class AddEdit extends React.Component {
   renderContent () {
     const { } = this.state;
     const { classes, program, genre } = this.props;
-    
+
     return (
       <Fragment>
         <DialogContent className={classes.content}>
           <Grid container spacing={24}>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ position: 'relative' }}>
               <FormLabel className={classes.descLabel} component="legend">Program</FormLabel>
-              <Program genreId={genre.id} program={program} />
+              <Program genreId={genre.id} program={program} onDeleteCategory={this.onDeleteCategory} />
+              <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
+                <AddIcon />
+              </IconButton>
             </Grid>
             <Grid item xs={12}>
               <FormLabel className={classes.descLabel} component="legend">Notes</FormLabel>
@@ -113,7 +127,7 @@ class AddEdit extends React.Component {
           <Button onClick={this.handleClose} color="primary">
             Cancel
           </Button>
-          <SaveButton onClick={this.handleSave} />
+          <SaveButton onClick={this.handleSave} disabled={program.length === 0} />
         </DialogActions>
       </Fragment>
     );
@@ -144,5 +158,10 @@ export default withStyles(theme => ({
   content: {
     flexGrow: 1,
     width: 700,
+  },
+  addCat: {
+    position: 'absolute',
+    top: 20,
+    left: 70,
   },
 }))(AddEdit);
