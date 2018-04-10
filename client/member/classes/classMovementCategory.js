@@ -79,6 +79,7 @@ class ClassMovementCategory extends React.Component {
     if (exerciseIds && exerciseIds.length) {
       expanded = true;
     }
+    this.props.onDurationChange();
     this.setState({ expanded: expanded, showSelectExercise: false });
   };
 
