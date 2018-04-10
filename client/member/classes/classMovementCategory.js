@@ -23,7 +23,7 @@ class ClassMovementCategory extends React.Component {
   state = {
     showSelectExercise: false,
     selectableExercises: null,
-    expanded: false,
+    expanded: true,
     loading: false,
   };
 
