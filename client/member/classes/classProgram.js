@@ -34,6 +34,11 @@ class ClassProgram extends React.Component {
     this.hover = el;
   };
 
+  onDurationChange = exercise => {
+    this.props.onDurationChange(exercise);
+    this.setState({ expanded: true });
+  };
+
   render () {
     const { classes, program, genreId } = this.props;
 
@@ -53,6 +58,7 @@ class ClassProgram extends React.Component {
                     onMoveUp={this.onMoveUp}
                     onMoveDown={this.onMoveDown}
                     onDeleteCategory={this.onDeleteCategory}
+                    onDurationChange={this.onDurationChange}
                   />
                 ))
               }

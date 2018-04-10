@@ -151,6 +151,10 @@ class AddEdit extends React.Component {
     this.setState({ className: e.target.value });
   };
 
+  onDurationChange = () => {
+    this.setState({ program: this.state.program });
+  };
+
   render () {
     const { classes } = this.props;
     const { className, program } = this.state;
@@ -183,6 +187,7 @@ class AddEdit extends React.Component {
   renderContent () {
     const { addCategories, addCategoriesTarget, isSaving, program } = this.state;
     const { classes, genreId } = this.props;
+    const duration = program.reduce((duration, category) => duration + category.exercises.reduce((duration, exercise) => duration + exercise.duration, 0), 0);
 
     return (
       <Fragment>
@@ -190,10 +195,11 @@ class AddEdit extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12} style={{ position: 'relative' }}>
               <FormLabel className={classes.primaryDescLabel} component="legend">Program</FormLabel>
-              <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} />
+              <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} onDurationChange={this.onDurationChange} />
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
                 <AddIcon />
               </IconButton>
+              <div className={classes.duration}>{duration} mins</div>
               {
                 addCategories
                   ? <Menu
@@ -267,5 +273,12 @@ export default withStyles(theme => ({
     fontSize: '100%',
     flexGrow: 1,
     color: '#fff',
+  },
+  duration: {
+    position: 'absolute',
+    top: 40,
+    right: 106,
+    color: '#ccc',
+    fontSize: '80%',
   }
 }))(AddEdit);

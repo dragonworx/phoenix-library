@@ -38,7 +38,7 @@ class TabsView extends React.Component {
     const { classes, readOnly } = this.props;
     const { value, exerciseCount, classCount } = this.state;
 
-    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}exercises`)} label={<span>Exercises<Badge className={classes.margin} badgeContent={exerciseCount} color="secondary">&nbsp;</Badge></span>} /> );
+    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}exercises`)} label={<span>Exercises<Badge className={classes.margin} badgeContent={exerciseCount}>&nbsp;</Badge></span>} /> );
     const ClassesTab = withRouter(({ history }) => <Tab style={{opacity:value === 1 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}classes`)} label={<span>Classes<Badge className={classes.margin} badgeContent={classCount} color="secondary">&nbsp;</Badge></span>} /> );
 
     return (

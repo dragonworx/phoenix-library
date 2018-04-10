@@ -90,6 +90,13 @@ class ClassMovementCategory extends React.Component {
     this.hover = el;
   };
 
+  onDurationChange = exercise => {
+    const { category } = this.props;
+    category.duration = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0);
+    this.props.onDurationChange(exercise);
+    this.setState({ expanded: true });
+  };
+
   render() {
     const { showSelectExercise, selectableExercises, expanded, loading } = this.state;
     const { classes, genreId, category, program, hasHover, onMoveUp, onMoveDown } = this.props;
@@ -109,7 +116,7 @@ class ClassMovementCategory extends React.Component {
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon onClick={this.handleExpandClick} style={{minHeight: 50}} />}>
           <ListItemText primary={
-            <span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}<span className={classes.duration}>{duration === 0 ? 'Empty' : `${duration} mins`}</span></span>
+            <span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}<span className={classes.duration}>{duration === 0 ? 'Blank' : `${duration} mins`}</span></span>
           } />
           {
             loading ? <CircularProgress className={classes.progress} thickness={3} /> : null
@@ -148,6 +155,7 @@ class ClassMovementCategory extends React.Component {
                       onMoveUpExercise={this.onMoveUpExercise}
                       onMoveDownExercise={this.onMoveDownExercise}
                       onDeleteExercise={this.onDeleteExercise}
+                      onDurationChange={this.onDurationChange}
                     />)
                 }
               </div>

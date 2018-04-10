@@ -48,6 +48,7 @@ class ClassExercise extends React.Component {
 
   handleDurationChange = (e, exercise) => {
     exercise.duration = parseInt(e.target.value, 10);
+    this.props.onDurationChange(exercise);
     this.setState({ exercise });
   };
 
@@ -220,7 +221,7 @@ export default withStyles(theme => ({
     width: 32,
   },
   selectMenu: {
-    minWidth: 40,
+    minWidth: 0,
     fontSize: '80%',
   },
   selectIcon: {
