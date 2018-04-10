@@ -114,6 +114,12 @@ module.exports = function (app) {
   app.get('/classes', (req, res) => {
     res.render('index', { user: encodedUser(req) });
   });
+
+  app.get('/class/program/:classId', async (req, res) => {
+    const classId = parseInt(req.params.classId, 10);
+    const program = await api.getClassProgram(classId);
+    res.sendJSON(program);
+  });
   
   app.get('/logout', (req, res) => {
     delete req.session.user;
@@ -170,6 +176,26 @@ module.exports = function (app) {
     const data = await api.getClassCategories(genreId);
     res.sendJSON(data);
   });
+
+  app.post('/class/add', async (req, res) => {
+    const cls = req.body;
+    const details = await api.addClass(cls);
+    res.sendJSON(details);
+  });
+
+  app.post('/class/edit', async (req, res) => {
+    const cls = req.body;
+    const details = await api.editClass(cls);
+    res.sendJSON(details);
+  });
+
+  // function createRoute(url, handler) {
+  //   const params = handler
+  //     .toString()
+  //     .match(/\(([^)]*)\)[ =>]*{/)[1]
+  //     .split(',')
+  //     .map(x => x.trim());
+  // }
 
   /* post */
   
@@ -243,6 +269,16 @@ module.exports = function (app) {
     const ids = req.body.ids;
     try {
       await api.deleteExercises(ids);
+      res.end();
+    } catch (error) {
+      res.send500(error);
+    }
+  });
+
+  app.post('/class/delete', async (req, res) => {
+    const ids = req.body.ids;
+    try {
+      await api.deleteClasses(ids);
       res.end();
     } catch (error) {
       res.send500(error);

@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const WebpackPreBuildPlugin = require('pre-build-webpack');
 const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const log = require('./server/log');
 const pkg = require('./package.json');
@@ -47,7 +48,10 @@ const devConfig = (entry, outfile) => {
         PHOENIX_LIB_STORAGE: JSON.stringify(PHOENIX_LIB_STORAGE + 'phoenix_lib/dev/excelsior/'),
         PHOENIX_LIB_VERSION: JSON.stringify(PHOENIX_LIB_VERSION),
       }),
-      new HardSourceWebpackPlugin()
+      new HardSourceWebpackPlugin(),
+      new WebpackPreBuildPlugin((/*stats*/) => {
+        log('Build started @ ' + (new Date().toLocaleTimeString()) + ' ...', 'green');
+      }),
     ]
   };
 };

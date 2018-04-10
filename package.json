@@ -1,6 +1,6 @@
 {
   "name": "phoenix_lib",
-  "version": "1.8.0",
+  "version": "0.8.0",
   "description": "For Liz",
   "main": "client/main.jsx",
   "scripts": {
@@ -74,6 +74,7 @@
     "husky": "^0.12.0",
     "nodemon": "^1.17.1",
     "open-browser-webpack-plugin": "0.0.3",
+    "pre-build-webpack": "^0.1.0",
     "style-loader": "~0.13.1",
     "validate-commit-msg": "2.x",
     "webpack": "^2.0.10",

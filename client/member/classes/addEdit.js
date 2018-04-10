@@ -16,9 +16,10 @@ import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
 import { withStyles } from "material-ui/styles";
+import axios from 'axios';
 import SaveButton from '../../common/saveButton';
 import ClassProgram from './classProgram';
-import axios from 'axios';
+import { user } from '../session';
 
 const ACCEPT_DELAY = 500;
 
@@ -36,6 +37,7 @@ class AddEdit extends React.Component {
     addCategories: null,
     addCategoriesTarget: null,
     className: null,
+    isSaving: false,
   };
 
   constructor (props) {
@@ -44,30 +46,54 @@ class AddEdit extends React.Component {
     this.state.className = props.className;
   }
 
+  async componentWillMount () {
+    const { editItem } = this.props;
+    if (editItem) {
+      const { data: program } = await axios.get(`/class/program/${editItem.id}`);
+      const state = stateFromHTML(editItem.notes);
+      this.setState({
+        editorState: EditorState.createWithContent(state),
+        className: editItem.name,
+        program
+      });
+    }
+  }
+
   handleSave = async () => {
-    const { editorState, program, className: name } = this.state;
+    const { genreId, mode, onAdded, onSaved, editItem } = this.props;
+    const { editorState, program, className: className } = this.state;
     const notes = stateToHTML(editorState.getCurrentContent());
+
     const cls = {
-      name,
-      program,
+      id: editItem && editItem.id,
+      genreId: genreId,
+      createdBy: user.id,
+      name: className,
+      categories: program,
       notes,
     };
 
     const close = () => {
       setTimeout(() => {
-        if (this.props.mode === MODE.ADD) {
-          this.props.onAdded(cls);
+        if (mode === MODE.ADD) {
+          onAdded(cls);
         } else {
-          this.props.onSaved(cls);
+          onSaved(cls);
         }
-      }, 0);
+      }, ACCEPT_DELAY);
       return Promise.resolve();
     };
 
     try {
-      await axios.post('/class/add', { cls });
+      this.setState({ isSaving: true });
+      const { data: { id, categorySummary, durationSummary } } = await axios.post(`/class/${mode}`, cls);
+      cls.id = id || cls.id;
+      cls.categorySummary = categorySummary;
+      cls.durationSummary = durationSummary;
+      this.setState({ isSaving: false });
     } catch (e) {
-      debugger
+      this.setState({ isSaving: false });
+      throw e;
     }
 
     return close();
@@ -85,7 +111,7 @@ class AddEdit extends React.Component {
   onChange = (editorState) => this.setState({editorState});
 
   onDeleteCategory = () => {
-    const program = this.props.program;
+    const program = this.state.program;
     program.forEach((category, i) => category.index = i);
     this.setState({ program });
   };
@@ -101,7 +127,7 @@ class AddEdit extends React.Component {
 
   handleAddCatClick = async e => {
     const target = e.target;
-    const { data: addCategories } = await axios.get(`/class/categories/${this.props.genre.id}`);
+    const { data: addCategories } = await axios.get(`/class/categories/${this.props.genreId}`);
     this.setState({ addCategories, addCategoriesTarget: target });
   };
 
@@ -126,8 +152,12 @@ class AddEdit extends React.Component {
   };
 
   render () {
-    const { classes, mode, genre } = this.props;
-    const { className } = this.state;
+    const { classes } = this.props;
+    const { className, program } = this.state;
+
+    if (!program) {
+      return null;
+    }
 
     return (
       <Dialog
@@ -140,7 +170,7 @@ class AddEdit extends React.Component {
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            <Input fullWidth={true} defaultValue={mode === MODE.ADD ? `New ${genre.name} Class` : className} classes={{ root: classes.title }} onChange={this.handleNameChange} />
+            <Input fullWidth={true} defaultValue={className} classes={{ root: classes.title }} onChange={this.handleNameChange} />
           </Typography>
         </AppBar>
 
@@ -151,8 +181,8 @@ class AddEdit extends React.Component {
   }
 
   renderContent () {
-    const { addCategories, addCategoriesTarget } = this.state;
-    const { classes, program, genre } = this.props;
+    const { addCategories, addCategoriesTarget, isSaving, program } = this.state;
+    const { classes, genreId } = this.props;
 
     return (
       <Fragment>
@@ -160,7 +190,7 @@ class AddEdit extends React.Component {
           <Grid container spacing={24}>
             <Grid item xs={12} style={{ position: 'relative' }}>
               <FormLabel className={classes.primaryDescLabel} component="legend">Program</FormLabel>
-              <ClassProgram genreId={genre.id} program={program} onDeleteCategory={this.onDeleteCategory} />
+              <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} />
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
                 <AddIcon />
               </IconButton>
@@ -190,10 +220,10 @@ class AddEdit extends React.Component {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleClose} color="primary">
+          <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
             Cancel
           </Button>
-          <SaveButton onClick={this.handleSave} disabled={program.length === 0} />
+          <SaveButton onClick={this.handleSave} disabled={program && program.length === 0} />
         </DialogActions>
       </Fragment>
     );

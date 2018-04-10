@@ -105,7 +105,7 @@ class SelectExercises extends React.Component {
         { count === 0 ? <span className={classes.empty}>This movement category is currently empty.</span> : null}
         <List>
             {exercises.map(exercise => (
-              <ListItem key={exercise.id} className={classes.item}>
+              <ListItem key={exercise.id} className={classes.item} classes={{ root: classes.listItemNoPad }}>
               <Checkbox
                   checked={!!selection[exercise.id]}
                   onClick={e => this.handleChange(e, exercise.id)}
@@ -117,7 +117,7 @@ class SelectExercises extends React.Component {
                   : <ImageIcon />
                 }
                 </Avatar>
-                <ListItemText primary={exercise.name} onClick={e => this.handleChange(e, exercise.id)} />
+                <ListItemText primary={<span><span className={classes.exerciseId}>#{exercise.id}.</span>{exercise.name}</span>} onClick={e => this.handleChange(e, exercise.id)} />
               </ListItem>
             ))}
             </List>
@@ -178,5 +178,16 @@ export default withStyles(theme => ({
     display: 'inline-block',
     position: 'relative',
     top: 20,
+  },
+  exerciseId: {
+    color: '#b8d0d5',
+    fontSize: '80%',
+    marginRight: 8,
+    width: 22,
+    display: 'inline-block',
+    textAlign: 'right',
+  },
+  listItemNoPad: {
+    paddingLeft: 10,
   }
 }))(SelectExercises);

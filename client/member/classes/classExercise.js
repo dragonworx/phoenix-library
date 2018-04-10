@@ -108,30 +108,40 @@ class ClassExercise extends React.Component {
             dangerouslySetInnerHTML={{__html: noteEditValue ? noteEditValue : exercise.notes}}
           />
         </div>
-        <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="age-simple">Reps.</InputLabel>
-          <Select
-            value={exercise.repetitions}
-            onChange={e => this.handleRepsChange(e, exercise)}
-            classes={{selectMenu: classes.selectMenu}}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-          </Select>
-        </FormControl>
-        <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="age-simple">Dur.<i>mins</i></InputLabel>
-          <Select
-            value={exercise.duration}
-            onChange={e => this.handleDurationChange(e, exercise)}
-            classes={{selectMenu: classes.selectMenu}}
-          >
-            <MenuItem value={1}>1</MenuItem>
-            <MenuItem value={3}>3</MenuItem>
-            <MenuItem value={5}>5</MenuItem>
-          </Select>
-        </FormControl>
+        <form className={classes.form} autoComplete="off">
+          <FormControl className={classes.formControl}>
+            <InputLabel>Reps.</InputLabel>
+            <Select
+              value={exercise.repetitions}
+              onChange={e => this.handleRepsChange(e, exercise)}
+              classes={{ selectMenu: classes.selectMenu, icon: classes.selectIcon }}
+            >
+              <MenuItem value={1}>1</MenuItem>
+              <MenuItem value={2}>2</MenuItem>
+              <MenuItem value={3}>3</MenuItem>
+              <MenuItem value={4}>4</MenuItem>
+              <MenuItem value={5}>5</MenuItem>
+              <MenuItem value={6}>6</MenuItem>
+              <MenuItem value={7}>7</MenuItem>
+              <MenuItem value={8}>8</MenuItem>
+              <MenuItem value={9}>9</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+            </Select>
+          </FormControl>
+          <FormControl className={classes.formControl}>
+            <InputLabel>Dur.</InputLabel>
+            <Select
+              value={exercise.duration}
+              onChange={e => this.handleDurationChange(e, exercise)}
+              classes={{ selectMenu: classes.selectMenu, icon: classes.selectIcon }}
+            >
+              <MenuItem value={1}>1 min</MenuItem>
+              <MenuItem value={3}>3 min</MenuItem>
+              <MenuItem value={5}>5 min</MenuItem>
+              <MenuItem value={10}>10 min</MenuItem>
+            </Select>
+          </FormControl>
+        </form>
         <If test={hover === exercise.id}>
           <div className={classes.subToolbar}>
             <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUpExercise(exercise)} disabled={exercise.index === 0}>
@@ -154,6 +164,10 @@ class ClassExercise extends React.Component {
 }
 
 export default withStyles(theme => ({
+  form: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
   button: {
     // margin: theme.spacing.unit,
   },
@@ -206,7 +220,11 @@ export default withStyles(theme => ({
     width: 32,
   },
   selectMenu: {
-    minWidth: 0,
+    minWidth: 40,
+    fontSize: '80%',
+  },
+  selectIcon: {
+    display: 'none',
   },
   title: {
     maxWidth: '80%'

@@ -17,13 +17,13 @@ import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
 import Tooltip from 'material-ui/Tooltip';
+import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import AddSelect from './addSelect';
 import AddEdit from './addEdit';
 import ViewClass from './view';
 import Alert from '../../common/alert';
-import { distinct, trimUsage } from '../../common/util';
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -75,6 +75,17 @@ const HTMLTypeProvider = props => (
   />
 );
 
+const DurationFormatter = ({ value }) => {
+  return <span>{value} mins</span>;
+};
+
+const DurationTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={DurationFormatter}
+    {...props}
+  />
+);
+
 const TooltipFormatter = ({ value }) => {
   if (value) {
     const values = Array.isArray(value) ? value.join(', ') : String(value);
@@ -92,9 +103,10 @@ const TooltipTypeProvider = props => (
 
 let defaultColumnWidths = [
   { columnName: 'name', width: 300 },
-  { columnName: 'status', width: 300 },
   { columnName: 'genre', width: 100 },
-  { columnName: 'designer', width: 200 },
+  { columnName: 'categorySummary', width: 100 },
+  { columnName: 'durationSummary', width: 100 },
+  { columnName: 'status', width: 200 },
   { columnName: 'notes', width: 200 },
 ];
 
@@ -109,10 +121,11 @@ class ClassesGrid extends React.PureComponent {
     mode: MODE.LOADING,
     columns: [
       { name: 'name', title: 'Name' },
-      { name: 'genre', title: 'Genre' },
-      { name: 'designer', title: 'Designer' },
-      { name: 'notes', title: 'Notes' },
+      { name: 'genre', title: 'Genre', getCellValue: row => ClassesGrid.labels.find(label => label.id = row.genreId).name },
+      { name: 'categorySummary', title: 'Movement Cats.' },
+      { name: 'durationSummary', title: 'Duration' },
       { name: 'status', title: 'Status' },
+      { name: 'notes', title: 'Notes' },
     ],
     rows: [],
     filteringStateColumnExtensions: [
@@ -121,8 +134,9 @@ class ClassesGrid extends React.PureComponent {
     defaultHiddenColumnNames: ['notes'],
     defaultColumnWidths,
     nameColumns: ['name'],
-    tooltipColumns: ['status', 'genre', 'designer'],
-    htmlColumns: ['nodes'],
+    tooltipColumns: ['name', 'categorySummary', 'notes'],
+    htmlColumns: ['notes'],
+    durationColumns: ['durationSummary'],
     selection: [],
     editItem: null,
     viewItem: null,
@@ -130,23 +144,15 @@ class ClassesGrid extends React.PureComponent {
     program: null,
   };
 
-  constructor (props) {
-    super(props);
-    if (props.readOnly) {
-      // ThumbnailRef = Thumbnail;
-    }
-  }
-
-  componentWillMount () {
-    axios.get('/classes/get')
-      .then(res => {
-        const classes = res.data;
-        this.setState({
-          mode: MODE.READ,
-          rows: classes,
-          selection: [],
-        });
-      });
+  async componentWillMount () {
+    const { data: classes } = await axios.get('/classes/get');
+    const { data: labels } = await axios.get('/labels/get');
+    ClassesGrid.labels = labels;
+    this.setState({
+      mode: MODE.READ,
+      rows: classes,
+      selection: [],
+    });
     
     this.isCommandDown = false;
     window.addEventListener('keydown', this.onGlobalKeyDown);
@@ -192,22 +198,6 @@ class ClassesGrid extends React.PureComponent {
     }
   };
 
-  updateRowLabels (row, usage) {
-    trimUsage(usage);
-    const labels = {};
-    this.labels.forEach(label => labels[label.id] = label);
-    const genres = Object.entries(usage)
-      .map(({ 0: id }) => labels[id].name);
-    const movementCategories = [];
-    Object.entries(usage)
-      .map(({ 1: selections }) => Object.keys(selections))
-      .forEach(ids => ids.forEach(id => movementCategories.push(labels[id].name)));
-    genres.sort();
-    movementCategories.sort();
-    row.genre = genres;
-    row.movement = distinct(movementCategories);
-  }
-
   onAddClick = () => {
     axios.get('/label/get/0').then(response => {
       this.setState({ genres: response.data, mode: MODE.ADD_SELECT });
@@ -240,6 +230,7 @@ class ClassesGrid extends React.PureComponent {
         },
         mode: MODE.ADD,
         program: template,
+        editItem: null,
       });
     } else {
       this.setState({ mode: MODE.READ });
@@ -253,7 +244,7 @@ class ClassesGrid extends React.PureComponent {
   onConfirmDeleteClose = async didAccept => {
     if (didAccept) {
       const ids = this.state.selection;
-      await axios.post('/exercise/delete', { ids: ids });
+      await axios.post('/class/delete', { ids: ids });
       const rows = this.state.rows.filter(row => ids.indexOf(row.id) === -1);
       this.setState({ rows, selection: [] });
     }
@@ -267,7 +258,6 @@ class ClassesGrid extends React.PureComponent {
     let mode = MODE.READ;
     if (this.props.readOnly) {
       if (!selection.length) {
-        // return this.setState({ selection: selected });
         selection = selected;
       }
       for (let i = 0; i < selection.length; i++) {
@@ -290,32 +280,22 @@ class ClassesGrid extends React.PureComponent {
   };
 
   onAdded = (cls) => {
-    // this.updateRowLabels(addedRow, usage);
-    // const rows = [
-    //   ...this.state.rows,
-    // ];
-    // addedRow.usage = usage;
-    // rows.push(addedRow);
-    // this.setState({ rows, selection: [addedRow.id] });
-    this.setState({ mode: MODE.READ });
+    const rows = [
+      ...this.state.rows,
+    ];
+    rows.push(cls);
+    this.setState({ rows, selection: [cls.id], mode: MODE.READ });
   };
 
   onSaved = (cls) => {
-    // const rows = [
-    //   ...this.state.rows,
-    // ];
-    // const id = this.state.editItem.id;
-    // const row = rows.find(row => row.id === id);
-    // row.name = savedRow.name;
-    // row.springs = savedRow.springs;
-    // row.description = savedRow.description;
-    // row.video = savedRow.video;
-    // row.photo = savedRow.photo || row.photo;
-    // row.id = id;
-    // row.usage = usage;
-    // this.updateRowLabels(row, usage);
-    // this.setState({ rows, editItem: null, selection: [], mode: MODE.READ });
-    this.setState({ mode: MODE.READ });
+    const rows = [
+      ...this.state.rows,
+    ];
+    const row = rows.find(row => row.id === cls.id);
+    const index = rows.indexOf(row);
+    rows.splice(index, 1);
+    rows.splice(index, 0, cls);
+    this.setState({ rows, editItem: null, selection: [], mode: MODE.READ });
   };
 
   onColumnWidthsChange = nextColumnWidths => {
@@ -364,16 +344,26 @@ class ClassesGrid extends React.PureComponent {
       defaultColumnWidths,
       mode,
       htmlColumns,
+      durationColumns,
       tooltipColumns,
       nameColumns,
       selection,
       program,
+      editItem,
       viewItem,
       genres,
       selectedGenre,
     } = this.state;
 
     const { readOnly } = this.props;
+
+    if (mode === MODE.LOADING) {
+      return (
+        <Paper>
+          <LinearProgress />
+        </Paper>
+      );
+    };
 
     return (
       <Paper>
@@ -382,6 +372,7 @@ class ClassesGrid extends React.PureComponent {
           <NameTypeProvider for={nameColumns} />
           <TooltipTypeProvider for={tooltipColumns} />
           <HTMLTypeProvider for={htmlColumns} />
+          <DurationTypeProvider for={durationColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />
@@ -416,7 +407,7 @@ class ClassesGrid extends React.PureComponent {
         }
         {
           mode === MODE.ADD || mode === MODE.EDIT
-            ? <AddEdit mode={mode} genre={selectedGenre} program={program} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
+            ? <AddEdit mode={mode} genreId={(editItem && editItem.genreId) || selectedGenre.id} program={program} className={mode === MODE.ADD ? `New ${selectedGenre.name} Class` : editItem.name} editItem={editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
             : null
         }
         {

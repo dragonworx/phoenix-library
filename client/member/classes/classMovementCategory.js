@@ -96,6 +96,7 @@ class ClassMovementCategory extends React.Component {
     const { name, exercises } = category;
     const index = category.index + 1;
     const ord = toOrdinal(index);
+    const duration = exercises.reduce((duration, exercise) => duration + exercise.duration, 0);
 
     return (
       <ExpansionPanel
@@ -107,7 +108,9 @@ class ClassMovementCategory extends React.Component {
         style={expanded ? { paddingBottom: 32 } : {}}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon onClick={this.handleExpandClick} style={{minHeight: 50}} />}>
-          <ListItemText primary={<span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}</span>} />
+          <ListItemText primary={
+            <span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}<span className={classes.duration}>{duration === 0 ? 'Empty' : `${duration} mins`}</span></span>
+          } />
           {
             loading ? <CircularProgress className={classes.progress} thickness={3} /> : null
           }
@@ -131,7 +134,7 @@ class ClassMovementCategory extends React.Component {
         <ExpansionPanelDetails className={classes.details}>
           {
             exercises.length === 0
-            ? <span className={classes.empty}>No exercises available.</span>
+            ? <span className={classes.empty}>Add some exercises!</span>
             : <HoverGroup ref={this.handleHoverRef} render={
             hover => (
               <div>
@@ -206,5 +209,10 @@ export default withStyles(theme => ({
   },
   empty: {
     color: '#d5d5d5',
+  },
+  duration: {
+    marginLeft: 10,
+    color: '#ccc',
+    fontSize: '80%',
   }
 }))(ClassMovementCategory);
