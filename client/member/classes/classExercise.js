@@ -113,6 +113,7 @@ class ClassExercise extends React.Component {
           <FormControl className={classes.formControl}>
             <InputLabel>Reps.</InputLabel>
             <Select
+              autoWidth={true}
               value={exercise.repetitions}
               onChange={e => this.handleRepsChange(e, exercise)}
               classes={{ selectMenu: classes.selectMenu, icon: classes.selectIcon }}
@@ -132,14 +133,24 @@ class ClassExercise extends React.Component {
           <FormControl className={classes.formControl}>
             <InputLabel>Dur.</InputLabel>
             <Select
+              autoWidth={true}
               value={exercise.duration}
               onChange={e => this.handleDurationChange(e, exercise)}
-              classes={{ selectMenu: classes.selectMenu, icon: classes.selectIcon }}
+              classes={{ selectMenu: classes.selectMenu2, icon: classes.selectIcon }}
             >
               <MenuItem value={1}>1 min</MenuItem>
+              <MenuItem value={2}>2 min</MenuItem>
               <MenuItem value={3}>3 min</MenuItem>
+              <MenuItem value={4}>4 min</MenuItem>
               <MenuItem value={5}>5 min</MenuItem>
+              <MenuItem value={6}>6 min</MenuItem>
+              <MenuItem value={7}>7 min</MenuItem>
+              <MenuItem value={8}>8 min</MenuItem>
+              <MenuItem value={9}>9 min</MenuItem>
               <MenuItem value={10}>10 min</MenuItem>
+              <MenuItem value={15}>15 min</MenuItem>
+              <MenuItem value={20}>20 min</MenuItem>
+              <MenuItem value={30}>30 min</MenuItem>
             </Select>
           </FormControl>
         </form>
@@ -223,6 +234,11 @@ export default withStyles(theme => ({
   selectMenu: {
     minWidth: 0,
     fontSize: '80%',
+  },
+  selectMenu2: {
+    minWidth: 0,
+    fontSize: '80%',
+    width: 40,
   },
   selectIcon: {
     display: 'none',

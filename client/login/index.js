@@ -72,7 +72,7 @@ class Login extends React.Component {
           />
           <CardContent>
           <Typography variant="headline" component="h2" className={classes.title}>
-            Exercise &amp; Class Library&copy;
+            Exercise &amp; Class Library &copy;
             </Typography>
             <Typography component="p" className={classes.licence}>
               <span className={classes.licencedTo}>Licenced to:</span>
@@ -167,7 +167,7 @@ export default withStyles({
   title: {
     color: 'rgb(255, 255, 255)',
 		padding: '10px 19px',
-		fontSize: '140%',
+		fontSize: '135%',
 		boxShadow: 'inset 0 0 10px #b5580a',
 		textAlign: 'center',
 		background: 'linear-gradient(180deg, #ffd903 0, #ff8901 100%)',
