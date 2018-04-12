@@ -23,7 +23,6 @@ class ClassMovementCategory extends React.Component {
   state = {
     showSelectExercise: false,
     selectableExercises: null,
-    expanded: true,
     loading: false,
   };
 
@@ -69,22 +68,22 @@ class ClassMovementCategory extends React.Component {
   };
 
   handleCloseSelectExercise = exerciseIds => {
+    const { category } = this.props;
     if (exerciseIds) {
-      const { category } = this.props;
       const exercises = this.state.selectableExercises.filter(exercise => exerciseIds.indexOf(exercise.id) > -1);
       category.exercises.push.apply(category.exercises, exercises);
       category.exercises.forEach((exercise, i) => exercise.index = i);
     }
-    let expanded = this.state.expanded;
     if (exerciseIds && exerciseIds.length) {
-      expanded = true;
+      category.expanded = true;
     }
     this.props.onDurationChange();
-    this.setState({ expanded: expanded, showSelectExercise: false });
+    this.setState({ showSelectExercise: false });
   };
 
   handleExpandClick = () => {
-    this.setState({ expanded: !this.state.expanded });
+    this.props.category.expanded = !this.props.category.expanded;
+    this.setState({ loading: false });
   };
 
   handleHoverRef = el => {
@@ -95,13 +94,14 @@ class ClassMovementCategory extends React.Component {
     const { category } = this.props;
     category.duration = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0);
     this.props.onDurationChange(exercise);
-    this.setState({ expanded: true });
+    category.expanded = true;
+    this.setState({ loading: false });
   };
 
   render() {
-    const { showSelectExercise, selectableExercises, expanded, loading } = this.state;
+    const { showSelectExercise, selectableExercises, loading } = this.state;
     const { classes, genreId, category, program, hasHover, onMoveUp, onMoveDown } = this.props;
-    const { name, exercises } = category;
+    const { name, exercises, expanded } = category;
     const index = category.index + 1;
     const ord = toOrdinal(index);
     const duration = exercises.reduce((duration, exercise) => duration + exercise.duration, 0);

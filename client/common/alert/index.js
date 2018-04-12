@@ -43,7 +43,7 @@ class AlertDialog extends React.Component {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={this.handleCancel} color="secondary">
+          <Button onClick={this.handleCancel}>
             Cancel
           </Button>
           <Button variant="raised" onClick={this.handleSubmit} color="primary" autoFocus>

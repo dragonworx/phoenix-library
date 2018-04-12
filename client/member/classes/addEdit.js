@@ -6,6 +6,8 @@ import { stateToHTML } from 'draft-js-export-html';
 import { stateFromHTML } from 'draft-js-import-html';
 import IconButton from "material-ui/IconButton";
 import AddIcon from "material-ui-icons/AddCircle";
+import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
+import ExpandLessIcon from 'material-ui-icons/ExpandLess';
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -50,6 +52,7 @@ class AddEdit extends React.Component {
     const { editItem } = this.props;
     if (editItem) {
       const { data: program } = await axios.get(`/class/program/${editItem.id}`);
+      program.forEach(category => category.expanded = true);
       const state = stateFromHTML(editItem.notes);
       this.setState({
         editorState: EditorState.createWithContent(state),
@@ -155,6 +158,18 @@ class AddEdit extends React.Component {
     this.setState({ program: this.state.program });
   };
 
+  expandAll = () => {
+    const { program } = this.state;
+    program.forEach(category => category.expanded = true);
+    this.setState({ program });
+  };
+
+  collapseAll = () => {
+    const { program } = this.state;
+    program.forEach(category => category.expanded = false);
+    this.setState({ program });
+  };
+
   render () {
     const { classes } = this.props;
     const { className, program } = this.state;
@@ -199,6 +214,14 @@ class AddEdit extends React.Component {
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
                 <AddIcon />
               </IconButton>
+              <div className={classes.buttons}>
+                <IconButton aria-label="collapse all" className={classes.button} onClick={this.collapseAll}>
+                  <ExpandLessIcon />
+                </IconButton>
+                <IconButton aria-label="expand all" className={classes.button} onClick={this.expandAll}>
+                  <ExpandMoreIcon />
+                </IconButton>
+              </div>
               <div className={classes.duration}>{duration} mins</div>
               {
                 addCategories
@@ -280,5 +303,8 @@ export default withStyles(theme => ({
     right: 106,
     color: '#ccc',
     fontSize: '80%',
+  },
+  buttons: {
+    textAlign: 'right',
   }
 }))(AddEdit);

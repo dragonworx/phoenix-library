@@ -36,7 +36,6 @@ class ClassProgram extends React.Component {
 
   onDurationChange = exercise => {
     this.props.onDurationChange(exercise);
-    this.setState({ expanded: true });
   };
 
   render () {

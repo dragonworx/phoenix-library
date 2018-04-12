@@ -223,6 +223,7 @@ class ClassesGrid extends React.PureComponent {
   onAddSelectClose = async value => {
     if (value) {
       const { data: template } = await axios.get(`/template/${value}`);
+      template.forEach(category => category.expanded = true);
       this.setState({
         selectedGenre: {
           id: value,
