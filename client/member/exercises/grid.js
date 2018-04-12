@@ -56,16 +56,19 @@ const KEYS = {
 
 const htmlNode = document.createElement('div');
 
+let NameProps = {};
+
 const NameFormatter = ({ row }) => {
-  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span>{row.name}</label></Tooltip>;
+  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span><span className={NameFormatter.defaultProps.name}>{row.name}</span></label></Tooltip>;
 };
 
-const NameTypeProvider = props => (
-  <DataTypeProvider
+const NameTypeProvider = props => {
+  NameFormatter.defaultProps = props.classes;
+  return <DataTypeProvider
     formatterComponent={NameFormatter}
     {...props}
-  />
-);
+  />;
+};
 
 const ThumbnailFormatter = ({ row }) => {
   return <ThumbnailRef row={row} />;
@@ -146,8 +149,11 @@ let defaultColumnWidths = [
   { columnName: 'video', width: 150 },
 ];
 
+let defaultHiddenColumnNames = ['video'];
+
 try {
-  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_1.columns']);
+  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_1.0.column_widths']);
+  defaultHiddenColumnNames = JSON.parse(localStorage['phoenix_lib_1.0.hidden_columns']);
 } catch (e) {
   console.warn('Could not load column widths: ' + String(e));
 }
@@ -168,7 +174,7 @@ class ExerciseGrid extends React.PureComponent {
     filteringStateColumnExtensions: [
       { columnName: 'photo', filteringEnabled: false },
     ],
-    defaultHiddenColumnNames: ['video'],
+    defaultHiddenColumnNames,
     defaultColumnWidths,
     nameColumns: ['name'],
     photoColumns: ['photo'],
@@ -362,7 +368,16 @@ class ExerciseGrid extends React.PureComponent {
   onColumnWidthsChange = nextColumnWidths => {
     try {
       const data = JSON.stringify(nextColumnWidths);
-      localStorage['phoenix_lib_1.columns'] = data;
+      localStorage['phoenix_lib_1.0.column_widths'] = data;
+    } catch (e) {
+      // ?
+    }   
+  };
+
+  onHiddenColumnNamesChange = hiddenColumnNames => {
+    try {
+      const data = JSON.stringify(hiddenColumnNames);
+      localStorage['phoenix_lib_1.0.hidden_columns'] = data;
     } catch (e) {
       // ?
     }   
@@ -417,7 +432,7 @@ class ExerciseGrid extends React.PureComponent {
       viewItem,
     } = this.state;
 
-    const { readOnly } = this.props;
+    const { readOnly, classes } = this.props;
 
     const labels = this.labels;
 
@@ -436,7 +451,7 @@ class ExerciseGrid extends React.PureComponent {
           <DescriptionTypeProvider for={htmlColumns} />
           <TooltipTypeProvider for={labelColumns} />
           <SpringTypeProvider for={springColumns} />
-          <NameTypeProvider for={nameColumns} />
+          <NameTypeProvider for={nameColumns} classes={classes} />
           <ThumbnailTypeProvider for={photoColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
@@ -460,7 +475,7 @@ class ExerciseGrid extends React.PureComponent {
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
           <TableSelection showSelectAll={!readOnly} highlightRow selectByRowClick showSelectionColumn={!readOnly} />
-          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} />
+          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange}/>
           <Toolbar />
           <ColumnChooser />
           <SearchPanel />
@@ -508,5 +523,10 @@ export default withStyles(theme => ({
   },
   pointer: {
     cursor: 'pointer',
+  },
+  name: {
+		color: '#597daf',
+		fontWeight: 'bold',
+		fontSize: '110%',
   }
 }))(ExerciseGrid);

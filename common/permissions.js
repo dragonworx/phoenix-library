@@ -6,13 +6,15 @@ const READ_WRITE_DELETE = 3;
 // permissions = 3 integers, of the above
 // lowest 000, highest 333
 
+// exercise, class, user
+
 module.exports = str => {
   if (!str.match(/[0-3]{3}/)) {
     throw new Error(`Invalid permissions value: ${str}`);
   }
 
   const exerciseLevel = parseInt(str.charAt(0), 10);
-  const classeLevel = parseInt(str.charAt(1), 10);
+  const classLevel = parseInt(str.charAt(1), 10);
   const userLevel = parseInt(str.charAt(2), 10);
 
   const isForbiddenExercise = exerciseLevel === FORBIDDEN;
@@ -21,11 +23,11 @@ module.exports = str => {
   const canWriteExercise = exerciseLevel >= READ_WRITE;
   const canDeleteExercise = exerciseLevel === READ_WRITE_DELETE;
 
-  const isForbiddenClass = classeLevel === FORBIDDEN;
-  const isClassReadOnly = classeLevel === READ;
-  const canReadClass = classeLevel >= READ;
-  const canWriteClass = classeLevel >= READ_WRITE;
-  const canDeleteClass = classeLevel === READ_WRITE_DELETE;
+  const isForbiddenClass = classLevel === FORBIDDEN;
+  const isClassReadOnly = classLevel === READ;
+  const canReadClass = classLevel >= READ;
+  const canWriteClass = classLevel >= READ_WRITE;
+  const canDeleteClass = classLevel === READ_WRITE_DELETE;
 
   const isForbiddenUser = userLevel === FORBIDDEN;
   const isUserReadOnly = userLevel === READ;
@@ -34,11 +36,14 @@ module.exports = str => {
   const canDeleteUser = userLevel === READ_WRITE_DELETE;
 
   const isAdmin = (exerciseLevel >= READ_WRITE) 
-    || (classeLevel >= READ_WRITE) 
+    || (classLevel >= READ_WRITE) 
     || (userLevel >= READ_WRITE);
 
 
   return {
+    exerciseLevel,
+    classLevel,
+    userLevel,
     isAdmin,
     isForbiddenExercise,
     isExerciseReadOnly,

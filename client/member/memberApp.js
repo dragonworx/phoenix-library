@@ -42,7 +42,7 @@ class MemberApp extends React.PureComponent {
                 className={classNames(classes.avatar, classes.bigAvatar)}
               /></a>
               <Typography variant="title" color="inherit" noWrap>
-                Phoenix Pilates Library ~ {user.firstName}
+                Phoenix Pilates Library
               </Typography>
               <HamburgerMenu className={classes.menu} options={userOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
@@ -54,6 +54,9 @@ class MemberApp extends React.PureComponent {
             <Route exact path="/admin/exercises" component={() => <TabsView readOnly={false} value={0} />}/>
             <Route exact path="/admin/classes" component={() => <TabsView  readOnly={false}value={1} />}/>
           </main>
+          <footer className={classes.footer}>
+            Phoenix Pilates Library&copy; 2018 All rights reserved. <a href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
+          </footer>
         </div>
       </Router>
     );
@@ -89,7 +92,8 @@ export default withStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.default,
+    backgroundColor: '#2e5594',
+    background: 'linear-gradient(180deg, #2e5594 0, #000 100%)',
     minWidth: 0, // So the Typography noWrap works
   },
   toolbar: theme.mixins.toolbar,
@@ -115,5 +119,17 @@ export default withStyles(theme => ({
   menu: {
     position: 'absolute',
     right: 0,
+  },
+  footer: {
+		width: '100%',
+		bottom: 0,
+		height: 30,
+		position: 'fixed',
+		backgroundColor: 'rgba(255,255,255,0.5)',
+		color: '#1f3f90',
+		padding: 5,
+		boxSizing: 'border-box',
+		fontSize: '80%',
+		textAlign: 'center',
   }
 }))(MemberApp);

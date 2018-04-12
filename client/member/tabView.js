@@ -4,6 +4,8 @@ import Tabs, { Tab } from 'material-ui/Tabs';
 import { withRouter } from 'react-router-dom';
 import { withStyles } from 'material-ui/styles';
 import Badge from 'material-ui/Badge';
+import ExerciseIcon from 'material-ui-icons/Dns';
+import ClassIcon from 'material-ui-icons/Assignment';
 import axios from 'axios';
 import Exercises from './exercises';
 import Classes from './classes';
@@ -38,8 +40,8 @@ class TabsView extends React.Component {
     const { classes, readOnly } = this.props;
     const { value, exerciseCount, classCount } = this.state;
 
-    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}exercises`)} label={<span>Exercises<Badge className={classes.margin} badgeContent={exerciseCount}>&nbsp;</Badge></span>} /> );
-    const ClassesTab = withRouter(({ history }) => <Tab style={{opacity:value === 1 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}classes`)} label={<span>Classes<Badge className={classes.margin} badgeContent={classCount} color="secondary">&nbsp;</Badge></span>} /> );
+    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}exercises`)} label={<span><ExerciseIcon className={classes.icon} />Exercises<Badge className={classes.margin} badgeContent={exerciseCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
+    const ClassesTab = withRouter(({ history }) => <Tab style={{opacity:value === 1 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}classes`)} label={<span><ClassIcon className={classes.icon} />Classes<Badge className={classes.margin} badgeContent={classCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
 
     return (
       <div className={classes.root}>
@@ -64,4 +66,12 @@ export default withStyles(theme => ({
   margin: {
     margin: theme.spacing.unit * 2,
   },
+  icon: {
+		position: 'relative',
+		top: 5,
+		left: -7,
+  },
+  badge: {
+    backgroundColor: '#f6bf18',
+  }
 }))(TabsView);

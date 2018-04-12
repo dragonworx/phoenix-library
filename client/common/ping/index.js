@@ -6,6 +6,9 @@ import axios from 'axios';
 
 const PING_INTERVAL_SECS = 30;
 
+// eslint-disable-next-line no-undef
+const VERSION = PHOENIX_LIB_VERSION;
+
 class PingStatus extends React.Component {
   state = {
     isConnected: true,
@@ -27,11 +30,11 @@ class PingStatus extends React.Component {
   render () {
     const { classes } = this.props;
     const { isConnected } = this.state;
-    const title = `v${PHOENIX_LIB_VERSION} ~ ${isConnected ? ' Server is connected' : 'Server is disconnected, try reloading page'}`;
+    const title = `v${VERSION} ~ ${isConnected ? ' Server is connected' : 'Server is disconnected, try reloading page'}`;
 
     return (
       <div className={classes.root}>
-      <span className={classes.version}>{PHOENIX_LIB_VERSION}</span>
+      <span className={classes.version}>v{VERSION}</span>
       <Tooltip title={title} placement="left">
         {
           isConnected
@@ -57,8 +60,9 @@ export default withStyles({
     color: 'red'
   },
   version: {
-    position: 'absolute',
-    top: 0,
-    right: 30,
+		top: 5,
+		right: 39,
+		position: 'absolute',
+		fontSize: '80%',
   }
 })(PingStatus);

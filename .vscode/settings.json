@@ -1,5 +1,7 @@
 {
   "favorites.resources": [
-    "client/login/index.js"
+    "client/login/index.js",
+    "client/member/memberApp.js",
+    "client/member/tabView.js"
   ]
 }
