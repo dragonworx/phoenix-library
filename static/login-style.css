@@ -6,7 +6,7 @@
 }
 
 .bg-mid {
-  background-color: #dddddd;
+  background: linear-gradient(180deg, #ff8901 0, #000 100%);
 }
 
 .error {

@@ -4,19 +4,14 @@
   "description": "For Liz",
   "main": "client/main.jsx",
   "scripts": {
-    "lint": "eslint --cache --ignore-path .gitignore --ext .jsx,.js --format=node_modules/eslint-formatter-pretty .",
-    "lint:msg": "validate-commit-msg",
-    "test": "npm run lint",
     "build-dev": "PHOENIX_LIB_ENV=dev webpack --watch",
     "build-prod": "webpack",
-    "validate": "npm ls",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s -r 1",
     "server-dev": "nodemon ./server",
     "server-prod": "pm2 start ./server/index.js --name phoenix_lib",
     "hash": "node ./scripts/hash.js",
     "test-query": "node ./scripts/query.js",
     "test-api": "node ./scripts/api.js",
-    "dev": "yarn build-dev & yarn server-dev"
+    "start": "yarn build-dev & yarn server-dev"
   },
   "dependencies": {
     "@devexpress/dx-react-core": "^1.1.0",

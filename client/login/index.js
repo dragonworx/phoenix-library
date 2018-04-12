@@ -7,6 +7,11 @@ import { FormControl } from "material-ui/Form";
 import Input, { InputLabel } from "material-ui/Input";
 import axios from 'axios';
 
+const LICENCED_TO = 'Excelsior™ Studios Erina';
+
+// eslint-disable-next-line no-undef
+const VERSION = PHOENIX_LIB_VERSION;
+
 class Login extends React.Component {
   state = {
     email: 'magnoliasoup@gmail.com',
@@ -59,18 +64,19 @@ class Login extends React.Component {
 
     return (
       <div className={this.state.loginFail ? 'error' : ''}>
-        <Card className={classes.card}>
+        <Card className={classes.card} raised={true}>
           <CardMedia
             className={classes.media}
             image="img/logo-card.png"
             title="Phoenix Pilates"
           />
           <CardContent>
-          <Typography variant="headline" component="h2">
-            Exercise &amp; Class Library
+          <Typography variant="headline" component="h2" className={classes.title}>
+            Exercise &amp; Class Library&copy;
             </Typography>
             <Typography component="p" className={classes.licence}>
-              Licenced to: <i>Excelsior&trade; Studios Erina</i>
+              <span className={classes.licencedTo}>Licenced to:</span>
+              <span className={classes.licencee}>{LICENCED_TO}</span>
             </Typography>
             <div className={classes.fields}>
               {
@@ -106,6 +112,7 @@ class Login extends React.Component {
               Login
             </Button>
           </CardActions>
+          <span className={classes.version}>v{VERSION}</span>
         </Card>
       </div>
     );
@@ -126,9 +133,12 @@ export default withStyles({
   },
   card: {
     maxWidth: 345,
+    position: 'relative',
+    borderRadius: 12,
   },
   media: {
-    height: 200
+    height: 200,
+    borderRadius: 20,
   },
   error: {
     color: 'orange',
@@ -138,5 +148,31 @@ export default withStyles({
     backgroundColor: 'orange',
     borderRadius: '10px',
     marginBottom: '1px',
+  },
+  licencedTo: {
+    color: '#ccc',
+    display: 'block',
+  },
+  licencee: {
+    color: 'orange',
+    display: 'block',
+  },
+  version: {
+		left: 26,
+		color: 'orange',
+		bottom: 14,
+		position: 'absolute',
+		fontSize: '80%',
+  },
+  title: {
+    color: 'rgb(255, 255, 255)',
+		padding: '10px 19px',
+		fontSize: '140%',
+		boxShadow: 'inset 0 0 10px #b5580a',
+		textAlign: 'center',
+		background: 'linear-gradient(180deg, #ffd903 0, #ff8901 100%)',
+		fontWeight: 400,
+		borderRadius: 50,
+		marginBottom: 20,
   }
 })(Login);
