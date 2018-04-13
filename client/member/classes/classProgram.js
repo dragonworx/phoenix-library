@@ -80,6 +80,6 @@ export default withStyles(theme => ({
     borderRadius: 5,
     paddingTop: theme.spacing.unit * 2,
     paddingBottom: theme.spacing.unit * 2,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#fffbf3',
   }),
 }))(ClassProgram);

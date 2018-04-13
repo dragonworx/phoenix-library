@@ -215,14 +215,14 @@ class AddEdit extends React.Component {
                 <AddIcon />
               </IconButton>
               <div className={classes.buttons}>
-                <IconButton aria-label="collapse all" className={classes.button} onClick={this.collapseAll}>
+                <a title="collapse all"><IconButton aria-label="collapse all" className={classes.button} onClick={this.collapseAll}>
                   <ExpandLessIcon />
-                </IconButton>
-                <IconButton aria-label="expand all" className={classes.button} onClick={this.expandAll}>
+                </IconButton></a>
+                <a title="expand all"><IconButton aria-label="expand all" className={classes.button} onClick={this.expandAll}>
                   <ExpandMoreIcon />
-                </IconButton>
+                </IconButton></a>
               </div>
-              <div className={classes.duration}>{duration} mins</div>
+              <div className={classes.duration}>{duration} mins Total Duration</div>
               {
                 addCategories
                   ? <Menu
@@ -270,7 +270,7 @@ export default withStyles(theme => ({
     fontSize: '80%',
     height: 46,
     overflow: 'auto',
-    backgroundColor: 'fcfcfc',
+    backgroundColor: '#ebf6ef',
   },
   primaryDescLabel: {
     marginTop: theme.spacing.unit * 3,
@@ -302,8 +302,8 @@ export default withStyles(theme => ({
   duration: {
     position: 'absolute',
     top: 24,
-    right: 106,
-    color: '#ccc',
+    right: 60,
+    color: '#84a0c0',
     fontSize: '80%',
   },
   buttons: {

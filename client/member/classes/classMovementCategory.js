@@ -1,8 +1,8 @@
 import React from 'react';
 import { withStyles } from 'material-ui/styles';
 import { ListItemText } from 'material-ui/List';
-import UpIcon from 'material-ui-icons/KeyboardArrowUp';
-import DownIcon from 'material-ui-icons/KeyboardArrowDown';
+import UpIcon from 'material-ui-icons/ArrowUpward';
+import DownIcon from 'material-ui-icons/ArrowDownward';
 import AddIcon from 'material-ui-icons/AddCircle';
 import RemoveIcon from 'material-ui-icons/Cancel';
 import { CircularProgress } from 'material-ui/Progress';
@@ -113,29 +113,27 @@ class ClassMovementCategory extends React.Component {
         data-hover-type="item"
         data-hover-value={category.index}
         expanded={expanded}
-        style={expanded ? { paddingBottom: 32 } : {}}
+        style={expanded ? { paddingBottom: 22 } : {}}
       >
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon onClick={this.handleExpandClick} style={{minHeight: 50}} />}>
+        <ExpansionPanelSummary expandIcon={<a title="expand / collapse"><ExpandMoreIcon onClick={this.handleExpandClick} style={{ height: 50 }} /></a>} classes={{ expanded: classes.expanded }}>
           <ListItemText primary={
             <span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}<span className={classes.duration}>{duration === 0 ? 'Blank' : `${duration} mins`}</span></span>
           } />
-          {
-            loading ? <CircularProgress className={classes.progress} thickness={3} /> : null
-          }
+          { loading ? <CircularProgress className={classes.progress} thickness={3} /> : null }
           <If test={hasHover}>
             <div className={classes.toolbar}>
-              <IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddExercisesClick(category)}>
+              <a title="add exercises to category"><IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddExercisesClick(category)}>
                 <AddIcon />
-              </IconButton>
-              <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
+              </IconButton></a>
+              <a title="move category up"><IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
                 <UpIcon />
-              </IconButton>
-              <IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDown(category)} disabled={category.index === program.length - 1}>
+              </IconButton></a>
+              <a title="move category down"><IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDown(category)} disabled={category.index === program.length - 1}>
                 <DownIcon />
-              </IconButton>
-              <IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveCategoryClick(category)}>
+              </IconButton></a>
+              <a title="remove category"><IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveCategoryClick(category)}>
                 <RemoveIcon />
-              </IconButton>
+              </IconButton></a>
             </div>
           </If>
         </ExpansionPanelSummary>
@@ -189,7 +187,7 @@ export default withStyles(theme => ({
   toolbar: {
     position: "absolute",
     right: 28,
-    top: 1
+    top: -4,
   },
   ordinal: {
     color: '#375ace',
@@ -221,7 +219,11 @@ export default withStyles(theme => ({
   },
   duration: {
     marginLeft: 10,
-    color: '#ccc',
+    color: '#90c2d7',
     fontSize: '80%',
+  },
+  expanded: {
+    height: 40,
+    minHeight: 0,
   }
 }))(ClassMovementCategory);

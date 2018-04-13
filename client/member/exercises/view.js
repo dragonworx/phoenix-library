@@ -1,23 +1,9 @@
 import React from 'react';
 import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
-import FolderIcon from 'material-ui-icons/Folder';
-import CheckIcon from 'material-ui-icons/Done';
-import Dialog, {
-  DialogActions,
-  DialogContent,
-} from 'material-ui/Dialog';
-import List, {
-  ListItem,
-  ListItemIcon,
-  ListItemSecondaryAction,
-  ListItemText,
-} from 'material-ui/List';
-import { FormLabel } from 'material-ui/Form';
-import AppBar from 'material-ui/AppBar';
+import Card, { CardActions, CardContent, CardMedia } from 'material-ui/Card';
+import Dialog from 'material-ui/Dialog';
 import Chip from 'material-ui/Chip';
 import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
 import { withStyles } from "material-ui/styles";
 import { multi } from '../../common/util';
 import Lightbox from '../../common/lightbox';
@@ -52,7 +38,8 @@ class ViewExercise extends React.Component {
   };
 
   render () {
-    const { viewItem, classes } = this.props;
+    const { viewItem } = this.props;
+    const { photo } = viewItem;
     const { lightboxOpen } = this.state;
     // eslint-disable-next-line no-undef
     const photoUrl = `${PHOENIX_LIB_STORAGE}${viewItem.id}_1_full.png`;
@@ -67,15 +54,10 @@ class ViewExercise extends React.Component {
           disableEscapeKeyDown={false}
           disableBackdropClick={false}
           >
-          <AppBar position="static">
-            <Typography variant="title" color="inherit" className={classes.flex}>
-              {viewItem.name.trim()}
-            </Typography>
-          </AppBar>
           { this.renderContent() }
         </Dialog>
         {
-          lightboxOpen ? <Lightbox name={viewItem.photo} src={photoUrl} onClose={this.handleImgClose} /> : null
+          lightboxOpen ? <Lightbox name={photo} src={photoUrl} onClose={this.handleImgClose} /> : null
         }
       </div>
     );
@@ -84,9 +66,10 @@ class ViewExercise extends React.Component {
   renderContent () {
     const { labels } = this.state;
     const { classes, viewItem } = this.props;
+    const { photo, description, name, springs } = viewItem;
 
     // eslint-disable-next-line no-undef
-    const photoUrl = viewItem.photo ? `${PHOENIX_LIB_STORAGE}${viewItem.id}_1_preview.png` : '/img/image-placeholder.png';
+    const photoUrl = photo ? `${PHOENIX_LIB_STORAGE}${viewItem.id}_1_preview.png` : '/img/image-placeholder.png';
 
     // const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
     // const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
@@ -111,55 +94,49 @@ class ViewExercise extends React.Component {
       }
     }
 
-    const blank = /<p><br><\/p>\n?$/;
+    const blank = /<p><br><\/p>/;
 
-    let description = viewItem.description;
+    let __html = description;
 
-    while (description.match(blank)) {
-      description = description.replace(blank, '');
+    while (__html.match(blank)) {
+      __html = __html.replace(blank, '');
     }
-    description = description.trim();
+    __html = __html.trim();
 
     return (
-      <div>
-        <DialogContent className={classes.content}>
-        <Grid container spacing={24}>
-          <Grid item sm={2}>
-          {
-            categorisation.length
-            ? (
-              <List id="exercise-usage">
-                { categorisation }
-              </List>
-            )
-            : null
-          }
-          </Grid>
-          <Grid item sm={4}>
-            <span id="exercise-description" className={classes.description} dangerouslySetInnerHTML={{ __html: description }}></span>
-          </Grid>
-          <Grid item sm={6}>
-            <Paper className={classes.photoFrame} onClick={this.handleImgClick}>
-              <img className={classes.imgPreview} src={photoUrl} />
-              <FormLabel className={classes.descLabel} component="legend">{(viewItem.photo || '').replace(/\.(jpg|jpeg|png)$/i, '')}</FormLabel>
-            </Paper>
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={this.handleClose} color="primary">
-          Close
-        </Button>
-        <Paper className={classes.springs}>
-          { textToSprings(viewItem.springs) }
-        </Paper>
-      </DialogActions>
-      </div>
+      <Card className={classes.card}>
+        <CardMedia
+          className={classes.media}
+          image={photoUrl}
+          title={viewItem.photo}
+          onClick={this.handleImgClick}
+          style={{ cursor: 'pointer' }}
+        />
+        <CardContent style={{ paddingBottom: 5 }}>
+          <Typography className={classes.name} gutterBottom variant="headline" component="h2">
+            { name }
+          </Typography>
+          <Typography className={classes.description} component="p" dangerouslySetInnerHTML={{ __html }} />
+        </CardContent>
+        <CardActions>
+          <Button size="small" color="primary" onClick={this.handleClose}>
+            Close
+          </Button>
+          <div className={classes.springsContainer}>
+            { textToSprings(springs) }
+          </div>
+        </CardActions>
+      </Card>
     );
   }
 }
 
 export default withStyles(theme => ({
+  springsContainer: {
+    right: 23,
+    top: 215,
+    position: 'absolute',
+  },
   genres: {
     marginTop: theme.spacing.unit * 2,
     textAlign: 'center',
@@ -241,5 +218,14 @@ export default withStyles(theme => ({
   },
   chipRoot: {
     height: 25,
+  },
+  card: {
+    maxWidth: 600,
+  },
+  media: {
+    height: 200,
+  },
+  name: {
+    color: '#377ec2',
   }
 }))(ViewExercise);

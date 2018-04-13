@@ -3,8 +3,8 @@ import { withStyles } from 'material-ui/styles';
 import { ListItem } from 'material-ui/List';
 import Avatar from 'material-ui/Avatar';
 import ImageIcon from 'material-ui-icons/Image';
-import UpIcon from 'material-ui-icons/KeyboardArrowUp';
-import DownIcon from 'material-ui-icons/KeyboardArrowDown';
+import UpIcon from 'material-ui-icons/ArrowUpward';
+import DownIcon from 'material-ui-icons/ArrowDownward';
 import RemoveIcon from 'material-ui-icons/Cancel';
 import Select from 'material-ui/Select';
 import IconButton from 'material-ui/IconButton';
@@ -156,15 +156,15 @@ class ClassExercise extends React.Component {
         </form>
         <If test={hover === exercise.id}>
           <div className={classes.subToolbar}>
-            <IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUpExercise(exercise)} disabled={exercise.index === 0}>
+            <a title="move exercise up"><IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUpExercise(exercise)} disabled={exercise.index === 0}>
               <UpIcon />
-            </IconButton>
-            <IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDownExercise(exercise)} disabled={exercise.index === exercises.length - 1}>
+            </IconButton></a>
+            <a title="move exercise down"><IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDownExercise(exercise)} disabled={exercise.index === exercises.length - 1}>
               <DownIcon />
-            </IconButton>
-            <IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveExercise(exercise)}>
+            </IconButton></a>
+            <a title="remove exercise"><IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveExercise(exercise)}>
               <RemoveIcon />
-            </IconButton>
+            </IconButton></a>
           </div>
         </If>
         {
@@ -185,8 +185,8 @@ export default withStyles(theme => ({
   },
   subToolbar: {
     position: "absolute",
-    top: -14,
-    right: 93,
+    top: -7,
+    right: 95,
   },
   ordinal: {
     color: '#375ace',
@@ -220,11 +220,11 @@ export default withStyles(theme => ({
     fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     lineGeight: '1.46429em',
     margin: 0,
-    backgroundColor: '#f5f8f8',
+    backgroundColor: '#f3fdff',
     padding: 3,
     borderRadius: 5,
     borderTop: '1px solid #b1cbdc',
-    color: '#a4c0d5',
+    color: '#9ebacf',
   },
   formControl: {
     margin: 8,
