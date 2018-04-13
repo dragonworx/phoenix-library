@@ -76,7 +76,7 @@ const HTMLTypeProvider = props => (
 );
 
 const DurationFormatter = ({ value }) => {
-  return <span>{value} mins</span>;
+  return <span>{!!value ? `${value} mins` : 'Empty'}</span>;
 };
 
 const DurationTypeProvider = props => (

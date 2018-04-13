@@ -105,6 +105,7 @@ class ClassMovementCategory extends React.Component {
     const index = category.index + 1;
     const ord = toOrdinal(index);
     const duration = exercises.reduce((duration, exercise) => duration + exercise.duration, 0);
+    const isExpanded = expanded;
 
     return (
       <ExpansionPanel
@@ -112,8 +113,8 @@ class ClassMovementCategory extends React.Component {
         className={classes.root}
         data-hover-type="item"
         data-hover-value={category.index}
-        expanded={expanded}
-        style={expanded ? { paddingBottom: 22 } : {}}
+        expanded={isExpanded}
+        style={isExpanded ? { paddingBottom: 22 } : {}}
       >
         <ExpansionPanelSummary expandIcon={<a title="expand / collapse"><ExpandMoreIcon onClick={this.handleExpandClick} style={{ height: 50 }} /></a>} classes={{ expanded: classes.expanded }}>
           <ListItemText primary={

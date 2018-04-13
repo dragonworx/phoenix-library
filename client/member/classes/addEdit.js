@@ -52,7 +52,7 @@ class AddEdit extends React.Component {
     const { editItem } = this.props;
     if (editItem) {
       const { data: program } = await axios.get(`/class/program/${editItem.id}`);
-      program.forEach(category => category.expanded = true);
+      program.forEach(category => category.expanded = false);
       const state = stateFromHTML(editItem.notes);
       this.setState({
         editorState: EditorState.createWithContent(state),
@@ -73,6 +73,7 @@ class AddEdit extends React.Component {
       createdBy: user.id,
       name: className,
       categories: program,
+      status: 'Submitted',
       notes,
     };
 

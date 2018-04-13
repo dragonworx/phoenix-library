@@ -7,6 +7,8 @@
     "client/member/classes/addEdit.js",
     "client/member/classes/classProgram.js",
     "client/member/classes/classMovementCategory.js",
-    "client/member/classes/classExercise.js"
+    "client/member/classes/classExercise.js",
+    "server/routes.js",
+    "server/api.js"
   ]
 }

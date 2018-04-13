@@ -353,7 +353,7 @@ module.exports = {
 
     const newCls = await model.Class.create({
       name: cls.name,
-      status: CLASS_MODE.SUBMITTED,
+      status: cls.status,
       genreId: cls.genreId,
       createdBy: cls.createdBy,
       categorySummary: categorySummary.join(','),
