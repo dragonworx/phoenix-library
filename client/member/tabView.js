@@ -61,7 +61,8 @@ class TabsView extends React.Component {
 export default withStyles(theme => ({
   root: {
     flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
+		margin: '15px 10px',
+		borderRadius: 5,
   },
   margin: {
     margin: theme.spacing.unit * 2,

@@ -50,7 +50,7 @@ const devConfig = (entry, outfile) => {
       }),
       new HardSourceWebpackPlugin(),
       new WebpackPreBuildPlugin((/*stats*/) => {
-        log('Build started @ ' + (new Date().toLocaleTimeString()) + ' ...', 'green');
+        log(`${PHOENIX_LIB_VERSION} Build started @ ` + (new Date().toLocaleTimeString()) + ' ...', 'green');
       }),
     ]
   };

@@ -2,6 +2,11 @@
   "favorites.resources": [
     "client/login/index.js",
     "client/member/memberApp.js",
-    "client/member/tabView.js"
+    "client/member/tabView.js",
+    "client/member/classes/grid.js",
+    "client/member/classes/addEdit.js",
+    "client/member/classes/classProgram.js",
+    "client/member/classes/classMovementCategory.js",
+    "client/member/classes/classExercise.js"
   ]
 }

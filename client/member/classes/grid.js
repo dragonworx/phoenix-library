@@ -101,6 +101,8 @@ const TooltipTypeProvider = props => (
   />
 );
 
+const calcGridHeight = () => window.innerHeight - 230;
+
 let defaultColumnWidths = [
   { columnName: 'name', width: 300 },
   { columnName: 'genre', width: 100 },
@@ -142,6 +144,7 @@ class ClassesGrid extends React.PureComponent {
     viewItem: null,
     selectedGenre: null,
     program: null,
+    gridHeight: calcGridHeight(),
   };
 
   async componentWillMount () {
@@ -157,11 +160,13 @@ class ClassesGrid extends React.PureComponent {
     this.isCommandDown = false;
     window.addEventListener('keydown', this.onGlobalKeyDown);
     window.addEventListener('keyup', this.onGlobalKeyUp);
+    window.addEventListener('resize', this.onResize);
   }
 
   componentWillUnmount () {
     window.removeEventListener('keydown', this.onGlobalKeyDown);
     window.removeEventListener('keyup', this.onGlobalKeyUp);
+    window.removeEventListener('resize', this.onResize);
   }
 
   onGlobalKeyDown = e => {
@@ -196,6 +201,10 @@ class ClassesGrid extends React.PureComponent {
         this.setState({ selection: [ids[selectedRowIndex - 1]] });
       }
     }
+  };
+
+  onResize = () => {
+    this.setState({ gridHeight: calcGridHeight() });
   };
 
   onAddClick = () => {
@@ -354,6 +363,7 @@ class ClassesGrid extends React.PureComponent {
       viewItem,
       genres,
       selectedGenre,
+      gridHeight,
     } = this.state;
 
     const { readOnly } = this.props;
@@ -390,7 +400,7 @@ class ClassesGrid extends React.PureComponent {
           <IntegratedFiltering />
           <IntegratedSorting />
           <IntegratedSelection />
-          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={615} />
+          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={gridHeight} />
           {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />

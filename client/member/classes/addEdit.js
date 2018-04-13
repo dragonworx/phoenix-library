@@ -208,7 +208,7 @@ class AddEdit extends React.Component {
       <Fragment>
         <DialogContent className={classes.content}>
           <Grid container spacing={24}>
-            <Grid item xs={12} style={{ position: 'relative' }}>
+            <Grid item xs={12} style={{ position: 'relative', paddingBottom: 0, paddingTop: 0 }}>
               <FormLabel className={classes.primaryDescLabel} component="legend">Sections</FormLabel>
               <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} onDurationChange={this.onDurationChange} />
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
@@ -237,7 +237,7 @@ class AddEdit extends React.Component {
                   : null
               }
             </Grid>
-            <Grid item xs={12}>
+            <Grid item xs={12} style={{ paddingTop: 0 }}>
               <FormLabel className={classes.descLabel} component="legend">Notes</FormLabel>
                 <div className={classes.editor} >
                   <Editor
@@ -280,16 +280,18 @@ export default withStyles(theme => ({
     marginBottom: theme.spacing.unit,
   },
   flex: {
-    padding: theme.spacing.unit * 3,
     flex: 1,
+    padding: '10px 22px',
   },
   content: {
     flexGrow: 1,
     width: 700,
+    paddingBottom: 0,
+    overflow: 'hidden',
   },
   addCat: {
     position: 'absolute',
-    top: 20,
+    top: 8,
     left: 70,
   },
   title: {
@@ -299,12 +301,13 @@ export default withStyles(theme => ({
   },
   duration: {
     position: 'absolute',
-    top: 40,
+    top: 24,
     right: 106,
     color: '#ccc',
     fontSize: '80%',
   },
   buttons: {
     textAlign: 'right',
+    height: 20,
   }
 }))(AddEdit);

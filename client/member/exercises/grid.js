@@ -56,7 +56,7 @@ const KEYS = {
 
 const htmlNode = document.createElement('div');
 
-let NameProps = {};
+const calcGridHeight = () => window.innerHeight - 230;
 
 const NameFormatter = ({ row }) => {
   return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span><span className={NameFormatter.defaultProps.name}>{row.name}</span></label></Tooltip>;
@@ -122,7 +122,7 @@ export const textToSprings = (value) => {
     .replace(/#(red|blue|yellow)/gi, '<img style="height:32px" src="/img/spring-$1.png" />')
     .toLowerCase()
     .replace(/mat/gi, '<img style="height:32px" src="/img/mat.png" />');
-  return <Tooltip title={value} placement="top"><span dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
+  return <Tooltip title={value} placement="top"><span style={{ fontFamily: 'monospace', color: '#a1a1a1' }} dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
 };
 
 const SpringFormatter = ({ value }) => {
@@ -184,6 +184,7 @@ class ExerciseGrid extends React.PureComponent {
     selection: [],
     editItem: null,
     viewItem: null,
+    gridHeight: calcGridHeight(),
   };
 
   constructor (props) {
@@ -211,11 +212,13 @@ class ExerciseGrid extends React.PureComponent {
     this.isCommandDown = false;
     window.addEventListener('keydown', this.onGlobalKeyDown);
     window.addEventListener('keyup', this.onGlobalKeyUp);
+    window.addEventListener('resize', this.onResize);
   }
 
   componentWillUnmount () {
     window.removeEventListener('keydown', this.onGlobalKeyDown);
     window.removeEventListener('keyup', this.onGlobalKeyUp);
+    window.removeEventListener('resize', this.onResize);
   }
 
   onGlobalKeyDown = e => {
@@ -249,6 +252,10 @@ class ExerciseGrid extends React.PureComponent {
         this.setState({ selection: [ids[selectedRowIndex - 1]] });
       }
     }
+  };
+
+  onResize = () => {
+    this.setState({ gridHeight: calcGridHeight() });
   };
 
   updateRowLabels (row, usage) {
@@ -430,6 +437,7 @@ class ExerciseGrid extends React.PureComponent {
       selection,
       editItem,
       viewItem,
+      gridHeight,
     } = this.state;
 
     const { readOnly, classes } = this.props;
@@ -469,7 +477,7 @@ class ExerciseGrid extends React.PureComponent {
           <IntegratedFiltering />
           <IntegratedSorting />
           <IntegratedSelection />
-          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={615} />
+          <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={gridHeight} />
           {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />}
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />

@@ -55,7 +55,7 @@ class MemberApp extends React.PureComponent {
             <Route exact path="/admin/classes" component={() => <TabsView  readOnly={false}value={1} />}/>
           </main>
           <footer className={classes.footer}>
-            Phoenix Pilates Library &copy; 2018 All rights reserved. <a href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
+            Phoenix Pilates Library &copy; 2018 All rights reserved. <a style={{ color: '#fff' }} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
           </footer>
         </div>
       </Router>
@@ -122,14 +122,14 @@ export default withStyles(theme => ({
   },
   footer: {
 		width: '100%',
+		color: '#989898',
 		bottom: 0,
 		height: 30,
-		position: 'fixed',
-		backgroundColor: 'rgba(255,255,255,0.5)',
-		color: '#1f3f90',
 		padding: 5,
-		boxSizing: 'border-box',
+		position: 'fixed',
 		fontSize: '80%',
+		boxSizing: 'border-box',
 		textAlign: 'center',
+		backgroundColor: 'rgba(44, 59, 76, 0.5)',
   }
 }))(MemberApp);
