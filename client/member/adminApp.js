@@ -12,18 +12,19 @@ import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
 import TabsView from './tabView';
+import LogoutIcon from 'material-ui-icons/PowerSettingsNew';
 import HamburgerMenu from '../common/hamburgerMenu';
 import { user } from './session';
 
-const userOptions = [ 'Logout' ];
+const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon style={{ verticalAlign: 'bottom', marginRight: 10 }} /> Logout</span> };
 
 const drawerWidth = 180;
 
 class MemberApp extends React.PureComponent {
   state = {};
 
-  onUserMenuSelect = ({ 1: option }) => {
-    if (option === 'Logout') {
+  onUserMenuSelect = selectedValue => {
+    if (selectedValue === 'Logout') {
       location = '/logout';
     }
   };
@@ -31,6 +32,8 @@ class MemberApp extends React.PureComponent {
   render () {
     const { classes } = this.props;
   
+    const menuOptions = [ logoutMenuItem ];
+
     return (
       <Router>
         <div className={classes.root}>
@@ -44,15 +47,15 @@ class MemberApp extends React.PureComponent {
               <Typography variant="title" color="inherit" noWrap>
                 Phoenix Pilates Library
               </Typography>
-              <HamburgerMenu className={classes.menu} options={userOptions} onSelect={this.onUserMenuSelect} />
+              <HamburgerMenu isAdmin={true} className={classes.menu} options={menuOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
             <PingStatus />
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/admin" component={() => <TabsView readOnly={false} value={0} />}/>
-            <Route exact path="/admin/exercises" component={() => <TabsView readOnly={false} value={0} />}/>
-            <Route exact path="/admin/classes" component={() => <TabsView  readOnly={false}value={1} />}/>
+            <Route exact path="/admin" component={() => <TabsView isAdmin={true} value={0} />}/>
+            <Route exact path="/admin/exercises" component={() => <TabsView isAdmin={true} value={0} />}/>
+            <Route exact path="/admin/classes" component={() => <TabsView  isAdmin={true} value={1} />}/>
           </main>
           <footer className={classes.footer}>
             Phoenix Pilates Library &copy; 2018 All rights reserved. <a style={{ color: '#fff' }} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>

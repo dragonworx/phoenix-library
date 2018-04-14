@@ -12,26 +12,32 @@ import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
 import TabsView from './tabView';
+import AdminIcon from 'material-ui-icons/Business';
+import LogoutIcon from 'material-ui-icons/PowerSettingsNew';
 import HamburgerMenu from '../common/hamburgerMenu';
-import { user } from './session';
+import { user, permissions } from './session';
 
-const userOptions = [ 'Admin', 'Logout' ];
+const itemStyle = { verticalAlign: 'bottom', marginRight: 10 };
+const adminMenuItem = { value: 'Admin', label: <span key="admin"><AdminIcon style={itemStyle} /> Admin</span> };
+const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon style={itemStyle} /> Logout</span> };
 
 const drawerWidth = 180;
 
 class PublicApp extends React.PureComponent {
   state = {};
 
-  onUserMenuSelect = ({ 1: option }) => {
-    if (option === 'Logout') {
+  onUserMenuSelect = selectedValue => {
+    if (selectedValue === 'Logout') {
       location = '/logout';
-    } else if (option === 'Admin') {
+    } else if (selectedValue === 'Admin') {
       location = '/admin';
     }
   };
 
   render () {
     const { classes } = this.props;
+
+    const menuOptions = [ permissions.isAdmin ? adminMenuItem : null, logoutMenuItem ].filter(i => i !== null);
   
     return (
       <Router>
@@ -44,18 +50,21 @@ class PublicApp extends React.PureComponent {
                 className={classNames(classes.avatar, classes.bigAvatar)}
               /></a>
               <Typography variant="title" color="inherit" noWrap>
-                Phoenix Pilates Library ~ {user.firstName}
+                Phoenix Pilates Library
               </Typography>
-              <HamburgerMenu className={classes.menu} options={userOptions} onSelect={this.onUserMenuSelect} />
+              <HamburgerMenu isAdmin={false} className={classes.menu} options={menuOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
             <PingStatus />
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/" component={() => <TabsView readOnly={true} value={0} />}/>
-            <Route exact path="/exercises" component={() => <TabsView readOnly={true} value={0} />}/>
-            <Route exact path="/classes" component={() => <TabsView readOnly={true} value={1} />}/>
+            <Route exact path="/" component={() => <TabsView isAdmin={false} value={0} />}/>
+            <Route exact path="/exercises" component={() => <TabsView isAdmin={false} value={0} />}/>
+            <Route exact path="/classes" component={() => <TabsView isAdmin={false} value={1} />}/>
           </main>
+          <footer className={classes.footer}>
+            Phoenix Pilates Library &copy; 2018 All rights reserved. <a style={{ color: '#fff' }} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
+          </footer>
         </div>
       </Router>
     );
@@ -117,5 +126,17 @@ export default withStyles(theme => ({
   menu: {
     position: 'absolute',
     right: 0,
+  },
+  footer: {
+		width: '100%',
+		color: '#ddd',
+		bottom: 0,
+		height: 30,
+		padding: 5,
+		position: 'fixed',
+		fontSize: '80%',
+		boxSizing: 'border-box',
+		textAlign: 'center',
+		backgroundColor: 'rgba(44, 59, 76, 0.5)',
   }
 }))(PublicApp);

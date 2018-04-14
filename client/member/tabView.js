@@ -37,11 +37,11 @@ class TabsView extends React.Component {
   };
 
   render() {
-    const { classes, readOnly } = this.props;
+    const { classes, isAdmin } = this.props;
     const { value, exerciseCount, classCount } = this.state;
 
-    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}exercises`)} label={<span><ExerciseIcon className={classes.icon} />Exercises<Badge className={classes.margin} badgeContent={exerciseCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
-    const ClassesTab = withRouter(({ history }) => <Tab style={{opacity:value === 1 ? 1 : 0.7}} onClick={() => history.push(`${!readOnly ? '/admin/' : '/'}classes`)} label={<span><ClassIcon className={classes.icon} />Classes<Badge className={classes.margin} badgeContent={classCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
+    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}exercises`)} label={<span><ExerciseIcon className={classes.icon} />Exercises<Badge className={classes.margin} badgeContent={exerciseCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
+    const ClassesTab = withRouter(({ history }) => <Tab style={{opacity:value === 1 ? 1 : 0.7}} onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}classes`)} label={<span><ClassIcon className={classes.icon} />Classes<Badge className={classes.margin} badgeContent={classCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
 
     return (
       <div className={classes.root}>
@@ -51,8 +51,8 @@ class TabsView extends React.Component {
             <ClassesTab />
           </Tabs>
         </AppBar>
-        {value === 0 && <Exercises />}
-        {value === 1 && <Classes />}
+        {value === 0 && <Exercises isAdmin={isAdmin} />}
+        {value === 1 && <Classes isAdmin={isAdmin} />}
       </div>
     );
   }

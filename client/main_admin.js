@@ -1,5 +1,5 @@
 import React from 'react';
 import App from './common/app';
-import MemberApp from './member/memberApp';
+import AdminApp from './member/adminApp';
 
-App.render(() => <MemberApp />);
+App.render(() => <AdminApp />);

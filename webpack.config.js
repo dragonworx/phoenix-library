@@ -29,9 +29,11 @@ const defaultConfig = (entryFile, outputFile) => ({
   },
   resolve: {
     extensions: ['.js', '.jsx'],
-    alias: {
-      // server: path.resolve(__dirname, 'server'),
-    },
+    // NOTE: alias's need to be found by eslint (how?), otherwise they cause exceptions
+    // alias: {
+    //   client: path.resolve(__dirname, 'client'),
+    //   member: path.resolve(__dirname, 'client/member'),
+    // },
   },
 });
 

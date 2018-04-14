@@ -271,7 +271,7 @@ export default withStyles(theme => ({
     fontSize: '80%',
     height: 46,
     overflow: 'auto',
-    backgroundColor: '#ebf6ef',
+    backgroundColor: '#f3f8fc',
   },
   primaryDescLabel: {
     marginTop: theme.spacing.unit * 3,

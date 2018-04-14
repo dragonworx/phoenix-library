@@ -9,6 +9,8 @@
     "client/member/classes/classMovementCategory.js",
     "client/member/classes/classExercise.js",
     "server/routes.js",
-    "server/api.js"
+    "server/api.js",
+    "client/member/publicApp.js",
+    "client/member/exercises/grid.js"
   ]
 }

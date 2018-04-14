@@ -5,7 +5,6 @@ import MoreVertIcon from 'material-ui-icons/MoreVert';
 import ExerciseIcon from 'material-ui-icons/Dns';
 import ClassIcon from 'material-ui-icons/Assignment';
 import UserIcon from 'material-ui-icons/AccountBox';
-import Tooltip from 'material-ui/Tooltip';
 import { user, permissions } from '../../member/session';
 
 const forbiddenStyle = {display: 'none'};
@@ -31,13 +30,13 @@ class HamburgerMenu extends React.Component {
     this.setState({ anchorEl: event.currentTarget });
   };
 
-  handleClose = selectedIndex => {
+  handleClose = selectedValue => {
     this.setState({ anchorEl: null });
-    this.props.onSelect(selectedIndex);
+    this.props.onSelect(selectedValue);
   };
 
   render() {
-    const { options = [], selectedIndex = 0, itemHeight = 48 } = this.props;
+    const { options = [], selectedIndex = -1, itemHeight = 48, isAdmin } = this.props;
     const { anchorEl } = this.state;
 
     return (
@@ -62,13 +61,17 @@ class HamburgerMenu extends React.Component {
             },
           }}
         >
-          <MenuItem style={{backgroundColor: 'rgb(48 158 145)', color: 'rgb(192, 249, 248)', position: 'relative'}}>
+          <MenuItem style={{backgroundColor: isAdmin ? 'blue' : 'orange', color: 'rgb(192, 249, 248)', position: 'relative'}}>
             <span style={{fontSize: '90%', marginRight: 10}}>{user.firstName} {user.lastName.charAt(0).toUpperCase() + '.'}</span>
-            <span style={{position: 'absolute', top: 11, right: 6}}><ExerciseIcon style={exerciseStyle} /> <ClassIcon style={classStyle} /> <UserIcon style={userStyle} /></span>
+            <span style={{position: 'absolute', top: 11, right: 6}}>
+              <a title={`You have ${permissions.toString(0)} permissions for exercises`}><ExerciseIcon style={exerciseStyle} /></a>&nbsp;
+              <a title={`You have ${permissions.toString(1)} permissions for classes`}><ClassIcon style={classStyle} /></a>&nbsp;
+              <a title={`You have ${permissions.toString(2)} permissions for users`}><UserIcon style={userStyle} /></a>
+            </span>
           </MenuItem>
-          {options.map((option, i) => (
-            <MenuItem key={option} selected={i === selectedIndex} onClick={this.handleClose.bind(this, [i, option])}>
-              {option}
+          {options.map(({ value, label }, i) => (
+            <MenuItem key={value} selected={i === selectedIndex} onClick={() => this.handleClose(value)}>
+              {label}
             </MenuItem>
           ))}
         </Menu>

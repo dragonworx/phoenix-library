@@ -2,6 +2,11 @@ const FORBIDDEN = 0;
 const READ = 1;
 const READ_WRITE = 2;
 const READ_WRITE_DELETE = 3;
+const LEVEL = {
+  EXERCISE: 0,
+  CLASSES: 1,
+  USERS: 3,
+};
 
 // permissions = 3 integers, of the above
 // lowest 000, highest 333
@@ -60,5 +65,14 @@ module.exports = str => {
     canReadUser,
     canWriteUser,
     canDeleteUser,
+    toString (level) {
+      if (level === LEVEL.EXERCISE) {
+        return [canReadExercise && 'read', canWriteExercise && 'write', canDeleteExercise && 'delete', ].filter(i => !!i).join(' / ');
+      } else if (level === LEVEL.CLASSES) {
+        return [canReadClass && 'read', canWriteClass && 'write', canDeleteClass && 'delete', ].filter(i => !!i).join(' / ');
+      } else if (level === LEVEL.USERS) {
+        return [canReadUser && 'read', canWriteUser && 'write', canDeleteUser && 'delete', ].filter(i => !!i).join(' / ');
+      }
+    }
   };
 };

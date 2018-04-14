@@ -16,6 +16,7 @@ import Button from 'material-ui/Button';
 import AddIcon from 'material-ui-icons/Add';
 import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
+import ViewIcon from 'material-ui-icons/Visibility';
 import Tooltip from 'material-ui/Tooltip';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
@@ -178,14 +179,14 @@ class ClassesGrid extends React.PureComponent {
   onGlobalKeyUp = e => {
     const { keyCode } = e;
     const { selection, rows } = this.state;
-    const { readOnly } = this.props;
+    const { isAdmin } = this.props;
     const ids = rows.map(row => row.id);
     ids.sort();
     if (keyCode === KEYS.OPTION) {
       this.isCommandDown = false;
     } else if ((keyCode === KEYS.TILDA) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
-      if (readOnly) {
+      if (!isAdmin) {
         this.setState({ mode: MODE.VIEW, viewItem: row });
       } else {
         this.setState({ mode: MODE.EDIT, editItem: row });
@@ -266,7 +267,7 @@ class ClassesGrid extends React.PureComponent {
     const { isCommandDown } = this;
     let viewItem;
     let mode = MODE.READ;
-    if (this.props.readOnly) {
+    if (!this.props.isAdmin) {
       if (!selection.length) {
         selection = selected;
       }
@@ -319,14 +320,13 @@ class ClassesGrid extends React.PureComponent {
 
   renderEditControls () {
     const { selection } = this.state;
-    const { classes, readOnly } = this.props;
+    const { classes, isAdmin } = this.props;
 
     return (
       <span className={classes.root}>
       {
-        readOnly
-          ? null
-          : (
+        isAdmin
+          ? (
             <span>
               <Button variant="fab" color="primary" aria-label="add" className={classes.button} onClick={this.onAddClick}>
                 <AddIcon />
@@ -337,8 +337,12 @@ class ClassesGrid extends React.PureComponent {
               <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
                 <DeleteIcon />
               </Button>
+              <Button variant="fab" disabled={selection.length === 0} aria-label="view" className={classes.button} onClick={this.onViewClick}>
+                <ViewIcon />
+              </Button>
             </span>
           )
+          : null
       }
       </span>
     );
@@ -366,7 +370,7 @@ class ClassesGrid extends React.PureComponent {
       gridHeight,
     } = this.state;
 
-    const { readOnly } = this.props;
+    const { isAdmin } = this.props;
 
     if (mode === MODE.LOADING) {
       return (
@@ -377,7 +381,7 @@ class ClassesGrid extends React.PureComponent {
     };
 
     return (
-      <Paper>
+      <Paper id="grid">
         { this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <NameTypeProvider for={nameColumns} />
@@ -405,7 +409,7 @@ class ClassesGrid extends React.PureComponent {
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
-          <TableSelection showSelectAll={!readOnly} highlightRow selectByRowClick showSelectionColumn={!readOnly} />
+          <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
           <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} />
           <Toolbar />
           <ColumnChooser />
@@ -455,6 +459,8 @@ export default withStyles(theme => ({
   },
   button: {
     margin: theme.spacing.unit,
+    width: 45,
+    height: 45,
   },
   count: {
     display: 'inline-block',

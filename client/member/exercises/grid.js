@@ -190,7 +190,7 @@ class ExerciseGrid extends React.PureComponent {
 
   constructor (props) {
     super(props);
-    if (props.readOnly) {
+    if (!props.isAdmin) {
       ThumbnailRef = Thumbnail;
     }
   }
@@ -322,9 +322,8 @@ class ExerciseGrid extends React.PureComponent {
     const { isCommandDown } = this;
     let viewItem;
     let mode = MODE.READ;
-    if (this.props.readOnly) {
+    if (!this.props.isAdmin) {
       if (!selection.length) {
-        // return this.setState({ selection: selected });
         selection = selected;
       }
       for (let i = 0; i < selection.length; i++) {
@@ -393,14 +392,13 @@ class ExerciseGrid extends React.PureComponent {
 
   renderEditControls () {
     const { selection } = this.state;
-    const { classes, readOnly } = this.props;
+    const { classes, isAdmin } = this.props;
 
     return (
       <span className={classes.root}>
       {
-        readOnly
-          ? null
-          : (
+        isAdmin
+          ? (
             <span>
               <Button variant="fab" color="primary" aria-label="add" className={classes.button} onClick={this.onAddClick}>
                 <AddIcon />
@@ -416,6 +414,7 @@ class ExerciseGrid extends React.PureComponent {
               </Button>
             </span>
           )
+          : null
       }
       </span>
     );
@@ -441,7 +440,7 @@ class ExerciseGrid extends React.PureComponent {
       gridHeight,
     } = this.state;
 
-    const { readOnly, classes } = this.props;
+    const { isAdmin, classes } = this.props;
 
     const labels = this.labels;
 
@@ -454,7 +453,7 @@ class ExerciseGrid extends React.PureComponent {
     };
 
     return (
-      <Paper>
+      <Paper id="grid">
         { this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
@@ -483,7 +482,7 @@ class ExerciseGrid extends React.PureComponent {
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
-          <TableSelection showSelectAll={!readOnly} highlightRow selectByRowClick showSelectionColumn={!readOnly} />
+          <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
           <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange}/>
           <Toolbar />
           <ColumnChooser />
@@ -524,6 +523,8 @@ export default withStyles(theme => ({
   },
   button: {
     margin: theme.spacing.unit,
+    width: 45,
+    height: 45,
   },
   count: {
     display: 'inline-block',
