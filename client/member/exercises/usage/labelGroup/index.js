@@ -27,15 +27,15 @@ class LabelGroup extends React.Component {
     const { usage, subLabels } = this.props;
     const selections = {};
     const labels = subLabels.map(label => clone(label));
-    labels.sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      } else if (a.name > b.name) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
+    // labels.sort((a, b) => {
+    //   if (a.name < b.name) {
+    //     return -1;
+    //   } else if (a.name > b.name) {
+    //     return 1;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
     labels.forEach(label => {
       label.selected = usage && (usage[label.id] || null);
       selections[label.id] = label;

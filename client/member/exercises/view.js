@@ -53,6 +53,11 @@ class ViewExercise extends React.Component {
           maxWidth={false}
           disableEscapeKeyDown={false}
           disableBackdropClick={false}
+          BackdropProps={{
+            style: {
+              backgroundColor: 'rgba(0,0,0,0.8)'
+            }
+          }}
           >
           { this.renderContent() }
         </Dialog>

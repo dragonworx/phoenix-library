@@ -210,7 +210,7 @@ class AddEdit extends React.Component {
         <DialogContent className={classes.content}>
           <Grid container spacing={24}>
             <Grid item xs={12} style={{ position: 'relative', paddingBottom: 0, paddingTop: 0 }}>
-              <FormLabel className={classes.primaryDescLabel} component="legend">Stages</FormLabel>
+              <FormLabel className={classes.primaryDescLabel} component="legend">Movement Categories</FormLabel>
               <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} onDurationChange={this.onDurationChange} />
               <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
                 <AddIcon />
@@ -293,7 +293,7 @@ export default withStyles(theme => ({
   addCat: {
     position: 'absolute',
     top: 8,
-    left: 70,
+    left: 163,
   },
   title: {
     fontSize: '100%',

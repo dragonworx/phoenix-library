@@ -19,15 +19,15 @@ class ExerciseLabels extends React.PureComponent {
     this.rootLabels = this.props.labels.filter(label => label.type === LABEL.ROOT);
     this.subLabels = this.props.labels.filter(label => label.type === LABEL.SUB);
     this.subLabels.forEach(label => label.selected = null);
-    this.subLabels.sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      } else if (a.name > b.name) {
-        return 1;
-      } else {
-        return 0;
-      }
-    });
+    // this.subLabels.sort((a, b) => {
+    //   if (a.name < b.name) {
+    //     return -1;
+    //   } else if (a.name > b.name) {
+    //     return 1;
+    //   } else {
+    //     return 0;
+    //   }
+    // });
   }
 
   handleClick = () => {

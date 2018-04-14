@@ -54,7 +54,7 @@ module.exports = {
 
     const exerciseById = hashById(exercises);
 
-    let labels = await model.Label.findAll({ order: Sequelize.col('name') });
+    let labels = await model.Label.findAll(/*{ order: Sequelize.col('name') }*/);
     labels = labels.map(label => label.get(PLAIN));
     const labelsById = hashById(labels);
     const exerciseLabelsPerExercise = await Promise.all(exercises.map(
@@ -126,13 +126,13 @@ module.exports = {
   },
 
   async getLabels (type) {
-    let labels = await model.Label.findAll({ where: { type }, raw: true, order: Sequelize.col('name') });
+    let labels = await model.Label.findAll({ where: { type }, raw: true/*, order: Sequelize.col('name')*/ });
     return labels;
   },
 
   async getAllLabels () {
     let labels = await model.Label.findAll({
-      order: Sequelize.col('name'),
+      /*order: Sequelize.col('name'),*/
       raw: true
     });
     return labels;
@@ -301,14 +301,14 @@ module.exports = {
       exercise.notes = 'Notes...';
       return exercise;
     });
-    exercises.sort((a, b) => {
-      if (a.name < b.name) {
-        return -1;
-      } else if (a.name > b.name) {
-        return 1;
-      }
-      return 0;
-    });
+    // exercises.sort((a, b) => {
+    //   if (a.name < b.name) {
+    //     return -1;
+    //   } else if (a.name > b.name) {
+    //     return 1;
+    //   }
+    //   return 0;
+    // });
     exercises.forEach((exercise, i) => exercise.index = i);
     return exercises;
   },

@@ -98,6 +98,10 @@ export default withStyles(theme => ({
     backgroundColor: '#2e5594',
     background: 'linear-gradient(180deg, #2e5594 0, #000 100%)',
     minWidth: 0, // So the Typography noWrap works
+    display: 'flex',
+    paddingTop: 66,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   toolbar: theme.mixins.toolbar,
   avatar: {

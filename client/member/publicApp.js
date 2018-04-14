@@ -102,6 +102,10 @@ export default withStyles(theme => ({
     flexGrow: 1,
     backgroundColor: '#f7efe8',
     minWidth: 0, // So the Typography noWrap works
+    display: 'flex',
+    paddingTop: 66,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   toolbar: theme.mixins.toolbar,
   avatar: {
