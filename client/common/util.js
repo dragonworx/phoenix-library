@@ -43,3 +43,4 @@ module.exports = {
 };
 
 module.exports.combineCss = module.exports.multi;
+module.exports.css = module.exports.combineCss;

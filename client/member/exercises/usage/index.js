@@ -9,7 +9,7 @@ const LABEL = {
   SUB: 1
 };
 
-class ExerciseLabels extends React.Component {
+class ExerciseLabels extends React.PureComponent {
   state = {
     open: true
   };
@@ -19,6 +19,15 @@ class ExerciseLabels extends React.Component {
     this.rootLabels = this.props.labels.filter(label => label.type === LABEL.ROOT);
     this.subLabels = this.props.labels.filter(label => label.type === LABEL.SUB);
     this.subLabels.forEach(label => label.selected = null);
+    this.subLabels.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      } else if (a.name > b.name) {
+        return 1;
+      } else {
+        return 0;
+      }
+    });
   }
 
   handleClick = () => {
@@ -50,15 +59,14 @@ class ExerciseLabels extends React.Component {
 
 export default withStyles(theme => ({
   root: {
-    paddingTop: theme.spacing.unit * 3.75,
+
   },
   container: {
     width: '100%',
     maxWidth: 360,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: '#eef9fe',
     maxHeight: 275,
     minHeight: 275,
-    minWidth: 300,
     overflow: 'auto',
     border: '1px solid #e7e7e7',
     marginTop: 5,

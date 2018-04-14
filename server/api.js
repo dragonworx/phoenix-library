@@ -46,7 +46,6 @@ module.exports = {
     let exercises = await model.Exercise.findAll({ raw: true });
 
     exercises = exercises.map(exercise => {
-      // exercise = exercise.get(PLAIN);
       exercise.genre = [];
       exercise.movement = [];
       exercise.usage = {};
@@ -55,7 +54,7 @@ module.exports = {
 
     const exerciseById = hashById(exercises);
 
-    let labels = await model.Label.findAll();
+    let labels = await model.Label.findAll({ order: Sequelize.col('name') });
     labels = labels.map(label => label.get(PLAIN));
     const labelsById = hashById(labels);
     const exerciseLabelsPerExercise = await Promise.all(exercises.map(
@@ -127,13 +126,13 @@ module.exports = {
   },
 
   async getLabels (type) {
-    let labels = await model.Label.findAll({ where: { type }, raw: true });
+    let labels = await model.Label.findAll({ where: { type }, raw: true, order: Sequelize.col('name') });
     return labels;
   },
 
   async getAllLabels () {
     let labels = await model.Label.findAll({
-      order: Sequelize.col('id'),
+      order: Sequelize.col('name'),
       raw: true
     });
     return labels;

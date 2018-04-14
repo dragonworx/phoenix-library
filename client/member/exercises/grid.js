@@ -291,14 +291,6 @@ class ExerciseGrid extends React.PureComponent {
     this.setState({ mode: MODE.CONFIRM_DELETE });
   };
 
-  onViewClick = () => {
-    const selection = this.state.selection;
-    this.setState({
-      viewItem: this.state.rows.find(row => row.id === selection[0]),
-      mode: MODE.VIEW
-    });
-  };
-
   onAddEditClose = () => {
     this.setState({ mode: MODE.READ });
   };
@@ -409,9 +401,6 @@ class ExerciseGrid extends React.PureComponent {
               <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
                 <DeleteIcon />
               </Button>
-              <Button variant="fab" disabled={selection.length === 0} aria-label="view" className={classes.button} onClick={this.onViewClick}>
-                <ViewIcon />
-              </Button>
             </span>
           )
           : null
@@ -490,7 +479,7 @@ class ExerciseGrid extends React.PureComponent {
         </Grid>
         {
           mode === MODE.ADD || mode === MODE.EDIT ? 
-          <AddEdit mode={mode} labels={labels} editItem={mode === MODE.EDIT && editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
+          <AddEdit name={MODE.EDIT && editItem ? editItem.name : 'New Exercise'} mode={mode} labels={labels} editItem={mode === MODE.EDIT && editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} /> : null
         }
         {
           mode === MODE.VIEW ? <ViewExercise viewItem={viewItem} onClose={this.onViewClose} /> : null
@@ -535,7 +524,7 @@ export default withStyles(theme => ({
     cursor: 'pointer',
   },
   name: {
-		color: '#597daf',
+		color: '#254779',
 		fontWeight: 'bold',
 		fontSize: '110%',
   }

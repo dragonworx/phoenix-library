@@ -118,7 +118,7 @@ class ViewExercise extends React.Component {
           </Typography>
           <Typography className={classes.description} component="p" dangerouslySetInnerHTML={{ __html }} />
         </CardContent>
-        <CardActions>
+        <CardActions className={classes.actions}>
           <Button size="small" color="primary" onClick={this.handleClose}>
             Close
           </Button>
@@ -227,5 +227,9 @@ export default withStyles(theme => ({
   },
   name: {
     color: '#377ec2',
+  },
+  actions: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
   }
 }))(ViewExercise);

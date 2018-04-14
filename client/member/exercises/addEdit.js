@@ -19,7 +19,7 @@ import { LinearProgress } from 'material-ui/Progress';
 import axios from 'axios';
 import SaveButton from '../../common/saveButton';
 import ExerciseLabels from './usage';
-import { clone, trimUsage } from '../../common/util';
+import { clone, css, trimUsage } from '../../common/util';
 
 const ERROR = {
   IMAGE_FORMAT: 'Invalid image, only use PNG or JPG',
@@ -39,11 +39,13 @@ class AddEdit extends React.Component {
     editorState: EditorState.createEmpty(),
     error: null,
     isSaving: false,
+    exerciseName: null,
   };
 
   constructor (props) {
     super(props);
     this.usage = {};
+    this.state.exerciseName = props.name;
   }
 
   componentWillMount () {
@@ -83,7 +85,7 @@ class AddEdit extends React.Component {
 
   get values () {
     return {
-      name: document.getElementById('addEdit_name').value,
+      name: this.state.exerciseName,
       springs: document.getElementById('addEdit_springs').value,
       description: stateToHTML(this.state.editorState.getCurrentContent()),
       photo: document.getElementById('addEdit_photo').files[0],
@@ -180,8 +182,13 @@ class AddEdit extends React.Component {
     this.usage[rootLabel.id] = selections;
   };
 
+  handleNameChange = e => {
+    this.setState({ exerciseName: e.target.value });
+  };
+
   render () {
-    const { mode, classes } = this.props;
+    const { classes } = this.props;
+    const { exerciseName } = this.state;
 
     return (
       <Dialog
@@ -194,7 +201,7 @@ class AddEdit extends React.Component {
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            {mode === MODE.ADD ? 'New' : 'Edit'} Exercise
+          <Input fullWidth={true} defaultValue={exerciseName} classes={{ root: classes.title }} onChange={this.handleNameChange} />
           </Typography>
         </AppBar>
 
@@ -224,17 +231,14 @@ class AddEdit extends React.Component {
       <div>
         <DialogContent className={classes.content}>
         <Grid container spacing={24}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-                autoFocus
-                margin="dense"
-                id="addEdit_name"
-                label="Name"
-                type="text"
-                fullWidth
-                defaultValue={defaultItem.name}
-                onChange={this.handleChange}
-              />
+          <Grid item xs={1} sm={7}>
+              <FormLabel className={css(classes.descLabel, classes.topLabel)} component="legend">Description</FormLabel>
+              <div className={classes.editor} >
+                <Editor
+                  editorState={this.state.editorState}
+                  handleKeyCommand={this.handleEditorKeyCommand}
+                  onChange={this.onChange} />
+              </div>
               <TextField
                 margin="dense"
                 id="addEdit_springs"
@@ -243,13 +247,6 @@ class AddEdit extends React.Component {
                 fullWidth
                 defaultValue={defaultItem.springs}
               />
-              <FormLabel className={classes.descLabel} component="legend">Description</FormLabel>
-              <div className={classes.editor} >
-                <Editor
-                  editorState={this.state.editorState}
-                  handleKeyCommand={this.handleEditorKeyCommand}
-                  onChange={this.onChange} />
-              </div>
               <FormLabel className={classes.descLabel} component="legend">Photo</FormLabel>
               <Input id="addEdit_photo" type="file" onChange={this.handleFileUpload} error={error === ERROR.IMAGE_FORMAT} />
               <TextField
@@ -261,12 +258,12 @@ class AddEdit extends React.Component {
                 defaultValue={defaultItem.video}
               />
           </Grid>
-          <Grid item xs={12} sm={6}>
+          <Grid item xs={1} sm={5}>
             <ExerciseLabels onChange={this.handleExerciseLabelChange} usage={editItem && editItem.usage} labels={labels} />
           </Grid>
         </Grid>
       </DialogContent>
-      <DialogActions>
+      <DialogActions className={classes.actions}>
         <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
           Cancel
         </Button>
@@ -298,14 +295,20 @@ export default withStyles(theme => ({
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit,
   },
+  topLabel: {
+    marginTop: 0,
+  },
   editor: {
     border: '1px solid #b2b2b2',
     borderRadius: '5px',
     padding: '5px',
     fontSize: '80%',
+    maxHeight: 259,
+    height: 259,
+    overflow: 'auto',
   },
   flex: {
-    padding: theme.spacing.unit * 3,
+    padding: '0 10px',
     flex: 1,
   },
   content: {
@@ -317,5 +320,13 @@ export default withStyles(theme => ({
   },
   snackbarContent: {
     width: 360,
+  },
+  title: {
+    fontSize: '100%',
+    flexGrow: 1,
+    color: '#fff',
+  },
+  actions: {
+    marginTop: -40,
   }
 }))(AddEdit);

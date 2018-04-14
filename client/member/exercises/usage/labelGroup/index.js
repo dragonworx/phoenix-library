@@ -24,13 +24,23 @@ class LabelGroup extends React.Component {
 
   constructor (props) {
     super(props);
-    const { usage } = this.props;
+    const { usage, subLabels } = this.props;
     const selections = {};
-    this.props.subLabels.forEach(label => {
-      const labelCopy = clone(label);
-      labelCopy.selected = usage && (usage[label.id] || null);
-      selections[label.id] = labelCopy;
+    const labels = subLabels.map(label => clone(label));
+    labels.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      } else if (a.name > b.name) {
+        return 1;
+      } else {
+        return 0;
+      }
     });
+    labels.forEach(label => {
+      label.selected = usage && (usage[label.id] || null);
+      selections[label.id] = label;
+    });
+    this.labels = labels;
     this.state.selections = selections;
   }
 
@@ -51,8 +61,8 @@ class LabelGroup extends React.Component {
 
   render() {
     const { classes, rootLabel } = this.props;
-    const { anchorEl, selections } = this.state;
-    const labels = Object.entries(selections).map(({ 1: label }) => label);
+    const { anchorEl } = this.state;
+    const labels = this.labels;
 
     return (
       <div>
@@ -60,7 +70,7 @@ class LabelGroup extends React.Component {
           <ListItemIcon>
             <FolderIcon />
           </ListItemIcon>
-          <ListItemText inset primary={rootLabel.name} />
+          <ListItemText inset primary={rootLabel.name} classes={{ root: classes.listItemRoot }} />
           <ListItemSecondaryAction>
             <IconButton
               aria-label="More"
@@ -84,9 +94,9 @@ class LabelGroup extends React.Component {
             >
               {
                 labels.map(label => (
-                  <MenuItem key={`menu_${label.id}`} onClick={() => this.handleMenuClick(label)}>
+                  <MenuItem key={`menu_${label.id}`} onClick={() => this.handleMenuClick(label)} classes={{ root: classes.menuItemRoot }}>
                     <Checkbox checked={label.selected === true} value={String(label.id)} />
-                    <ListItemText primary={label.name} />
+                    <ListItemText primary={label.name} classes={{ root: classes.listItemRoot }} />
                   </MenuItem>
                 ))
               }
@@ -113,5 +123,14 @@ class LabelGroup extends React.Component {
 export default withStyles({
   subItem: {
     maxHeight: 20,
+    backgroundColor: '#e5f1f6',
+    borderBottom: '1px solid #e8e8e8',
+  },
+  menuItemRoot: {
+    padding: '5px 5px',
+  },
+  listItemRoot: {
+    padding: '0 2px',
+    paddingRight: 12,
   }
 })(LabelGroup);
