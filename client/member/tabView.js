@@ -63,7 +63,7 @@ export default withStyles(theme => ({
     flexGrow: 1,
 		margin: '15px 10px',
     borderRadius: 5,
-    maxWidth: 1000,
+    maxWidth: '98%',
   },
   margin: {
     margin: theme.spacing.unit * 2,

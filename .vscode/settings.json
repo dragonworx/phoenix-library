@@ -11,6 +11,7 @@
     "server/routes.js",
     "server/api.js",
     "client/member/publicApp.js",
-    "client/member/exercises/grid.js"
+    "client/member/exercises/grid.js",
+    "client/member/classes/view.js"
   ]
 }

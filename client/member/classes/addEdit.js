@@ -212,16 +212,22 @@ class AddEdit extends React.Component {
             <Grid item xs={12} style={{ position: 'relative', paddingBottom: 0, paddingTop: 0 }}>
               <FormLabel className={classes.primaryDescLabel} component="legend">Movement Categories</FormLabel>
               <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} onDurationChange={this.onDurationChange} />
-              <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
-                <AddIcon />
-              </IconButton>
+              <a title="Add a movement category">
+                <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
+                  <AddIcon />
+                </IconButton>
+              </a>
               <div className={classes.buttons}>
-                <a title="collapse all"><IconButton aria-label="collapse all" className={classes.button} onClick={this.collapseAll}>
-                  <ExpandLessIcon />
-                </IconButton></a>
-                <a title="expand all"><IconButton aria-label="expand all" className={classes.button} onClick={this.expandAll}>
-                  <ExpandMoreIcon />
-                </IconButton></a>
+                <a title="collapse all">
+                  <IconButton variant="raised" color="primary" aria-label="collapse all" className={classes.button} onClick={this.collapseAll}>
+                    <ExpandLessIcon />
+                  </IconButton>
+                </a>
+                <a title="expand all">
+                  <IconButton variant="raised" color="primary" aria-label="expand all" className={classes.button} onClick={this.expandAll}>
+                    <ExpandMoreIcon />
+                  </IconButton>
+                </a>
               </div>
               <div className={classes.duration}>{duration} mins Total Duration</div>
               {
@@ -249,7 +255,7 @@ class AddEdit extends React.Component {
             </Grid>
           </Grid>
         </DialogContent>
-        <DialogActions>
+        <DialogActions classes={{ root: classes.actions }}>
           <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
             Cancel
           </Button>
@@ -278,6 +284,7 @@ export default withStyles(theme => ({
     marginBottom: theme.spacing.unit,
   },
   descLabel: {
+    marginTop: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
   },
   flex: {
@@ -301,14 +308,20 @@ export default withStyles(theme => ({
     color: '#fff',
   },
   duration: {
-    position: 'absolute',
-    top: 24,
-    right: 60,
-    color: '#84a0c0',
-    fontSize: '80%',
+    bottom: -24,
+		right: 18,
+		color: '#84a0c0',
+		position: 'absolute',
+		fontSize: '80%',
   },
   buttons: {
-    textAlign: 'right',
     height: 20,
+		textAlign: 'right',
+		top: 11,
+		right: 60,
+		position: 'absolute',
+  },
+  actions: {
+    margin: '10px 16px',
   }
 }))(AddEdit);

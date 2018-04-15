@@ -158,7 +158,7 @@ class ClassesGrid extends React.PureComponent {
       selection: [],
     });
     
-    this.isCommandDown = false;
+    this.isMetaDown = false;
     window.addEventListener('keydown', this.onGlobalKeyDown);
     window.addEventListener('keyup', this.onGlobalKeyUp);
     window.addEventListener('resize', this.onResize);
@@ -171,19 +171,19 @@ class ClassesGrid extends React.PureComponent {
   }
 
   onGlobalKeyDown = e => {
-    if (e.keyCode === KEYS.OPTION) {
-      this.isCommandDown = true;
+    if (e.key === 'Meta') {
+      this.isMetaDown = true;
     }
   };
 
   onGlobalKeyUp = e => {
-    const { keyCode } = e;
+    const { keyCode, key } = e;
     const { selection, rows } = this.state;
     const { isAdmin } = this.props;
     const ids = rows.map(row => row.id);
     ids.sort();
-    if (keyCode === KEYS.OPTION) {
-      this.isCommandDown = false;
+    if (key === 'Meta') {
+      this.isMetaDown = false;
     } else if ((keyCode === KEYS.TILDA) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
       if (!isAdmin) {
@@ -233,7 +233,7 @@ class ClassesGrid extends React.PureComponent {
   onAddSelectClose = async value => {
     if (value) {
       const { data: template } = await axios.get(`/template/${value}`);
-      template.forEach(category => category.expanded = true);
+      template.forEach(category => category.expanded = false);
       this.setState({
         selectedGenre: {
           id: value,
@@ -264,7 +264,7 @@ class ClassesGrid extends React.PureComponent {
 
   onSelectionChange = selection => {
     const { selection: selected } = this.state;
-    const { isCommandDown } = this;
+    const { isMetaDown } = this;
     let viewItem;
     let mode = MODE.READ;
     if (!this.props.isAdmin) {
@@ -277,9 +277,8 @@ class ClassesGrid extends React.PureComponent {
           break;
         }
       }
-      viewItem = this.state.rows.find(row => row.id === selection[0]);
       mode = MODE.VIEW;
-    } else if (!isCommandDown) {
+    } else if (!isMetaDown) {
       for (let i = 0; i < selection.length; i++) {
         if (selected.indexOf(selection[i]) === -1) {
           selection = [selection[i]];
@@ -287,6 +286,7 @@ class ClassesGrid extends React.PureComponent {
         }
       }
     }
+    viewItem = this.state.rows.find(row => row.id === selection[0]);
     this.setState({ selection, viewItem, mode });
   };
 
@@ -316,6 +316,10 @@ class ClassesGrid extends React.PureComponent {
     } catch (e) {
       // ?
     }   
+  };
+
+  onViewClick = () => {
+    this.setState({ mode: MODE.VIEW });
   };
 
   renderEditControls () {

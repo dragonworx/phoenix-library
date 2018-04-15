@@ -89,7 +89,7 @@ class ClassExercise extends React.Component {
         data-hover-type="item"
         data-hover-value={exercise.id}
       >
-        <Avatar onClick={() => this.handleExerciseClick(exercise)}>
+        <Avatar onClick={() => this.handleExerciseClick(exercise)} classes={{ root: classes.avatar}}>
         {
           exercise.photo
           ? <img src={thumbnailUrl.replace('%', exercise.id)} />
@@ -199,7 +199,7 @@ export default withStyles(theme => ({
     padding: 0,
     paddingBottom: theme.spacing.unit,
     marginBottom: theme.spacing.unit,
-    borderBottom: '1px dashed #e4e4e4',
+    borderBottom: '2px dotted #d3e4ea',
   },
   listTextContainer: {
     flex: '1 1 auto',
@@ -246,4 +246,9 @@ export default withStyles(theme => ({
   title: {
     maxWidth: '80%'
   },
+  avatar: {
+    root: {
+      marginLeft: theme.spacing.unit,
+    }
+  }
 }))(ClassExercise);

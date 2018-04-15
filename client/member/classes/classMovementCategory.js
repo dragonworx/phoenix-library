@@ -94,7 +94,7 @@ class ClassMovementCategory extends React.Component {
     const { category } = this.props;
     category.duration = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0);
     this.props.onDurationChange(exercise);
-    category.expanded = true;
+    // category.expanded = true;
     this.setState({ loading: false });
   };
 
@@ -118,23 +118,31 @@ class ClassMovementCategory extends React.Component {
       >
         <ExpansionPanelSummary expandIcon={<a title="expand / collapse"><ExpandMoreIcon onClick={this.handleExpandClick} style={{ height: 50 }} /></a>} classes={{ expanded: classes.expanded }}>
           <ListItemText primary={
-            <span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}<span className={classes.duration}>{duration === 0 ? 'Blank' : `${duration} mins`}</span></span>
+            <span style={{fontSize:'1.2rem'}}><span className={classes.ordinal}>{`${index}${ord}.`}</span>{name}<span className={classes.duration}>{duration === 0 ? 'Blank' : `${exercises.length} Exercises, ${duration} mins duration`}</span></span>
           } />
           { loading ? <CircularProgress className={classes.progress} thickness={3} /> : null }
           <If test={hasHover}>
             <div className={classes.toolbar}>
-              <a title="add exercises to category"><IconButton variant="fab" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddExercisesClick(category)}>
-                <AddIcon />
-              </IconButton></a>
-              <a title="move category up"><IconButton variant="fab" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
-                <UpIcon />
-              </IconButton></a>
-              <a title="move category down"><IconButton variant="fab" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDown(category)} disabled={category.index === program.length - 1}>
-                <DownIcon />
-              </IconButton></a>
-              <a title="remove category"><IconButton variant="fab" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveCategoryClick(category)}>
-                <RemoveIcon />
-              </IconButton></a>
+              <a title="add exercises to category">
+                <IconButton variant="raised" color="primary" aria-label="add exercise" className={classes.button} onClick={() => this.onAddExercisesClick(category)}>
+                  <AddIcon />
+                </IconButton>
+              </a>
+              <a title="move category up">
+                <IconButton variant="raised" color="primary" aria-label="move up" className={classes.button} onClick={() => onMoveUp(category)} disabled={category.index === 0}>
+                  <UpIcon />
+                </IconButton>
+              </a>
+              <a title="move category down">
+                <IconButton variant="raised" color="primary" aria-label="move down" className={classes.button} onClick={() => onMoveDown(category)} disabled={category.index === program.length - 1}>
+                  <DownIcon />
+                </IconButton>
+              </a>
+              <a title="remove category">
+                <IconButton variant="raised" color="secondary" aria-label="remove category" className={classes.button} onClick={() => this.onRemoveCategoryClick(category)}>
+                  <RemoveIcon />
+                </IconButton>
+              </a>
             </div>
           </If>
         </ExpansionPanelSummary>
@@ -181,6 +189,7 @@ export default withStyles(theme => ({
     cursor: 'default',
     paddingLeft: 0,
     paddingRight: 0,
+    backgroundColor: '#e9f4ff',
   }),
   button: {
     // margin: theme.spacing.unit,
@@ -188,7 +197,7 @@ export default withStyles(theme => ({
   toolbar: {
     position: "absolute",
     right: 28,
-    top: -4,
+    top: 0,
   },
   ordinal: {
     color: '#375ace',
@@ -198,10 +207,11 @@ export default withStyles(theme => ({
   },
   details: {
     display: 'block',
-    backgroundColor: '#fbfdff',
+    backgroundColor: '#fff',
     borderRadius: 10,
     padding: 10,
     border: '1px solid #eee',
+    boxShadow: 'inset 0 0 10px #7ccfff70',
   },
   item: {
     cursor: 'pointer',
@@ -219,9 +229,11 @@ export default withStyles(theme => ({
     color: '#d5d5d5',
   },
   duration: {
-    marginLeft: 10,
     color: '#90c2d7',
-    fontSize: '80%',
+		fontSize: '70%',
+		marginLeft: 10,
+		position: 'relative',
+		top: -1,
   },
   expanded: {
     height: 40,
