@@ -99,7 +99,7 @@ class ViewExercise extends React.Component {
       }
     }
 
-    const blank = /<p><br><\/p>/;
+    const blank = /<p>(<br>|&nbsp;)<\/p>/;
 
     let __html = description;
 

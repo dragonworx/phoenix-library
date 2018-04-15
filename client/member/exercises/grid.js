@@ -52,6 +52,7 @@ const KEYS = {
   UP: 38,
   DOWN: 40,
   TILDA: 192,
+  META: 'Meta',
 };
 
 const htmlNode = document.createElement('div');
@@ -210,7 +211,7 @@ class ExerciseGrid extends React.PureComponent {
         });
       });
     
-    this.isCommandDown = false;
+    this.isMetaDown = false;
     window.addEventListener('keydown', this.onGlobalKeyDown);
     window.addEventListener('keyup', this.onGlobalKeyUp);
     window.addEventListener('resize', this.onResize);
@@ -223,18 +224,18 @@ class ExerciseGrid extends React.PureComponent {
   }
 
   onGlobalKeyDown = e => {
-    if (e.keyCode === KEYS.OPTION) {
-      this.isCommandDown = true;
+    if (e.key === 'Meta') {
+      this.isMetaDown = true;
     }
   };
 
   onGlobalKeyUp = e => {
-    const { keyCode, altKey } = e;
+    const { keyCode, altKey, key } = e;
     const { selection, rows } = this.state;
     const ids = rows.map(row => row.id);
     ids.sort();
-    if (keyCode === KEYS.OPTION) {
-      this.isCommandDown = false;
+    if (key === KEYS.META) {
+      this.isMetaDown = false;
     } else if (keyCode === KEYS.TILDA && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
       if (altKey) {
@@ -296,7 +297,7 @@ class ExerciseGrid extends React.PureComponent {
   };
 
   onViewClose = () => {
-    this.setState({ mode: MODE.READ, viewItem: null });
+    this.setState({ mode: MODE.READ });
   };
 
   onConfirmDeleteClose = async didAccept => {
@@ -311,7 +312,7 @@ class ExerciseGrid extends React.PureComponent {
 
   onSelectionChange = selection => {
     const { selection: selected } = this.state;
-    const { isCommandDown } = this;
+    const { isMetaDown } = this;
     let viewItem;
     let mode = MODE.READ;
     if (!this.props.isAdmin) {
@@ -324,9 +325,8 @@ class ExerciseGrid extends React.PureComponent {
           break;
         }
       }
-      viewItem = this.state.rows.find(row => row.id === selection[0]);
       mode = MODE.VIEW;
-    } else if (!isCommandDown) {
+    } else if (!isMetaDown) {
       for (let i = 0; i < selection.length; i++) {
         if (selected.indexOf(selection[i]) === -1) {
           selection = [selection[i]];
@@ -334,6 +334,7 @@ class ExerciseGrid extends React.PureComponent {
         }
       }
     }
+    viewItem = this.state.rows.find(row => row.id === selection[0]);
     this.setState({ selection, viewItem, mode });
   };
 
@@ -382,6 +383,10 @@ class ExerciseGrid extends React.PureComponent {
     }   
   };
 
+  onViewClick = () => {
+    this.setState({ mode: MODE.VIEW });
+  };
+
   renderEditControls () {
     const { selection } = this.state;
     const { classes, isAdmin } = this.props;
@@ -400,6 +405,9 @@ class ExerciseGrid extends React.PureComponent {
               </Button>
               <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
                 <DeleteIcon />
+              </Button>
+              <Button variant="fab" disabled={selection.length === 0} aria-label="view" className={classes.button} onClick={this.onViewClick}>
+                <ViewIcon />
               </Button>
             </span>
           )

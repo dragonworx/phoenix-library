@@ -49,6 +49,7 @@ const KEYS = {
   UP: 38,
   DOWN: 40,
   TILDA: 192,
+  META: 'Meta',
 };
 
 const htmlNode = document.createElement('div');
@@ -182,7 +183,7 @@ class ClassesGrid extends React.PureComponent {
     const { isAdmin } = this.props;
     const ids = rows.map(row => row.id);
     ids.sort();
-    if (key === 'Meta') {
+    if (key === KEYS.META) {
       this.isMetaDown = false;
     } else if ((keyCode === KEYS.TILDA) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
@@ -249,7 +250,7 @@ class ClassesGrid extends React.PureComponent {
   };
 
   onViewClose = () => {
-    this.setState({ mode: MODE.READ, viewItem: null });
+    this.setState({ mode: MODE.READ });
   };
 
   onConfirmDeleteClose = async didAccept => {
