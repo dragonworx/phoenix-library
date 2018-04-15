@@ -197,7 +197,7 @@ export default withStyles(theme => ({
   toolbar: {
     position: "absolute",
     right: 28,
-    top: 0,
+    top: -4,
   },
   ordinal: {
     color: '#375ace',

@@ -34,7 +34,6 @@ class PingStatus extends React.Component {
 
     return (
       <div className={classes.root}>
-      <span className={classes.version}>v{VERSION}</span>
       <Tooltip title={title} placement="left">
         {
           isConnected
@@ -59,10 +58,4 @@ export default withStyles({
   offline: {
     color: 'red'
   },
-  version: {
-		top: 5,
-		right: 39,
-		position: 'absolute',
-		fontSize: '80%',
-  }
 })(PingStatus);

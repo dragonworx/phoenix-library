@@ -20,6 +20,9 @@ const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon 
 
 const drawerWidth = 180;
 
+// eslint-disable-next-line no-undef
+const VERSION = PHOENIX_LIB_VERSION;
+
 class MemberApp extends React.PureComponent {
   state = {};
 
@@ -44,8 +47,9 @@ class MemberApp extends React.PureComponent {
                 src="/img/icon/48x48.png"
                 className={classNames(classes.avatar, classes.bigAvatar)}
               /></a>
-              <Typography variant="title" color="inherit" noWrap>
-                Phoenix Pilates Library
+              <Typography variant="title" color="inherit" noWrap className={classes.titleContainer}>
+                <div className={classes.titleMain}>Phoenix Pilates</div>
+                <div className={classes.titleSub}>Exercise &amp; Class Library</div>
               </Typography>
               <HamburgerMenu isAdmin={true} className={classes.menu} options={menuOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
@@ -58,7 +62,7 @@ class MemberApp extends React.PureComponent {
             <Route exact path="/admin/classes" component={() => <TabsView  isAdmin={true} value={1} />}/>
           </main>
           <footer className={classes.footer}>
-            Phoenix Pilates Library &copy; 2018 All rights reserved. <a style={{ color: '#fff' }} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
+          <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 All rights reserved | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
           </footer>
         </div>
       </Router>
@@ -138,5 +142,20 @@ export default withStyles(theme => ({
 		boxSizing: 'border-box',
 		textAlign: 'center',
 		backgroundColor: 'rgba(44, 59, 76, 0.5)',
-  }
+  },
+  titleContainer: {
+    position: 'relative',
+    top: 1,
+    left: 8,
+  },
+  titleMain: {
+
+  },
+  titleSub: {
+    fontSize: '65%',
+    color: '#e5e5e5',
+  },
+  footerHighlight: {
+    color: '#fff',
+  },
 }))(MemberApp);
