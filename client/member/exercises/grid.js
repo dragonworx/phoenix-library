@@ -149,16 +149,21 @@ let defaultColumnWidths = [
   { columnName: 'springs', width: 200 },
   { columnName: 'description', width: 600 },
   { columnName: 'video', width: 150 },
+  { columnName: 'revision', width: 50 },
 ];
 
 let defaultHiddenColumnNames = ['video'];
 
 try {
-  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_1.0.column_widths']);
-  defaultHiddenColumnNames = JSON.parse(localStorage['phoenix_lib_1.0.hidden_columns']);
-} catch (e) {
-  console.warn('Could not load column widths: ' + String(e));
-}
+  defaultColumnWidths = JSON.parse(
+    localStorage["phoenix_lib_1.0.exercise.column.width"]
+  );
+} catch (e) {}
+try {
+  defaultHiddenColumnNames = JSON.parse(
+    localStorage["phoenix_lib_1.0.exercise.column.hidden"]
+  );
+} catch (e) {}
 
 class ExerciseGrid extends React.PureComponent {
   state = {
@@ -171,6 +176,7 @@ class ExerciseGrid extends React.PureComponent {
       { name: 'springs', title: 'Springs' },
       { name: 'description', title: 'Description' },
       { name: 'video', title: 'Video URL' },
+      { name: 'revision', title: 'Rev.' },
     ],
     rows: [],
     filteringStateColumnExtensions: [
@@ -344,6 +350,7 @@ class ExerciseGrid extends React.PureComponent {
       ...this.state.rows,
     ];
     addedRow.usage = usage;
+    addedRow.revision = 1;
     rows.push(addedRow);
     this.setState({ rows, selection: [addedRow.id] });
   };
@@ -361,6 +368,7 @@ class ExerciseGrid extends React.PureComponent {
     row.photo = savedRow.photo || row.photo;
     row.id = id;
     row.usage = usage;
+    row.revision = savedRow.revision;
     this.updateRowLabels(row, usage);
     this.setState({ rows, editItem: null, selection: [] });
   };
@@ -368,7 +376,7 @@ class ExerciseGrid extends React.PureComponent {
   onColumnWidthsChange = nextColumnWidths => {
     try {
       const data = JSON.stringify(nextColumnWidths);
-      localStorage['phoenix_lib_1.0.column_widths'] = data;
+      localStorage['phoenix_lib_1.0.exercise.column.width'] = data;
     } catch (e) {
       // ?
     }   
@@ -377,7 +385,7 @@ class ExerciseGrid extends React.PureComponent {
   onHiddenColumnNamesChange = hiddenColumnNames => {
     try {
       const data = JSON.stringify(hiddenColumnNames);
-      localStorage['phoenix_lib_1.0.hidden_columns'] = data;
+      localStorage['phoenix_lib_1.0.exercise.column.hidden'] = data;
     } catch (e) {
       // ?
     }   

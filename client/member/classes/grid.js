@@ -112,13 +112,21 @@ let defaultColumnWidths = [
   { columnName: 'durationSummary', width: 100 },
   { columnName: 'status', width: 200 },
   { columnName: 'notes', width: 200 },
+  { columnName: 'revision', width: 50 },
 ];
 
+let defaultHiddenColumnNames = ['notes'];
+
 try {
-  defaultColumnWidths = JSON.parse(localStorage['phoenix_lib_2.columns']);
-} catch (e) {
-  console.warn('Could not load column widths: ' + String(e));
-}
+  defaultColumnWidths = JSON.parse(
+    localStorage["phoenix_lib_1.0.exercise.column.width"]
+  );
+} catch (e) {}
+try {
+  defaultHiddenColumnNames = JSON.parse(
+    localStorage["phoenix_lib_1.0.exercise.column.hidden"]
+  );
+} catch (e) {}
 
 class ClassesGrid extends React.PureComponent {
   state = {
@@ -130,12 +138,13 @@ class ClassesGrid extends React.PureComponent {
       { name: 'durationSummary', title: 'Duration' },
       { name: 'status', title: 'Status' },
       { name: 'notes', title: 'Notes' },
+      { name: 'revision', title: 'Rev.' },
     ],
     rows: [],
     filteringStateColumnExtensions: [
       // { columnName: 'photo', filteringEnabled: false },
     ],
-    defaultHiddenColumnNames: ['notes'],
+    defaultHiddenColumnNames,
     defaultColumnWidths,
     nameColumns: ['name'],
     tooltipColumns: ['name', 'categorySummary', 'notes'],
@@ -313,7 +322,16 @@ class ClassesGrid extends React.PureComponent {
   onColumnWidthsChange = nextColumnWidths => {
     try {
       const data = JSON.stringify(nextColumnWidths);
-      localStorage['phoenix_lib_2.columns'] = data;
+      localStorage['phoenix_lib_1.0.exercise.column.width'] = data;
+    } catch (e) {
+      // ?
+    }   
+  };
+
+  onHiddenColumnNamesChange = hiddenColumnNames => {
+    try {
+      const data = JSON.stringify(hiddenColumnNames);
+      localStorage['phoenix_lib_1.0.exercise.column.hidden'] = data;
     } catch (e) {
       // ?
     }   
@@ -415,7 +433,7 @@ class ClassesGrid extends React.PureComponent {
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
           <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
-          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} />
+          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange} />
           <Toolbar />
           <ColumnChooser />
           <SearchPanel />

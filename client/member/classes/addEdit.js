@@ -90,10 +90,11 @@ class AddEdit extends React.Component {
 
     try {
       this.setState({ isSaving: true });
-      const { data: { id, categorySummary, durationSummary } } = await axios.post(`/class/${mode}`, cls);
+      const { data: { id, categorySummary, durationSummary, revision } } = await axios.post(`/class/${mode}`, cls);
       cls.id = id || cls.id;
       cls.categorySummary = categorySummary;
       cls.durationSummary = durationSummary;
+      cls.revision = revision;
       this.setState({ isSaving: false });
     } catch (e) {
       this.setState({ isSaving: false });

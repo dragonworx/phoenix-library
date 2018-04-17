@@ -1,6 +1,8 @@
 const log = require('./log');
 const api = require('./api');
 const readPermissions = require('../common/permissions');
+const PDFDocument = require('pdfkit');
+const path = require('path');
 
 function encodedUser (req) {
   const sessionUser = req.session.user;
@@ -81,7 +83,7 @@ module.exports = function (app) {
     log(req.url, isUnauthorised ? 'red' : 'green');
   
     if (isUnauthorised && !isAssetUrl) {
-      return res.redirect('/login');
+      return res.redirect('/login?next=' + req.url);
     }
   
     next();
@@ -247,7 +249,7 @@ module.exports = function (app) {
     const video = req.body.video;
     const usage = JSON.parse(req.body.usage);
     try {
-      await api.editExercise(
+      const revision = await api.editExercise(
         exerciseId,
         name,
         springs,
@@ -258,6 +260,7 @@ module.exports = function (app) {
       );
       res.sendJSON({
         id: exerciseId,
+        revision,
         photo: photo && photo.name,
       });
     } catch (error) {
@@ -283,5 +286,50 @@ module.exports = function (app) {
     } catch (error) {
       res.send500(error);
     }
+  });
+
+  app.get('/class/:classId', async (req, res) => {
+    // const id = parseInt(req.params.classId, 10);
+    // const cls = await api.getClass(id);
+    // res.sendJSON(cls);
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('Cache-Control', 'no-cache');
+    const doc = new PDFDocument();
+    doc.pipe(res);
+
+    // Embed a font, set the font size, and render some text
+    doc.font(path.resolve(__dirname, '../static/fonts/Roboto-Regular.ttf'))
+      .fontSize(25)
+      .text('Some text with an embedded font!', 100, 100);
+
+    //Add another page
+    doc.addPage()
+      .fontSize(25)
+      .text('Here is some vector graphics...', 100, 100);
+
+    // Draw a triangle
+    doc.save()
+      .moveTo(100, 150)
+      .lineTo(100, 250)
+      .lineTo(200, 250)
+      .fill("#FF3300");
+
+    // Apply some transforms and render an SVG path with the 'even-odd' fill rule
+    doc.scale(0.6)
+      .translate(470, -380)
+      .path('M 250,75 L 323,301 131,161 369,161 177,301 z')
+      .fill('red', 'even-odd')
+      .restore();
+
+    // Add some text with annotations
+    doc.addPage()
+      .fillColor("blue")
+      .text('Here is a link!', 100, 100)
+      .underline(100, 100, 160, 27, "#0000FF")
+      .link(100, 100, 160, 27, 'http://google.com/');
+
+    // Finalize PDF file
+    doc.end();
   });
 };

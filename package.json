@@ -9,7 +9,7 @@
     "server-dev": "nodemon ./server",
     "server-prod": "pm2 start ./server/index.js --name phoenix_lib",
     "hash": "node ./scripts/hash.js",
-    "test-query": "node ./scripts/query.js",
+    "dbadmin": "node ./scripts/db-admin.js",
     "test-api": "node ./scripts/api.js",
     "start": "yarn build-dev & yarn server-dev"
   },
@@ -43,6 +43,7 @@
     "material-ui-icons": "^1.0.0-beta.36",
     "morgan": "^1.9.0",
     "passport-custom": "^1.0.5",
+    "pdfkit": "^0.8.3",
     "pg": "^7.4.1",
     "pg-hstore": "^2.3.2",
     "react": "16.3.1",

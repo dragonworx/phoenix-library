@@ -7,4 +7,5 @@ module.exports = (sql, SQL) => sql.define('class', {
   notes: { type: SQL.TEXT },
   categorySummary: { type: SQL.TEXT },
   durationSummary: { type: SQL.INTEGER },
+  revision: { type: SQL.TEXT, defaultValue: 1 },
 });

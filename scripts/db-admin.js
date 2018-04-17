@@ -1,8 +1,9 @@
 const database = require('../server/database');
 const model = require('../server/model');
 const log = require('../server/log');
+const Sequelize = require('sequelize');
 
-database.then(() => {
+database.then(async () => {
   function installRoot () {
     model.User.create({
       firstName: 'Liz',
@@ -69,8 +70,35 @@ database.then(() => {
     ]);
   }
 
+  async function addRevisions () {
+    const Op = Sequelize.Op;
+    await model.Class.update(
+      { revision: 1 },
+      { 
+        where: {
+          id: {
+            [Op.gt]: 1
+          }
+        }
+      }
+    );
+    await model.Exercise.update(
+      { revision: 1 },
+      { 
+        where: {
+          id: {
+            [Op.gt]: 1
+          }
+        }
+      }
+    );
+  }
+
   // installRoot ();
   // installLabels();
   // importExercises();
-  addTemplates();
+  // addTemplates();
+  await addRevisions();
+  log('Ok');
+  process.exit(0);
 });

@@ -116,15 +116,15 @@ class AddEdit extends React.Component {
 
   handleSave = () => {
     const { mode, editItem } = this.props;
-    const values = this.values;
+    const exercise = this.values;
     const usage = this.getSelectedLabels();
     trimUsage(usage);
     const data = new FormData();
-    data.append('name', values.name);
-    data.append('springs', values.springs);
-    data.append('description', values.description);
-    data.append('photo', values.photo);
-    data.append('video', values.video);
+    data.append('name', exercise.name);
+    data.append('springs', exercise.springs);
+    data.append('description', exercise.description);
+    data.append('photo', exercise.photo);
+    data.append('video', exercise.video);
     data.append('usage', JSON.stringify(usage));
     if (mode === MODE.EDIT && editItem) {
       data.append('id', editItem.id);
@@ -134,16 +134,17 @@ class AddEdit extends React.Component {
       headers: { 'content-type': 'multipart/form-data' }
     }).then(res => {
       setTimeout(() => {
-        values.id = res.data.id;
+        exercise.id = res.data.id;
+        exercise.revision = res.data.revision;
         if (res.data.photo) {
-          values.photo = res.data.photo;
+          exercise.photo = res.data.photo;
         }
         this.setState({ open: false, isSaving: false });
         this.props.onClose();
         if (mode === MODE.ADD) {
-          this.props.onAdded(values, usage);
+          this.props.onAdded(exercise, usage);
         } else {
-          this.props.onSaved(values, usage);
+          this.props.onSaved(exercise, usage);
         }
       }, ACCEPT_DELAY);
     }).catch(() => {

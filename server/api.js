@@ -54,11 +54,16 @@ module.exports = {
 
     const exerciseById = hashById(exercises);
 
-    let labels = await model.Label.findAll(/*{ order: Sequelize.col('name') }*/);
-    labels = labels.map(label => label.get(PLAIN));
+    let labels = await model.Label.findAll({ raw: true });
+    // labels = labels.map(label => label.get(PLAIN));
     const labelsById = hashById(labels);
     const exerciseLabelsPerExercise = await Promise.all(exercises.map(
-        exercise => model.ExerciseLabel.findAll({ where: { exerciseId: exercise.id }})
+        exercise => model.ExerciseLabel.findAll({
+          where: {
+            exerciseId: exercise.id
+          },
+          raw: true
+        })
       )
     );
 
@@ -125,6 +130,21 @@ module.exports = {
     return classes;
   },
 
+  async getClass (id) {
+    const cls = await model.Class.findOne({
+      where: {
+        id
+      },
+      raw: true
+    });
+    if (!cls) {
+      throw new Error('Class not found: ' + id);
+    }
+    log(cls);
+    cls.program = await this.getClassProgram(id);
+    return cls;
+  },
+
   async getLabels (type) {
     let labels = await model.Label.findAll({ where: { type }, raw: true/*, order: Sequelize.col('name')*/ });
     return labels;
@@ -180,7 +200,14 @@ module.exports = {
   },
 
   async addExercise (name, springs, description, photo, video, usage) {
-    const exercise = await model.Exercise.create({ name, springs, description, video });
+    const exercise = await model.Exercise.create({
+      name, 
+      springs, 
+      description, 
+      video,
+      revision: 1,
+    });
+
     const exerciseId = exercise.id;
     
     await this.createExerciseLabels(exerciseId, usage);
@@ -197,17 +224,33 @@ module.exports = {
 
   async editExercise (exerciseId, name, springs, description, photo, video, usage) {
     // update exercise
-    const exercise = await model.Exercise.findOne({ where: { id: exerciseId }});
-    exercise.set({ name, springs, description, video });
+    const exercise = await model.Exercise.findOne({
+      where: {
+        id: exerciseId
+      }
+    });
+
+    exercise.set({
+      name,
+      springs,
+      description,
+      video,
+      revision: exercise.revision + 1
+    });
 
     // destroy labels, re-create
-    await model.ExerciseLabel.destroy({ where: { exerciseId }});
+    await model.ExerciseLabel.destroy({
+      where: {
+        exerciseId
+      }
+    });
+
     await this.createExerciseLabels(exerciseId, usage);
 
     // save with no photo changes
     if (!photo) {
       exercise.save();
-      return exerciseId;
+      return exercise.revision;
     }
 
     // save with photo changes
@@ -215,7 +258,7 @@ module.exports = {
     exercise.photo = photo.name;
     exercise.save();
 
-    return exerciseId;
+    return exercise.revision;
   },
 
   async deleteExercises (ids) {
@@ -358,6 +401,7 @@ module.exports = {
       categorySummary: categorySummary.join(','),
       durationSummary,
       notes: cls.notes, 
+      revision: 1,
     });
 
     await Promise.all(cls.categories.map(async category => {
@@ -404,6 +448,7 @@ module.exports = {
     existingCls.categorySummary = categorySummary.join(',');
     existingCls.durationSummary = durationSummary;
     existingCls.notes = cls.notes;
+    existingCls.revision = existingCls.revision + 1;
     await existingCls.save();
 
     await this.deleteClassProgram([cls.id]);
@@ -430,6 +475,7 @@ module.exports = {
     return {
       categorySummary: existingCls.categorySummary,
       durationSummary: durationSummary,
+      revision: existingCls.revision,
     };
   },
 
