@@ -52,10 +52,23 @@ const KEYS = {
   META: 'Meta',
 };
 
+const STATUS = {
+  0: 'Submitted',
+  1: 'Enabled',
+  2: 'Disabled',
+};
+
 const htmlNode = document.createElement('div');
 
 const NameFormatter = ({ row }) => {
-  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span>{row.name}</label></Tooltip>;
+  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span><a href={`/class/${row.id}`} target="_blank" onClick={e => {
+    window.open('/class/' + row.id);
+    e.persist();
+    e.preventDefault();
+    e.cancel = true;
+    e.stopPropagation();
+    return false;
+  }}>{row.name}</a></label></Tooltip>;
 };
 
 const NameTypeProvider = props => (
@@ -84,6 +97,28 @@ const DurationFormatter = ({ value }) => {
 const DurationTypeProvider = props => (
   <DataTypeProvider
     formatterComponent={DurationFormatter}
+    {...props}
+  />
+);
+
+const StatusFormatter = ({ value }) => {
+  return <span>{STATUS[value]}</span>;
+};
+
+const StatusTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={StatusFormatter}
+    {...props}
+  />
+);
+
+const GenreFormatter = ({ row }) => {
+  return <span>{ClassesGrid.labels.find(label => label.id === row.genreId).name}</span>;
+};
+
+const GenreTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={GenreFormatter}
     {...props}
   />
 );
@@ -133,7 +168,7 @@ class ClassesGrid extends React.PureComponent {
     mode: MODE.LOADING,
     columns: [
       { name: 'name', title: 'Name' },
-      { name: 'genre', title: 'Genre', getCellValue: row => ClassesGrid.labels.find(label => label.id = row.genreId).name },
+      { name: 'genre', title: 'Genre' },
       { name: 'categorySummary', title: 'Movement Cats.' },
       { name: 'durationSummary', title: 'Duration' },
       { name: 'status', title: 'Status' },
@@ -147,9 +182,11 @@ class ClassesGrid extends React.PureComponent {
     defaultHiddenColumnNames,
     defaultColumnWidths,
     nameColumns: ['name'],
-    tooltipColumns: ['name', 'categorySummary', 'notes'],
+    tooltipColumns: ['categorySummary', 'notes'],
+    genreColumns: ['genre'],
     htmlColumns: ['notes'],
     durationColumns: ['durationSummary'],
+    statusColumns: ['status'],
     selection: [],
     editItem: null,
     viewItem: null,
@@ -382,6 +419,8 @@ class ClassesGrid extends React.PureComponent {
       mode,
       htmlColumns,
       durationColumns,
+      statusColumns,
+      genreColumns,
       tooltipColumns,
       nameColumns,
       selection,
@@ -411,6 +450,8 @@ class ClassesGrid extends React.PureComponent {
           <TooltipTypeProvider for={tooltipColumns} />
           <HTMLTypeProvider for={htmlColumns} />
           <DurationTypeProvider for={durationColumns} />
+          <StatusTypeProvider for={statusColumns} />
+          <GenreTypeProvider for={genreColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
           <SearchState />

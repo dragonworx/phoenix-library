@@ -17,6 +17,7 @@ import Input from 'material-ui/Input';
 import AppBar from 'material-ui/AppBar';
 import Typography from 'material-ui/Typography';
 import Grid from 'material-ui/Grid';
+import Select from 'material-ui/Select';
 import { withStyles } from "material-ui/styles";
 import axios from 'axios';
 import SaveButton from '../../common/saveButton';
@@ -73,7 +74,7 @@ class AddEdit extends React.Component {
       createdBy: user.id,
       name: className,
       categories: program,
-      status: 'Submitted',
+      status: editItem ? editItem.status : 0,
       notes,
     };
 
@@ -172,6 +173,12 @@ class AddEdit extends React.Component {
     this.setState({ program });
   };
 
+  handleStatusChange = e => {
+    const value = e.target.value;
+    this.props.editItem.status = value;
+    this.setState({ value: this.state.value });
+  };
+
   render () {
     const { classes } = this.props;
     const { className, program } = this.state;
@@ -203,7 +210,7 @@ class AddEdit extends React.Component {
 
   renderContent () {
     const { addCategories, addCategoriesTarget, isSaving, program } = this.state;
-    const { classes, genreId } = this.props;
+    const { classes, genreId, editItem } = this.props;
     const duration = program.reduce((duration, category) => duration + category.exercises.reduce((duration, exercise) => duration + exercise.duration, 0), 0);
 
     return (
@@ -257,6 +264,24 @@ class AddEdit extends React.Component {
           </Grid>
         </DialogContent>
         <DialogActions classes={{ root: classes.actions }}>
+          {
+            editItem
+              ? (
+                <div style={{ position: 'absolute', left: 20 }}>
+                <FormLabel style={{ display: 'inline-block' }} component="legend">Status</FormLabel>
+                  <Select
+                    value={editItem.status}
+                    onChange={this.handleStatusChange}
+                    input={<Input name="status" id="status" />}
+                  >
+                    <MenuItem value={0}>Submitted</MenuItem>
+                    <MenuItem value={1}>Enabled</MenuItem>
+                    <MenuItem value={2}>Disabled</MenuItem>
+                  </Select>
+                </div>
+              )
+              : null
+          }
           <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
             Cancel
           </Button>

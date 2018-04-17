@@ -4,14 +4,12 @@ const log = require('./log');
 const storage = require('./storage');
 const model = require('./model');
 const { clone } = require('../client/common/util');
-
 const Op = Sequelize.Op;
+// const PLAIN = { plain: true };
 
-const PLAIN = { plain: true };
-
-const CLASS_MODE = {
-  SUBMITTED: 'submitted',
-};
+// const CLASS_MODE = {
+//   SUBMITTED: 'submitted',
+// };
 
 function hashById (rows) {
   const hash = {};
@@ -98,8 +96,8 @@ module.exports = {
     exercise.movement = [];
     exercise.usage = {};
 
-    let labels = await model.Label.findAll();
-    labels = labels.map(label => label.get(PLAIN));
+    let labels = await model.Label.findAll({ raw: true });
+    // labels = labels.map(label => label.get(PLAIN));
     const labelsById = hashById(labels);
     const exerciseLabels = await model.ExerciseLabel.findAll({ where: { exerciseId: exercise.id }});
 
@@ -448,6 +446,7 @@ module.exports = {
     existingCls.categorySummary = categorySummary.join(',');
     existingCls.durationSummary = durationSummary;
     existingCls.notes = cls.notes;
+    existingCls.status = cls.status;
     existingCls.revision = existingCls.revision + 1;
     await existingCls.save();
 
