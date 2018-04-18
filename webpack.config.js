@@ -66,16 +66,20 @@ const prodConfig = (entry, outfile) => {
   return {
     ...defaultConfig(entry, outfile),
     plugins: [
-      new uglifyJsPlugin({
+      /*new uglifyJsPlugin({
         compress: {
           warnings: false
         }
-      }),
+      }),*/
       new webpack.DefinePlugin({
         PHOENIX_LIB_ENV: JSON.stringify('prod'),
         PHOENIX_LIB_STORAGE: JSON.stringify(PHOENIX_LIB_STORAGE + 'phoenix_lib/prod/excelsior/'),
         PHOENIX_LIB_VERSION: JSON.stringify(PHOENIX_LIB_VERSION),
       }),
+      new WebpackPreBuildPlugin((/*stats*/) => {
+        log(`${PHOENIX_LIB_VERSION} Build started @ ` + (new Date().toLocaleTimeString()) + ' ...', 'green');
+      }),
+      new CleanWebpackPlugin(['static/dist/*.js', 'static/dist/*.map']),
     ]
   };
 };

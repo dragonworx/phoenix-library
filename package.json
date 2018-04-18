@@ -5,6 +5,7 @@
   "main": "client/main.jsx",
   "scripts": {
     "build-dev": "PHOENIX_LIB_ENV=dev webpack --watch",
+    "build-local": "PHOENIX_LIB_ENV=dev webpack",
     "build-prod": "webpack",
     "server-dev": "nodemon ./server",
     "server-prod": "pm2 start ./server/index.js --name phoenix_lib",
