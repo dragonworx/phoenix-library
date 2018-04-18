@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const WebpackBuildNotifierPlugin = require('webpack-build-notifier');
 const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackPreBuildPlugin = require('pre-build-webpack');
 const uglifyJsPlugin = webpack.optimize.UglifyJsPlugin;
 const log = require('./server/log');
@@ -15,7 +16,7 @@ const defaultConfig = (entryFile, outputFile) => ({
   devtool: 'source-map',
   entry: [/*'babel-polyfill', */path.resolve(__dirname, entryFile)],
   output: {
-    path: path.resolve(__dirname, 'static'),
+    path: path.resolve(__dirname, 'static', 'dist'),
     publicPath: '/',
     filename: outputFile
   },
@@ -54,6 +55,7 @@ const devConfig = (entry, outfile) => {
       new WebpackPreBuildPlugin((/*stats*/) => {
         log(`${PHOENIX_LIB_VERSION} Build started @ ` + (new Date().toLocaleTimeString()) + ' ...', 'green');
       }),
+      new CleanWebpackPlugin(['static/dist/*.js', 'static/dist/*.map']),
     ]
   };
 };

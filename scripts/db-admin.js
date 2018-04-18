@@ -97,8 +97,9 @@ database.then(async () => {
   // installRoot ();
   // installLabels();
   // importExercises();
-  // addTemplates();
+  await addTemplates();
   await addRevisions();
+  
   log('Ok');
   process.exit(0);
 });

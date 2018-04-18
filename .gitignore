@@ -47,6 +47,6 @@ lib
 # Editor
 .idea
 
-static/*-bundle.js
-static/*-bundle.js.map
+static/dist/*.js
+static/dist/*.map
 log.txt

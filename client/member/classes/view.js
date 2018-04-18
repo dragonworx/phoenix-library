@@ -16,7 +16,9 @@ import Lightbox from '../../common/lightbox';
 import { textToSprings } from '../exercises/grid';
 
 const styles = theme => ({
-  
+  root: {
+    padding: 20,
+  }
 });
 
 class ViewClass extends React.Component {
@@ -39,7 +41,7 @@ class ViewClass extends React.Component {
   };
 
   render () {
-    // const { viewItem, classes } = this.props;
+    const { viewItem, classes} = this.props;
 
     return (
       <Dialog
@@ -51,7 +53,12 @@ class ViewClass extends React.Component {
         disableEscapeKeyDown={false}
         disableBackdropClick={false}
         >
-        <p>{this.props.viewItem.name}</p>
+        <div className={classes.root}>
+          <h1>{viewItem.name}</h1>
+          <p>Coming soon</p>
+          <p>Viewable classes under construction, check back soon!</p>
+          <p onClick={this.handleClose}><a href='javascript:void(0)'>(Click / Esc to close)</a></p>
+        </div>
       </Dialog>
     );
   }

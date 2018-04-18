@@ -59,7 +59,7 @@ class PrintedClass {
   createFooter () {
     this.doc
       // .moveTo(0, 0)
-      .image(path.resolve(__dirname, 'print/bg.png'))
+      // .image(path.resolve(__dirname, 'print/bg.png'))
       .moveTo(0, 0)
       .fontSize(24)
       // .moveTo(76, 27)
@@ -68,7 +68,12 @@ class PrintedClass {
       // .fill('red')
       // .rect(marginX(0), marginY(0), marginX(1), marginY(1))
       // .fill('blue');
-      .text(this.cls.name);
+      .text(this.cls.name)
+      .fontSize(16)
+      .text('Coming soon...')
+      .fontSize(12)
+      .text('Printable classes currently under development, check back soon...');
+      
     log(this.doc.x + ':' + this.doc.y);
   }
 
