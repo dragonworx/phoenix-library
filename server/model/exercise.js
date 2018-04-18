@@ -5,5 +5,5 @@ module.exports = (sql, SQL) => sql.define('exercise', {
   springs: { type: SQL.TEXT },
   photo: { type: SQL.TEXT },
   video: { type: SQL.TEXT },
-  revision: { type: SQL.TEXT, defaultValue: 1 },
+  revision: { type: SQL.INTEGER, defaultValue: 1 },
 });
