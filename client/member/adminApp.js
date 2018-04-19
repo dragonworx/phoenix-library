@@ -42,11 +42,13 @@ class MemberApp extends React.PureComponent {
         <div className={classes.root}>
           <AppBar position="absolute" className={classes.appBar}>
             <Toolbar>
-              <a href="/"><Avatar
-                alt={`${user.firstName} ${user.lastName}`}
-                src="/img/icon/48x48.png"
-                className={classNames(classes.avatar, classes.bigAvatar)}
-              /></a>
+              <a href="/">
+                <Avatar
+                  alt={`${user.firstName} ${user.lastName}`}
+                  src="/img/icon/48x48.png"
+                  className={classNames(classes.avatar, classes.bigAvatar)}
+                />
+              </a>
               <Typography variant="title" color="inherit" noWrap className={classes.titleContainer}>
                 <div className={classes.titleMain}>Phoenix Pilates</div>
                 <div className={classes.titleSub}>Exercise &amp; Class Library</div>

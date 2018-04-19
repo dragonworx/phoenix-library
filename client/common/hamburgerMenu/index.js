@@ -36,7 +36,7 @@ class HamburgerMenu extends React.Component {
   };
 
   render() {
-    const { options = [], selectedIndex = -1, itemHeight = 48, isAdmin } = this.props;
+    const { options = [], selectedIndex = -1, itemHeight = 48, showUser, isAdmin } = this.props;
     const { anchorEl } = this.state;
 
     return (
@@ -61,19 +61,27 @@ class HamburgerMenu extends React.Component {
             },
           }}
         >
-          <MenuItem style={{backgroundColor: isAdmin ? 'blue' : 'orange', color: 'rgb(192, 249, 248)', position: 'relative'}}>
-            <span style={{fontSize: '90%', marginRight: 10}}>{user.firstName} {user.lastName.charAt(0).toUpperCase() + '.'}</span>
-            <span style={{position: 'absolute', top: 11, right: 6}}>
-              <a title={`You have ${permissions.toString(0)} permissions for exercises`}><ExerciseIcon style={exerciseStyle} /></a>&nbsp;
-              <a title={`You have ${permissions.toString(1)} permissions for classes`}><ClassIcon style={classStyle} /></a>&nbsp;
-              <a title={`You have ${permissions.toString(2)} permissions for users`}><UserIcon style={userStyle} /></a>
-            </span>
-          </MenuItem>
-          {options.map(({ value, label }, i) => (
-            <MenuItem key={value} selected={i === selectedIndex} onClick={() => this.handleClose(value)}>
-              {label}
-            </MenuItem>
-          ))}
+          {
+            showUser
+              ? (
+                <MenuItem style={{backgroundColor: isAdmin ? 'blue' : 'orange', color: 'rgb(192, 249, 248)', position: 'relative'}}>
+                  <span style={{fontSize: '90%', marginRight: 10}}>{user.firstName} {user.lastName.charAt(0).toUpperCase() + '.'}</span>
+                  <span style={{position: 'absolute', top: 11, right: 6}}>
+                    <a title={`You have ${permissions.toString(0)} permissions for exercises`}><ExerciseIcon style={exerciseStyle} /></a>&nbsp;
+                    <a title={`You have ${permissions.toString(1)} permissions for classes`}><ClassIcon style={classStyle} /></a>&nbsp;
+                    <a title={`You have ${permissions.toString(2)} permissions for users`}><UserIcon style={userStyle} /></a>
+                  </span>
+                </MenuItem>
+              )
+              : null
+          }
+          {
+            options.map(({ value, label }, i) => (
+              <MenuItem key={value} selected={i === selectedIndex} onClick={() => this.handleClose(value)}>
+                {label}
+              </MenuItem>
+            ))
+          }
         </Menu>
       </div>
     );
