@@ -452,7 +452,7 @@ class ExerciseGrid extends React.PureComponent {
     if (mode === MODE.LOADING) {
       return (
         <Paper>
-          <LinearProgress />
+          <LinearProgress classes={{ colorPrimary: classes.progressFG, barColorPrimary: classes.progressBG }} />
         </Paper>
       );
     };
@@ -543,5 +543,11 @@ export default withStyles(theme => ({
 		color: '#254779',
 		fontWeight: 'bold',
 		fontSize: '110%',
-  }
+  },
+  progressFG: {
+    backgroundColor: '#2aff48',
+  },
+  progressBG: {
+    backgroundColor: '#fff',
+  },
 }))(ExerciseGrid);

@@ -12509,7 +12509,7 @@ var ViewExercise = function (_React$Component) {
       var lightboxOpen = this.state.lightboxOpen;
       // eslint-disable-next-line no-undef
 
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_full.png';
 
       return _react2.default.createElement(
         'div',
@@ -12548,7 +12548,7 @@ var ViewExercise = function (_React$Component) {
 
       // eslint-disable-next-line no-undef
 
-      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
+      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
 
       // const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
       // const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
@@ -19754,7 +19754,7 @@ var ExerciseGrid = function (_React$PureComponent) {
         return React.createElement(
           _Paper2.default,
           null,
-          React.createElement(_Progress.LinearProgress, null)
+          React.createElement(_Progress.LinearProgress, { classes: { colorPrimary: classes.progressFG, barColorPrimary: classes.progressBG } })
         );
       };
 
@@ -19837,6 +19837,12 @@ exports.default = (0, _styles.withStyles)(function (theme) {
       color: '#254779',
       fontWeight: 'bold',
       fontSize: '110%'
+    },
+    progressFG: {
+      backgroundColor: '#2aff48'
+    },
+    progressBG: {
+      backgroundColor: '#fff'
     }
   };
 })(ExerciseGrid);
@@ -41489,7 +41495,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "0.8.1";
+var VERSION = "0.9.1";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -41634,7 +41640,7 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -41866,9 +41872,9 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_full.png';
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -43277,7 +43283,7 @@ var ClassExercise = function (_React$Component) {
       var exercises = category.exercises;
       // eslint-disable-next-line no-undef
 
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
       var i = exercise.index;
 
 
@@ -44871,14 +44877,16 @@ var ClassesGrid = function (_React$PureComponent) {
           genres = _state.genres,
           selectedGenre = _state.selectedGenre,
           gridHeight = _state.gridHeight;
-      var isAdmin = this.props.isAdmin;
+      var _props2 = this.props,
+          isAdmin = _props2.isAdmin,
+          classes = _props2.classes;
 
 
       if (mode === MODE.LOADING) {
         return React.createElement(
           _Paper2.default,
           null,
-          React.createElement(_Progress.LinearProgress, null)
+          React.createElement(_Progress.LinearProgress, { classes: { colorPrimary: classes.progressFG, barColorPrimary: classes.progressBG } })
         );
       };
 
@@ -44958,6 +44966,12 @@ exports.default = (0, _styles.withStyles)(function (theme) {
     },
     pointer: {
       cursor: 'pointer'
+    },
+    progressFG: {
+      backgroundColor: '#2aff48'
+    },
+    progressBG: {
+      backgroundColor: '#fff'
     }
   };
 })(ClassesGrid);
@@ -45244,7 +45258,7 @@ var SelectExercises = function (_React$Component) {
 
       var count = exercises.length;
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
 
       return _react2.default.createElement(
         _Dialog2.default,
@@ -46908,35 +46922,54 @@ var TabsView = function (_React$Component) {
 
       var ExercisesTab = (0, _reactRouterDom.withRouter)(function (_ref) {
         var history = _ref.history;
-        return _react2.default.createElement(_Tabs.Tab, { style: { opacity: value === 0 ? 1 : 0.7 }, onClick: function onClick() {
+        return _react2.default.createElement(_Tabs.Tab, {
+          style: { opacity: value === 0 ? 1 : 0.7 },
+          onClick: function onClick() {
             return history.push((isAdmin ? '/admin/' : '/') + 'exercises');
-          }, label: _react2.default.createElement(
+          },
+          label: _react2.default.createElement(
             'span',
             null,
-            _react2.default.createElement(_Dns2.default, { className: classes.icon }),
+            _react2.default.createElement(_Dns2.default, {
+              className: classes.icon }),
             'Exercises',
             _react2.default.createElement(
               _Badge2.default,
-              { className: classes.margin, badgeContent: exerciseCount, color: 'primary', classes: { colorPrimary: classes.badge } },
+              {
+                className: classes.margin,
+                badgeContent: exerciseCount,
+                color: 'primary',
+                classes: { colorPrimary: classes.badge } },
               '\xA0'
             )
-          ) });
+          )
+        });
       });
+
       var ClassesTab = (0, _reactRouterDom.withRouter)(function (_ref2) {
         var history = _ref2.history;
-        return _react2.default.createElement(_Tabs.Tab, { style: { opacity: value === 1 ? 1 : 0.7 }, onClick: function onClick() {
+        return _react2.default.createElement(_Tabs.Tab, {
+          style: { opacity: value === 1 ? 1 : 0.7 },
+          onClick: function onClick() {
             return history.push((isAdmin ? '/admin/' : '/') + 'classes');
-          }, label: _react2.default.createElement(
+          },
+          label: _react2.default.createElement(
             'span',
             null,
-            _react2.default.createElement(_Assignment2.default, { className: classes.icon }),
+            _react2.default.createElement(_Assignment2.default, {
+              className: classes.icon }),
             'Classes',
             _react2.default.createElement(
               _Badge2.default,
-              { className: classes.margin, badgeContent: classCount, color: 'primary', classes: { colorPrimary: classes.badge } },
+              {
+                className: classes.margin,
+                badgeContent: classCount,
+                color: 'primary',
+                classes: { colorPrimary: classes.badge } },
               '\xA0'
             )
-          ) });
+          )
+        });
       });
 
       return _react2.default.createElement(
@@ -46947,7 +46980,7 @@ var TabsView = function (_React$Component) {
           { position: 'static' },
           _react2.default.createElement(
             _Tabs2.default,
-            { value: value, onChange: this.handleChange },
+            { value: value, onChange: this.handleChange, classes: { indicator: classes.indicator } },
             _react2.default.createElement(ExercisesTab, null),
             _react2.default.createElement(ClassesTab, null)
           )
@@ -46980,6 +47013,9 @@ exports.default = (0, _styles.withStyles)(function (theme) {
     },
     badge: {
       backgroundColor: '#f6bf18'
+    },
+    indicator: {
+      backgroundColor: '#fff'
     }
   };
 })(TabsView);

@@ -40,13 +40,34 @@ class TabsView extends React.Component {
     const { classes, isAdmin } = this.props;
     const { value, exerciseCount, classCount } = this.state;
 
-    const ExercisesTab = withRouter(({ history }) => <Tab style={{opacity:value === 0 ? 1 : 0.7}} onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}exercises`)} label={<span><ExerciseIcon className={classes.icon} />Exercises<Badge className={classes.margin} badgeContent={exerciseCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
-    const ClassesTab = withRouter(({ history }) => <Tab style={{opacity:value === 1 ? 1 : 0.7}} onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}classes`)} label={<span><ClassIcon className={classes.icon} />Classes<Badge className={classes.margin} badgeContent={classCount} color="primary" classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} /> );
+    const ExercisesTab = withRouter(
+      ({ history }) => <Tab 
+        style={{opacity:value === 0 ? 1 : 0.7}} 
+        onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}exercises`)} 
+        label={<span><ExerciseIcon 
+        className={classes.icon} />Exercises<Badge 
+        className={classes.margin} 
+        badgeContent={exerciseCount} 
+        color="primary" 
+        classes={{ colorPrimary: classes.badge}}>&nbsp;</Badge></span>} 
+      /> );
+
+    const ClassesTab = withRouter(
+      ({ history }) => <Tab 
+        style={{opacity:value === 1 ? 1 : 0.7}} 
+        onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}classes`)} 
+        label={<span><ClassIcon 
+        className={classes.icon} />Classes<Badge 
+        className={classes.margin} 
+        badgeContent={classCount} 
+        color="primary" 
+        classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} 
+      /> );
 
     return (
       <div className={classes.root}>
         <AppBar position="static">
-          <Tabs value={value} onChange={this.handleChange}>
+          <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
             <ExercisesTab />
             <ClassesTab />
           </Tabs>
@@ -75,5 +96,8 @@ export default withStyles(theme => ({
   },
   badge: {
     backgroundColor: '#f6bf18',
+  },
+  indicator: {
+    backgroundColor: '#fff',
   }
 }))(TabsView);

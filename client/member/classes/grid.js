@@ -432,12 +432,12 @@ class ClassesGrid extends React.PureComponent {
       gridHeight,
     } = this.state;
 
-    const { isAdmin } = this.props;
+    const { isAdmin, classes } = this.props;
 
     if (mode === MODE.LOADING) {
       return (
         <Paper>
-          <LinearProgress />
+          <LinearProgress classes={{ colorPrimary: classes.progressFG, barColorPrimary: classes.progressBG }} />
         </Paper>
       );
     };
@@ -533,5 +533,11 @@ export default withStyles(theme => ({
   },
   pointer: {
     cursor: 'pointer',
-  }
+  },
+  progressFG: {
+    backgroundColor: '#2aff48',
+  },
+  progressBG: {
+    backgroundColor: '#fff',
+  },
 }))(ClassesGrid);
