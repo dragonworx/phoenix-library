@@ -14,14 +14,12 @@ import PingStatus from '../common/ping';
 import TabsView from './tabView';
 import LogoutIcon from 'material-ui-icons/PowerSettingsNew';
 import HamburgerMenu from '../common/hamburgerMenu';
-import { user } from './session';
-
-const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon style={{ verticalAlign: 'bottom', marginRight: 10 }} /> Logout</span> };
-
-const drawerWidth = 180;
+import { user, permissions } from './session';
 
 // eslint-disable-next-line no-undef
 const VERSION = PHOENIX_LIB_VERSION;
+const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon style={{ verticalAlign: 'bottom', marginRight: 10 }} /> Logout</span> };
+const drawerWidth = 180;
 
 class MemberApp extends React.PureComponent {
   state = {};
@@ -34,7 +32,6 @@ class MemberApp extends React.PureComponent {
 
   render () {
     const { classes } = this.props;
-  
     const menuOptions = [ logoutMenuItem ];
 
     return (
@@ -60,8 +57,8 @@ class MemberApp extends React.PureComponent {
           <main className={classes.content}>
             <div className={classes.toolbar} />
             <Route exact path="/admin" component={() => <TabsView isAdmin={true} value={0} />}/>
-            <Route exact path="/admin/exercises" component={() => <TabsView isAdmin={true} value={0} />}/>
-            <Route exact path="/admin/classes" component={() => <TabsView  isAdmin={true} value={1} />}/>
+            <Route exact path="/admin/exercises" component={() => <TabsView isAdmin={true} value={permissions.adminSections.EXERCISES} />}/>
+            <Route exact path="/admin/classes" component={() => <TabsView  isAdmin={true} value={permissions.adminSections.CLASSES} />}/>
           </main>
           <footer className={classes.footer}>
           <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 All rights reserved | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>

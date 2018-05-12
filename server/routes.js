@@ -60,12 +60,13 @@ module.exports = function (app) {
 
   app.post('/login', async (req, res) => {
     const user = await api.login(req.body.email, req.body.password);
-    if (user) {
+    const isForbidden = user && readPermissions(user.permissions).isForbidden;
+    if (user && !isForbidden) {
       log('user found: ' + JSON.stringify(user), 'green');
       req.session.user = user;
     } else {
       log('user not found', 'red');
-      res.status(401);
+      res.status(isForbidden ? 403 : 401);
     }
     res.end();
   });
@@ -74,7 +75,7 @@ module.exports = function (app) {
 
   app.use((req, res, next) => {  
     const user = req.session.user;
-    const isAdmin = !!(user && readPermissions(user.permissions).isAdmin);
+    const isAdmin = user && readPermissions(user.permissions).isAdmin;
     const isUnauthorised = (req.url.match('^\/admin') && !isAdmin) || !user
       || (req.url === '/' && !user);
     const isAssetUrl = !!req.url.match(/\.[a-z]+$/);
@@ -93,15 +94,28 @@ module.exports = function (app) {
   });
 
   app.get('/admin/exercises', (req, res) => {
-    res.render('admin', { user: encodedUser(req) });
+    const user = req.session.user;
+    const permissions = readPermissions(user.permissions);
+    if (permissions.isExerciseReadOnly) {
+      res.redirect('/admin');
+    } else {
+      res.render('admin', { user: encodedUser(req) });
+    }
   });
 
   app.get('/admin/classes', (req, res) => {
-    res.render('admin', { user: encodedUser(req) });
+    const user = req.session.user;
+    const permissions = readPermissions(user.permissions);
+    if (permissions.isExerciseReadOnly) {
+      res.redirect('/admin');
+    } else {
+      res.render('admin', { user: encodedUser(req) });
+    }
   });
 
   app.get('/admin/land', (req, res) => {
-    res.redirect('/admin/classes');
+    // res.redirect('/admin/classes');
+    res.redirect('/');
   });
 
   app.get('/', (req, res) => {

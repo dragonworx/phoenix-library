@@ -7805,7 +7805,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LICENCED_TO = 'Excelsior™ Studios Erina';
 
 // eslint-disable-next-line no-undef
-var VERSION = "0.9.1";
+var VERSION = "0.8.1";
 
 var Login = function (_React$Component) {
   (0, _inherits3.default)(Login, _React$Component);
@@ -7819,7 +7819,8 @@ var Login = function (_React$Component) {
       email: 'magnoliasoup@gmail.com',
       password: 'Copacabana1',
       isValid: false,
-      loginFail: false
+      loginFail: false,
+      status: null
     };
 
     _this.onEmailChange = function (event) {
@@ -7849,11 +7850,11 @@ var Login = function (_React$Component) {
         } else {
           location = '/admin/land';
         }
-      }).catch(function () {
-        _this.setState({ loginFail: true });
+      }).catch(function (err) {
+        _this.setState({ loginFail: true, status: err.request.status });
         setTimeout(function () {
           return _this.setState({ loginFail: false });
-        }, 1000);
+        }, 2000);
       });
     };
 
@@ -7870,6 +7871,7 @@ var Login = function (_React$Component) {
   (0, _createClass3.default)(Login, [{
     key: "render",
     value: function render() {
+      var status = this.state.status;
       var classes = this.props.classes;
 
 
@@ -7912,7 +7914,9 @@ var Login = function (_React$Component) {
               this.state.loginFail ? _react2.default.createElement(
                 _Typography2.default,
                 { component: "p", className: classes.error },
-                "Incorrect"
+                "Sorry, ",
+                status === 401 ? 'user not found' : 'user is forbidden',
+                "."
               ) : _react2.default.createElement(
                 "span",
                 null,
@@ -7996,7 +8000,6 @@ exports.default = (0, _styles.withStyles)({
   },
   error: (_error = {
     color: 'orange',
-    fontStyle: 'italic',
     textAlign: 'center'
   }, (0, _defineProperty3.default)(_error, "color", 'white'), (0, _defineProperty3.default)(_error, "backgroundColor", 'orange'), (0, _defineProperty3.default)(_error, "borderRadius", '10px'), (0, _defineProperty3.default)(_error, "marginBottom", '1px'), _error),
   licencedTo: {

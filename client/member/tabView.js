@@ -9,6 +9,7 @@ import ClassIcon from 'material-ui-icons/Assignment';
 import axios from 'axios';
 import Exercises from './exercises';
 import Classes from './classes';
+import { permissions } from './session';
 
 class TabsView extends React.Component {
   state = {
@@ -49,12 +50,12 @@ class TabsView extends React.Component {
         className={classes.margin} 
         badgeContent={exerciseCount} 
         color="primary" 
-        classes={{ colorPrimary: classes.badge}}>&nbsp;</Badge></span>} 
+        classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} 
       /> );
 
     const ClassesTab = withRouter(
       ({ history }) => <Tab 
-        style={{opacity:value === 1 ? 1 : 0.7}} 
+        style={{ opacity: value === 1 ? 1 : 0.7 }} 
         onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}classes`)} 
         label={<span><ClassIcon 
         className={classes.icon} />Classes<Badge 
@@ -68,12 +69,12 @@ class TabsView extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
-            <ExercisesTab />
-            <ClassesTab />
+            { isAdmin && permissions.isExerciseReadOnly ? null : <ExercisesTab /> }
+            { isAdmin && permissions.isClassReadOnly ? null : <ClassesTab /> }
           </Tabs>
         </AppBar>
-        {value === 0 && <Exercises isAdmin={isAdmin} />}
-        {value === 1 && <Classes isAdmin={isAdmin} />}
+        {value === permissions.adminSections.EXERCISES && <Exercises isAdmin={isAdmin} />}
+        {value === permissions.adminSections.CLASSES && <Classes isAdmin={isAdmin} />}
       </div>
     );
   }

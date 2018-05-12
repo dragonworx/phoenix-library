@@ -19228,6 +19228,8 @@ var _thumbnailLink2 = _interopRequireDefault(_thumbnailLink);
 
 var _util = __webpack_require__(45);
 
+var _session = __webpack_require__(137);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -19710,11 +19712,11 @@ var ExerciseGrid = function (_React$PureComponent) {
             { variant: 'fab', 'aria-label': 'edit', disabled: selection.length !== 1, className: classes.button, onClick: this.onEditClick },
             React.createElement(_Edit2.default, null)
           ),
-          React.createElement(
+          _session.permissions.canDeleteExercise ? React.createElement(
             _Button2.default,
             { variant: 'fab', color: 'secondary', disabled: selection.length === 0, 'aria-label': 'delete', className: classes.button, onClick: this.onDeleteClick },
             React.createElement(_Delete2.default, null)
-          ),
+          ) : null,
           React.createElement(
             _Button2.default,
             { variant: 'fab', disabled: selection.length === 0, 'aria-label': 'view', className: classes.button, onClick: this.onViewClick },
@@ -40409,16 +40411,21 @@ const FORBIDDEN = 0;
 const READ = 1;
 const READ_WRITE = 2;
 const READ_WRITE_DELETE = 3;
+
 const LEVEL = {
   EXERCISE: 0,
   CLASSES: 1,
   USERS: 3,
 };
 
+const EXERCISES = 'EXERCISES';
+const CLASSES = 'CLASSES';
+const USERS = 'USERS';
+
 // permissions = 3 integers, of the above
 // lowest 000, highest 333
 
-// exercise, class, user
+// join: exercise,class,user
 
 module.exports = str => {
   if (!str.match(/[0-3]{3}/)) {
@@ -40451,11 +40458,30 @@ module.exports = str => {
     || (classLevel >= READ_WRITE) 
     || (userLevel >= READ_WRITE);
 
+  const isForbidden = (exerciseLevel == FORBIDDEN) 
+    || (classLevel == FORBIDDEN) 
+    || (userLevel == FORBIDDEN);
+
+  const adminSections = {};
+    [EXERCISES, CLASSES]
+      .filter(section => {
+        if (section === EXERCISES && isExerciseReadOnly) {
+          return false;
+        }
+        if (section === CLASSES && isClassReadOnly) {
+          return false;
+        }
+        if (section === USERS && isUserReadOnly) {
+          return false;
+        }
+        return true;
+      }).forEach((section, i) => adminSections[section] = i);
 
   return {
     exerciseLevel,
     classLevel,
     userLevel,
+    isForbidden,
     isAdmin,
     isForbiddenExercise,
     isExerciseReadOnly,
@@ -40472,6 +40498,7 @@ module.exports = str => {
     canReadUser,
     canWriteUser,
     canDeleteUser,
+    adminSections,
     toString (level) {
       if (level === LEVEL.EXERCISE) {
         return [canReadExercise && 'read', canWriteExercise && 'write', canDeleteExercise && 'delete', ].filter(i => !!i).join(' / ');
@@ -42010,17 +42037,15 @@ var _session = __webpack_require__(137);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+// eslint-disable-next-line no-undef
+var VERSION = "0.8.1";
 var logoutMenuItem = { value: 'Logout', label: _react2.default.createElement(
     'span',
     { key: 'logout' },
     _react2.default.createElement(_PowerSettingsNew2.default, { style: { verticalAlign: 'bottom', marginRight: 10 } }),
     ' Logout'
   ) };
-
 var drawerWidth = 180;
-
-// eslint-disable-next-line no-undef
-var VERSION = "0.8.1";
 
 var MemberApp = function (_React$PureComponent) {
   (0, _inherits3.default)(MemberApp, _React$PureComponent);
@@ -42047,7 +42072,6 @@ var MemberApp = function (_React$PureComponent) {
     key: 'render',
     value: function render() {
       var classes = this.props.classes;
-
 
       var menuOptions = [logoutMenuItem];
 
@@ -42098,10 +42122,10 @@ var MemberApp = function (_React$PureComponent) {
                 return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: 0 });
               } }),
             _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/admin/exercises', component: function component() {
-                return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: 0 });
+                return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: _session.permissions.adminSections.EXERCISES });
               } }),
             _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/admin/classes', component: function component() {
-                return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: 1 });
+                return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: _session.permissions.adminSections.CLASSES });
               } })
           ),
           _react2.default.createElement(
@@ -44327,6 +44351,8 @@ var _alert = __webpack_require__(197);
 
 var _alert2 = _interopRequireDefault(_alert);
 
+var _session = __webpack_require__(137);
+
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -44840,11 +44866,11 @@ var ClassesGrid = function (_React$PureComponent) {
             { variant: 'fab', 'aria-label': 'edit', disabled: selection.length !== 1, className: classes.button, onClick: this.onEditClick },
             React.createElement(_Edit2.default, null)
           ),
-          React.createElement(
+          _session.permissions.canDeleteClass ? React.createElement(
             _Button2.default,
             { variant: 'fab', color: 'secondary', disabled: selection.length === 0, 'aria-label': 'delete', className: classes.button, onClick: this.onDeleteClick },
             React.createElement(_Delete2.default, null)
-          ),
+          ) : null,
           React.createElement(
             _Button2.default,
             { variant: 'fab', disabled: selection.length === 0, 'aria-label': 'view', className: classes.button, onClick: this.onViewClick },
@@ -46872,6 +46898,8 @@ var _classes = __webpack_require__(344);
 
 var _classes2 = _interopRequireDefault(_classes);
 
+var _session = __webpack_require__(137);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var TabsView = function (_React$Component) {
@@ -46981,12 +47009,12 @@ var TabsView = function (_React$Component) {
           _react2.default.createElement(
             _Tabs2.default,
             { value: value, onChange: this.handleChange, classes: { indicator: classes.indicator } },
-            _react2.default.createElement(ExercisesTab, null),
-            _react2.default.createElement(ClassesTab, null)
+            isAdmin && _session.permissions.isExerciseReadOnly ? null : _react2.default.createElement(ExercisesTab, null),
+            isAdmin && _session.permissions.isClassReadOnly ? null : _react2.default.createElement(ClassesTab, null)
           )
         ),
-        value === 0 && _react2.default.createElement(_exercises2.default, { isAdmin: isAdmin }),
-        value === 1 && _react2.default.createElement(_classes2.default, { isAdmin: isAdmin })
+        value === _session.permissions.adminSections.EXERCISES && _react2.default.createElement(_exercises2.default, { isAdmin: isAdmin }),
+        value === _session.permissions.adminSections.CLASSES && _react2.default.createElement(_classes2.default, { isAdmin: isAdmin })
       );
     }
   }]);

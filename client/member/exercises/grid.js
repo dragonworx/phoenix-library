@@ -27,6 +27,7 @@ import Alert from '../../common/alert';
 import Thumbnail from '../../common/thumbnail';
 import ThumbnailLink from '../../common/thumbnailLink';
 import { distinct, trimUsage } from '../../common/util';
+import { permissions } from '../session';
 
 let ThumbnailRef = ThumbnailLink;
 
@@ -411,9 +412,13 @@ class ExerciseGrid extends React.PureComponent {
               <Button variant="fab" aria-label="edit" disabled={selection.length !== 1} className={classes.button} onClick={this.onEditClick}>
                 <EditIcon />
               </Button>
-              <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
-                <DeleteIcon />
-              </Button>
+              {
+                permissions.canDeleteExercise
+                  ? <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
+                      <DeleteIcon />
+                    </Button>
+                  : null
+              }
               <Button variant="fab" disabled={selection.length === 0} aria-label="view" className={classes.button} onClick={this.onViewClick}>
                 <ViewIcon />
               </Button>

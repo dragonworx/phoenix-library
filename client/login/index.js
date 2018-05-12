@@ -18,6 +18,7 @@ class Login extends React.Component {
     password: 'Copacabana1',
     isValid: false,
     loginFail: false,
+    status: null,
   };
 
   constructor (props) {
@@ -52,9 +53,9 @@ class Login extends React.Component {
       } else {
         location = '/admin/land';
       }
-    }).catch(() => {
-      this.setState({ loginFail: true });
-      setTimeout(() => this.setState({ loginFail: false }), 1000)
+    }).catch(err => {
+      this.setState({ loginFail: true, status: err.request.status});
+      setTimeout(() => this.setState({ loginFail: false }), 2000);
     });
   };
 
@@ -65,6 +66,7 @@ class Login extends React.Component {
   };
 
   render() {
+    const { status } = this.state;
     const { classes } = this.props;
 
     return (
@@ -87,7 +89,7 @@ class Login extends React.Component {
               {
                 this.state.loginFail ?
                   <Typography component="p" className={classes.error}>
-                    Incorrect
+                    Sorry, { status === 401 ? 'user not found' : 'user is forbidden' }.
                   </Typography>
                   : <span>&nbsp;</span>
               }
@@ -147,7 +149,6 @@ export default withStyles({
   },
   error: {
     color: 'orange',
-    fontStyle: 'italic',
     textAlign: 'center',
     color: 'white',
     backgroundColor: 'orange',

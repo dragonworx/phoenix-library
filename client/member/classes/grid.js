@@ -25,6 +25,7 @@ import AddSelect from './addSelect';
 import AddEdit from './addEdit';
 import ViewClass from './view';
 import Alert from '../../common/alert';
+import { permissions } from '../session';
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -394,9 +395,13 @@ class ClassesGrid extends React.PureComponent {
               <Button variant="fab" aria-label="edit" disabled={selection.length !== 1} className={classes.button} onClick={this.onEditClick}>
                 <EditIcon />
               </Button>
-              <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
-                <DeleteIcon />
-              </Button>
+              {
+                permissions.canDeleteClass
+                  ? <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
+                      <DeleteIcon />
+                    </Button>
+                  : null
+              }
               <Button variant="fab" disabled={selection.length === 0} aria-label="view" className={classes.button} onClick={this.onViewClick}>
                 <ViewIcon />
               </Button>

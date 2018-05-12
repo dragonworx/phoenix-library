@@ -2,16 +2,21 @@ const FORBIDDEN = 0;
 const READ = 1;
 const READ_WRITE = 2;
 const READ_WRITE_DELETE = 3;
+
 const LEVEL = {
   EXERCISE: 0,
   CLASSES: 1,
   USERS: 3,
 };
 
+const EXERCISES = 'EXERCISES';
+const CLASSES = 'CLASSES';
+const USERS = 'USERS';
+
 // permissions = 3 integers, of the above
 // lowest 000, highest 333
 
-// exercise, class, user
+// join: exercise,class,user
 
 module.exports = str => {
   if (!str.match(/[0-3]{3}/)) {
@@ -44,11 +49,30 @@ module.exports = str => {
     || (classLevel >= READ_WRITE) 
     || (userLevel >= READ_WRITE);
 
+  const isForbidden = (exerciseLevel == FORBIDDEN) 
+    || (classLevel == FORBIDDEN) 
+    || (userLevel == FORBIDDEN);
+
+  const adminSections = {};
+    [EXERCISES, CLASSES]
+      .filter(section => {
+        if (section === EXERCISES && isExerciseReadOnly) {
+          return false;
+        }
+        if (section === CLASSES && isClassReadOnly) {
+          return false;
+        }
+        if (section === USERS && isUserReadOnly) {
+          return false;
+        }
+        return true;
+      }).forEach((section, i) => adminSections[section] = i);
 
   return {
     exerciseLevel,
     classLevel,
     userLevel,
+    isForbidden,
     isAdmin,
     isForbiddenExercise,
     isExerciseReadOnly,
@@ -65,6 +89,7 @@ module.exports = str => {
     canReadUser,
     canWriteUser,
     canDeleteUser,
+    adminSections,
     toString (level) {
       if (level === LEVEL.EXERCISE) {
         return [canReadExercise && 'read', canWriteExercise && 'write', canDeleteExercise && 'delete', ].filter(i => !!i).join(' / ');
