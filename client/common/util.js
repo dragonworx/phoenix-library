@@ -39,6 +39,9 @@ module.exports = {
     }
 
     return ord;
+  },
+  plural (number, postfix) {
+    return number === 1 ? `${number} ${postfix}` : `${number} ${postfix}s`;
   }
 };
 

@@ -83,7 +83,8 @@ module.exports = function (app) {
     log(req.url, isUnauthorised ? 'red' : 'green');
   
     if (isUnauthorised && !isAssetUrl) {
-      return res.redirect('/login?next=' + req.url);
+      const url = req.url;
+      return res.redirect(`/login${url !== '/logout' && url !== '/' ? '?next=' + req.url : ''}`);
     }
   
     next();

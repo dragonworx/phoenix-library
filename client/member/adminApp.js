@@ -18,14 +18,18 @@ import { user, permissions } from './session';
 
 // eslint-disable-next-line no-undef
 const VERSION = PHOENIX_LIB_VERSION;
-const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon style={{ verticalAlign: 'bottom', marginRight: 10 }} /> Logout</span> };
+const logoutMenuItem = { 
+  value: 'logout',
+  label: 'Logout',
+  Icon: LogoutIcon
+};
 const drawerWidth = 180;
 
 class MemberApp extends React.PureComponent {
   state = {};
 
   onUserMenuSelect = selectedValue => {
-    if (selectedValue === 'Logout') {
+    if (selectedValue === 'logout') {
       location = '/logout';
     }
   };

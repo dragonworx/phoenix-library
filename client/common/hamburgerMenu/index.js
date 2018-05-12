@@ -1,5 +1,6 @@
 import React from 'react';
 import IconButton from 'material-ui/IconButton';
+import Checkbox from 'material-ui/Checkbox';
 import Menu, { MenuItem } from 'material-ui/Menu';
 import MoreVertIcon from 'material-ui-icons/MoreVert';
 import ExerciseIcon from 'material-ui-icons/Dns';
@@ -20,6 +21,8 @@ const styles = {
 const exerciseStyle = styles[permissions.exerciseLevel];
 const classStyle = styles[permissions.classLevel];
 const userStyle = styles[permissions.userLevel];
+
+const itemStyle = { verticalAlign: 'bottom', marginRight: 10 };
 
 class HamburgerMenu extends React.Component {
   state = {
@@ -76,9 +79,16 @@ class HamburgerMenu extends React.Component {
               : null
           }
           {
-            options.map(({ value, label }, i) => (
+            options.map(({ value, label, Icon, isChecked }, i) => (
               <MenuItem key={value} selected={i === selectedIndex} onClick={() => this.handleClose(value)}>
-                {label}
+                <span key={`hamburger_${i}`}>
+                  {
+                    typeof isChecked === 'function'
+                      ? <Checkbox checked={isChecked()} style={{ width: 25, marginRight: 10 }} />
+                      : <Icon style={itemStyle} />
+                  }
+                  { label }
+                </span>
               </MenuItem>
             ))
           }

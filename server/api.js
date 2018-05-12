@@ -339,7 +339,7 @@ module.exports = {
       exercise = clone(exercise);
       exercise.repetitions = 1;
       exercise.duration = 1;
-      exercise.notes = 'Notes...';
+      exercise.notes = '';
       return exercise;
     });
     // exercises.sort((a, b) => {

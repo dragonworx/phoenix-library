@@ -12,14 +12,21 @@ import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import PingStatus from '../common/ping';
 import TabsView from './tabView';
-import AdminIcon from 'material-ui-icons/Business';
+import AdminIcon from 'material-ui-icons/AccountCircle';
 import LogoutIcon from 'material-ui-icons/PowerSettingsNew';
 import HamburgerMenu from '../common/hamburgerMenu';
 import { user, permissions } from './session';
 
-const itemStyle = { verticalAlign: 'bottom', marginRight: 10 };
-const adminMenuItem = { value: 'Admin', label: <span key="admin"><AdminIcon style={itemStyle} /> Admin</span> };
-const logoutMenuItem = { value: 'Logout', label: <span key="logout"><LogoutIcon style={itemStyle} /> Logout</span> };
+const adminMenuItem = { 
+  value: 'admin', 
+  label: 'Admin',
+  Icon: AdminIcon
+};
+const logoutMenuItem = { 
+  value: 'logout',
+  label: 'Logout',
+  Icon: LogoutIcon
+};
 
 const drawerWidth = 180;
 
@@ -30,9 +37,9 @@ class PublicApp extends React.PureComponent {
   state = {};
 
   onUserMenuSelect = selectedValue => {
-    if (selectedValue === 'Logout') {
+    if (selectedValue === 'logout') {
       location = '/logout';
-    } else if (selectedValue === 'Admin') {
+    } else if (selectedValue === 'admin') {
       location = '/admin';
     }
   };
@@ -40,7 +47,10 @@ class PublicApp extends React.PureComponent {
   render () {
     const { classes } = this.props;
 
-    const menuOptions = [ permissions.isAdmin ? adminMenuItem : null, logoutMenuItem ].filter(i => i !== null);
+    const menuOptions = [ 
+      permissions.isAdmin ? adminMenuItem : null, 
+      logoutMenuItem 
+    ].filter(i => i !== null);
   
     return (
       <Router>

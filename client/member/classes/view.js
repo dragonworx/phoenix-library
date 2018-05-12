@@ -18,9 +18,10 @@ import Checkbox from 'material-ui/Checkbox';
 import { MenuItem } from 'material-ui/Menu';
 import { ListItemText } from 'material-ui/List';
 import { textToSprings } from '../exercises/grid';
+import CloseIcon from 'material-ui-icons/Input';
 import HamburgerMenu from '../../common/hamburgerMenu';
 import classNames from 'classnames';
-import { toOrdinal } from '../../common/util';
+import { toOrdinal, css, plural } from '../../common/util';
 import axios from 'axios';
 
 const styles = theme => ({
@@ -78,13 +79,27 @@ const styles = theme => ({
   },
   mins: {
     fontSize: '80%',
-    opacity: 0.35,
+    color: '#5475af',
     display: 'inline-block',
     marginLeft: 8,
+  },
+  classMins: {
+    fontSize: '120%',
+    color: '#a4eeff',
   },
   ordinal: {
     fontSize: '80%',
     opacity: 0.5,
+    display: 'inline-block',
+    minWidth: 45,
+  },
+  exerciseOrdinal: {
+    opacity: 0.3,
+    minWidth: 35,
+  },
+  reps: {
+    color: '#459ae2',
+    minWidth: 25,
     display: 'inline-block',
   },
   revision: {
@@ -103,15 +118,17 @@ const styles = theme => ({
     fontSize: '80%',
     display: 'block',
     backgroundColor: '#f1faff',
-    padding: 5,
+    padding: '0 5px',
     borderRadius: 5,
-    marginTop: 5,
+    marginTop: 10,
+    border: '1px solid #ccc',
   },
   exerciseNotes: {
     fontSize: '70%',
     backgroundColor: '#f1faff',
     padding: 5,
     borderRadius: 5,
+    border: '1px solid #ccc',
   },
   notesLabel: {
     fontSize: '65%',
@@ -127,21 +144,33 @@ const VERSION = PHOENIX_LIB_VERSION;
 
 const options = {
   showNotes: false,
+  showDurations: true,
 };
 
 const menuOptions = [
-  (
-    <MenuItem key="toggle_options" value='toggle_notes'>
-      <Checkbox checked={options.showNotes} />
-      <ListItemText primary={name} />
-    </MenuItem>
-  )
+  { 
+    value: 'toggleNotes',
+    label: 'Notes',
+    isChecked: () => options.showNotes
+  },
+  { 
+    value: 'toggleDurations',
+    label: 'Durations',
+    isChecked: () => options.showDurations
+  },
+  {
+    value: 'close',
+    label: 'Close',
+    Icon: CloseIcon,
+  }
 ];
 
 class ViewClass extends React.Component {
   state = {
     open: false,
-    lightboxOpen: false
+    lightboxOpen: false,
+    showNotes: options.showNotes,
+    showDurations: options.showDurations,
   };
 
   async componentWillMount () {
@@ -167,13 +196,19 @@ class ViewClass extends React.Component {
   };
 
   onUserMenuSelect = selectedValue => {
-    if (selectedValue === 'toggle_notes') {
-      
+    if (selectedValue === 'toggleNotes') {
+      options.showNotes = !options.showNotes;
+    } else if (selectedValue === 'toggleDurations') {
+      options.showDurations = !options.showDurations;
+    } else if (selectedValue === 'close') {
+      this.handleClose();
     }
+    this.setState({ showNotes: options.showNotes, showDurations: options.showDurations });
   };
 
   render () {
     const { viewItem, classes} = this.props;
+    const { showNotes, showDurations } = this.state;
     const { name, categories, genreId, durationSummary, revision, notes: classNotes } = viewItem;
 
     return (
@@ -195,33 +230,56 @@ class ViewClass extends React.Component {
                   className={classNames(classes.avatar, classes.bigAvatar)}
                 />
               <Typography variant="title" color="inherit" noWrap className={classes.name}>
-                {name} <span className={classes.revision}>rev. {revision}</span> <span className={classes.mins}>{durationSummary} mins</span>
+                {name} <span className={classes.revision}>rev. {revision}</span>
               </Typography>
+              {
+                showDurations
+                  ? <span className={css(classes.mins, classes.classMins)}>{plural(durationSummary, 'min')}</span>
+                  : null
+              }
               <HamburgerMenu showUser={false} className={classes.menu} options={menuOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
           </AppBar>
           <DialogContent className={classes.content}>
-          <span className={classes.notesLabel}>Notes:</span><span className={classes.classNotes} dangerouslySetInnerHTML={{__html: classNotes}}></span>
+            {
+              showNotes
+                ? <span className={classes.classNotes} dangerouslySetInnerHTML={{__html: classNotes}}></span>
+                : null
+            }
             {
               categories && categories.map((category, i) => {
                 const categoryOrdinal = i + 1;
                 return (
                   <div key={genreId + category.name + i}>
-                    <h2><span className={classes.ordinal}>{categoryOrdinal + toOrdinal(categoryOrdinal)}.</span> {category.name} <span className={classes.mins}>{category.durationSummary} mins</span></h2>
-                      <ul className={classes.exerciseList}>
-                        {
-                          category.exercises.map(exercise => {
-                            return (
-                              <li key={genreId + category.name + i + exercise.id}>
-                                <h4>{exercise.repetitions} x {exercise.name} <span className={classes.mins}>{exercise.duration} mins</span></h4>
-                                {
-                                  exercise.notes ? <div><span className={classes.notesLabel}>Notes:</span><span className={classes.exerciseNotes} dangerouslySetInnerHTML={{__html: exercise.notes}}></span></div> : null
+                    <h2>
+                      <span className={classes.ordinal}>{categoryOrdinal + toOrdinal(categoryOrdinal)}.</span> {category.name} {
+                        showDurations
+                          ? <span className={classes.mins}>{plural(category.durationSummary, 'min')}</span>
+                          : null
+                      }
+                    </h2>
+                    <ul className={classes.exerciseList}>
+                      {
+                        category.exercises.map((exercise, i) => {
+                          const exerciseOrdinal = i + 1;
+                          return (
+                            <li key={genreId + category.name + i + exercise.id}>
+                              <h4>
+                                <span className={css(classes.ordinal, classes.exerciseOrdinal)}>{exerciseOrdinal + toOrdinal(exerciseOrdinal)}.</span>
+                                <span className={classes.reps}>{exercise.repetitions} x</span> {exercise.name} {
+                                  showDurations
+                                    ? <span className={classes.mins}>{plural(exercise.duration, 'min')}</span>
+                                    : null
                                 }
-                              </li>
-                            )
-                          })
-                        }
-                      </ul>
+                              </h4>
+                              {
+                                showNotes && exercise.notes ? <span className={classes.exerciseNotes} dangerouslySetInnerHTML={{__html: exercise.notes}}></span> : null
+                              }
+                            </li>
+                          )
+                        })
+                      }
+                    </ul>
                   </div>
                 );
               })

@@ -22,7 +22,7 @@ import { withStyles } from "material-ui/styles";
 import axios from 'axios';
 import SaveButton from '../../common/saveButton';
 import ClassProgram from './classProgram';
-import { user } from '../session';
+import { user, permissions } from '../session';
 
 const ACCEPT_DELAY = 500;
 
@@ -265,10 +265,10 @@ class AddEdit extends React.Component {
         </DialogContent>
         <DialogActions classes={{ root: classes.actions }}>
           {
-            editItem
+            editItem && permissions.canDeleteClass
               ? (
                 <div style={{ position: 'absolute', left: 20 }}>
-                <FormLabel style={{ display: 'inline-block' }} component="legend">Status</FormLabel>
+                  <FormLabel style={{ display: 'inline-block' }} component="legend">Status</FormLabel>
                   <Select
                     value={editItem.status}
                     onChange={this.handleStatusChange}
