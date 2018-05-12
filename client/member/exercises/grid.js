@@ -153,6 +153,16 @@ let defaultColumnWidths = [
   { columnName: 'revision', width: 50 },
 ];
 
+function setColumnWidths (nextColumnWidths) {
+  const widths = {};
+  defaultColumnWidths.forEach(info => widths[info.columnName] = info.width);
+  nextColumnWidths.forEach(info => widths[info.columnName] = info.width);
+  defaultColumnWidths = [];
+  for (let k in widths) {
+    defaultColumnWidths.push({ columnName: k, width: widths[k] });
+  }
+}
+
 let defaultHiddenColumnNames = ['video'];
 
 try {
@@ -376,7 +386,8 @@ class ExerciseGrid extends React.PureComponent {
 
   onColumnWidthsChange = nextColumnWidths => {
     try {
-      const data = JSON.stringify(nextColumnWidths);
+      setColumnWidths(nextColumnWidths);
+      const data = JSON.stringify(defaultColumnWidths);
       localStorage['phoenix_lib_1.0.exercise.column.width'] = data;
     } catch (e) {
       // ?

@@ -1,23 +1,12 @@
 import React from 'react';
-import Button from 'material-ui/Button';
-import Paper from 'material-ui/Paper';
 import Dialog, {
-  DialogActions,
   DialogContent,
 } from 'material-ui/Dialog';
-import { FormLabel } from 'material-ui/Form';
 import AppBar from 'material-ui/AppBar';
 import Toolbar from 'material-ui/Toolbar';
-import Chip from 'material-ui/Chip';
 import Typography from 'material-ui/Typography';
-import Grid from 'material-ui/Grid';
 import Avatar from 'material-ui/Avatar';
 import { withStyles } from "material-ui/styles";
-import { multi } from '../../common/util';
-import Checkbox from 'material-ui/Checkbox';
-import { MenuItem } from 'material-ui/Menu';
-import { ListItemText } from 'material-ui/List';
-import { textToSprings } from '../exercises/grid';
 import CloseIcon from 'material-ui-icons/Input';
 import HamburgerMenu from '../../common/hamburgerMenu';
 import classNames from 'classnames';

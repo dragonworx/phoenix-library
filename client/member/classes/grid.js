@@ -151,16 +151,26 @@ let defaultColumnWidths = [
   { columnName: 'revision', width: 50 },
 ];
 
+function setColumnWidths (nextColumnWidths) {
+  const widths = {};
+  defaultColumnWidths.forEach(info => widths[info.columnName] = info.width);
+  nextColumnWidths.forEach(info => widths[info.columnName] = info.width);
+  defaultColumnWidths = [];
+  for (let k in widths) {
+    defaultColumnWidths.push({ columnName: k, width: widths[k] });
+  }
+}
+
 let defaultHiddenColumnNames = ['notes'];
 
 try {
   defaultColumnWidths = JSON.parse(
-    localStorage["phoenix_lib_1.0.exercise.column.width"]
+    localStorage["phoenix_lib_1.0.classes.column.width"]
   );
 } catch (e) {}
 try {
   defaultHiddenColumnNames = JSON.parse(
-    localStorage["phoenix_lib_1.0.exercise.column.hidden"]
+    localStorage["phoenix_lib_1.0.classes.column.hidden"]
   );
 } catch (e) {}
 
@@ -359,8 +369,9 @@ class ClassesGrid extends React.PureComponent {
 
   onColumnWidthsChange = nextColumnWidths => {
     try {
-      const data = JSON.stringify(nextColumnWidths);
-      localStorage['phoenix_lib_1.0.exercise.column.width'] = data;
+      setColumnWidths(nextColumnWidths);
+      const data = JSON.stringify(defaultColumnWidths);
+      localStorage['phoenix_lib_1.0.classes.column.width'] = data;
     } catch (e) {
       // ?
     }   
@@ -369,7 +380,7 @@ class ClassesGrid extends React.PureComponent {
   onHiddenColumnNamesChange = hiddenColumnNames => {
     try {
       const data = JSON.stringify(hiddenColumnNames);
-      localStorage['phoenix_lib_1.0.exercise.column.hidden'] = data;
+      localStorage['phoenix_lib_1.0.classes.column.hidden'] = data;
     } catch (e) {
       // ?
     }   
