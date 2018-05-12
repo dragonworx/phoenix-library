@@ -72,9 +72,9 @@ class PublicApp extends React.PureComponent {
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/" component={() => <TabsView isAdmin={false} value={0} />}/>
-            <Route exact path="/exercises" component={() => <TabsView isAdmin={false} value={0} />}/>
+            <Route exact path="/" component={() => <TabsView isAdmin={false} value={1} />}/>
             <Route exact path="/classes" component={() => <TabsView isAdmin={false} value={1} />}/>
+            <Route exact path="/exercises" component={() => <TabsView isAdmin={false} value={0} />}/>
           </main>
           <footer className={classes.footer}>
             <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 All rights reserved | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>

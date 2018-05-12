@@ -138,8 +138,8 @@ class ViewExercise extends React.Component {
 
 export default withStyles(theme => ({
   springsContainer: {
-    right: 23,
-    top: 215,
+    left: 25,
+    bottom: 17,
     position: 'absolute',
   },
   genres: {
@@ -236,5 +236,6 @@ export default withStyles(theme => ({
   actions: {
     flexDirection: 'column',
     alignItems: 'flex-end',
+    marginTop: 10,
   }
 }))(ViewExercise);

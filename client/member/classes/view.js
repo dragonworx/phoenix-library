@@ -8,10 +8,11 @@ import Typography from 'material-ui/Typography';
 import Avatar from 'material-ui/Avatar';
 import { withStyles } from "material-ui/styles";
 import CloseIcon from 'material-ui-icons/Input';
-import HamburgerMenu from '../../common/hamburgerMenu';
 import classNames from 'classnames';
-import { toOrdinal, css, plural } from '../../common/util';
 import axios from 'axios';
+import HamburgerMenu from '../../common/hamburgerMenu';
+import { toOrdinal, css, plural } from '../../common/util';
+import ViewExercise from '../exercises/view';
 
 const styles = theme => ({
   root: {
@@ -125,7 +126,10 @@ const styles = theme => ({
     display: 'inline-block',
     textDecoration: 'underline',
     marginRight: 10,
-  }
+  },
+  exercise: {
+    cursor: 'pointer',
+  },
 });
 
 // eslint-disable-next-line no-undef
@@ -160,6 +164,7 @@ class ViewClass extends React.Component {
     lightboxOpen: false,
     showNotes: options.showNotes,
     showDurations: options.showDurations,
+    viewExercise: null,
   };
 
   async componentWillMount () {
@@ -195,9 +200,17 @@ class ViewClass extends React.Component {
     this.setState({ showNotes: options.showNotes, showDurations: options.showDurations });
   };
 
+  onExerciseClick = exercise => {
+    this.setState({ viewExercise: exercise });
+  };
+
+  onViewExerciseClose = () => {
+    this.setState({ viewExercise: null });
+  };
+
   render () {
     const { viewItem, classes} = this.props;
-    const { showNotes, showDurations } = this.state;
+    const { showNotes, showDurations, viewExercise } = this.state;
     const { name, categories, genreId, durationSummary, revision, notes: classNotes } = viewItem;
 
     return (
@@ -253,7 +266,7 @@ class ViewClass extends React.Component {
                           const exerciseOrdinal = i + 1;
                           return (
                             <li key={genreId + category.name + i + exercise.id}>
-                              <h4>
+                              <h4 className={classes.exercise} onClick={() => this.onExerciseClick(exercise)}>
                                 <span className={css(classes.ordinal, classes.exerciseOrdinal)}>{exerciseOrdinal + toOrdinal(exerciseOrdinal)}.</span>
                                 <span className={classes.reps}>{exercise.repetitions} x</span> {exercise.name} {
                                   showDurations
@@ -278,6 +291,9 @@ class ViewClass extends React.Component {
             <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 All rights reserved | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
           </footer>
         </div>
+        {
+          viewExercise ? <ViewExercise viewItem={viewExercise} onClose={this.onViewExerciseClose} /> : null
+        }
       </Dialog>
     );
   }

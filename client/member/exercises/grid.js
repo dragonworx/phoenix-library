@@ -176,7 +176,7 @@ try {
   );
 } catch (e) {}
 
-class ExerciseGrid extends React.PureComponent {
+class ExerciseGrid extends React.Component {
   state = {
     mode: MODE.LOADING,
     columns: [

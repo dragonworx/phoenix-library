@@ -59,6 +59,12 @@ const STATUS = {
   2: 'Disabled',
 };
 
+const STATUSES = {
+  SUBMITTED: 0,
+  ENABLED: 1,
+  DISABLED: 2,
+};
+
 const htmlNode = document.createElement('div');
 
 const NameFormatter = ({ row }) => {
@@ -168,13 +174,8 @@ try {
     localStorage["phoenix_lib_1.0.classes.column.width"]
   );
 } catch (e) {}
-try {
-  defaultHiddenColumnNames = JSON.parse(
-    localStorage["phoenix_lib_1.0.classes.column.hidden"]
-  );
-} catch (e) {}
 
-class ClassesGrid extends React.PureComponent {
+class ClassesGrid extends React.Component {
   state = {
     mode: MODE.LOADING,
     columns: [
@@ -185,6 +186,11 @@ class ClassesGrid extends React.PureComponent {
       { name: 'status', title: 'Status' },
       { name: 'notes', title: 'Notes' },
       { name: 'revision', title: 'Rev.' },
+    ],
+    integratedFilteringColumnExtensions: [
+      { columnName: 'status', predicate: (rowValue, filter) => {
+        return STATUS[rowValue].indexOf(filter.value) > -1;
+      }},
     ],
     rows: [],
     filteringStateColumnExtensions: [
@@ -207,9 +213,17 @@ class ClassesGrid extends React.PureComponent {
   };
 
   async componentWillMount () {
-    const { data: classes } = await axios.get('/classes/get');
+    const { isAdmin } = this.props;
+    const { data } = await axios.get('/classes/get');
+    let classes = data;
+    if (!isAdmin) {
+      classes = classes.filter(cls => cls.status !== STATUSES.DISABLED);
+    }
     const { data: labels } = await axios.get('/labels/get');
+
+    classes.forEach(cls => cls.categorySummary = cls.categorySummary.split(',').join(', '));
     ClassesGrid.labels = labels;
+
     this.setState({
       mode: MODE.READ,
       rows: classes,
@@ -217,9 +231,22 @@ class ClassesGrid extends React.PureComponent {
     });
     
     this.isMetaDown = false;
+
     window.addEventListener('keydown', this.onGlobalKeyDown);
     window.addEventListener('keyup', this.onGlobalKeyUp);
     window.addEventListener('resize', this.onResize);
+
+    if (!isAdmin) {
+      defaultHiddenColumnNames.push('status');
+    }
+
+    try {
+      defaultHiddenColumnNames = JSON.parse(
+        localStorage["phoenix_lib_1.0.classes.column.hidden"]
+      );
+    } catch (e) {}
+
+    this.setState({ defaultHiddenColumnNames });
   }
 
   componentWillUnmount () {
@@ -391,8 +418,10 @@ class ClassesGrid extends React.PureComponent {
   };
 
   renderEditControls () {
-    const { selection } = this.state;
+    const { selection, rows } = this.state;
     const { classes, isAdmin } = this.props;
+    const canEdit = selection.length === 1 && (permissions.canDeleteClass 
+      || rows.find(row => row.id === selection[0]).status === STATUSES.SUBMITTED);
 
     return (
       <span className={classes.root}>
@@ -403,7 +432,7 @@ class ClassesGrid extends React.PureComponent {
               <Button variant="fab" color="primary" aria-label="add" className={classes.button} onClick={this.onAddClick}>
                 <AddIcon />
               </Button>
-              <Button variant="fab" aria-label="edit" disabled={selection.length !== 1} className={classes.button} onClick={this.onEditClick}>
+              <Button variant="fab" aria-label="edit" disabled={!canEdit} className={classes.button} onClick={this.onEditClick}>
                 <EditIcon />
               </Button>
               {
@@ -430,6 +459,7 @@ class ClassesGrid extends React.PureComponent {
       columns, 
       tableColumnExtensions, 
       filteringStateColumnExtensions,
+      integratedFilteringColumnExtensions,
       defaultHiddenColumnNames,
       defaultColumnWidths,
       mode,
@@ -481,7 +511,7 @@ class ClassesGrid extends React.PureComponent {
             ]}
           />
           <SelectionState selection={selection} onSelectionChange={this.onSelectionChange} />
-          <IntegratedFiltering />
+          <IntegratedFiltering columnExtensions={integratedFilteringColumnExtensions} />
           <IntegratedSorting />
           <IntegratedSelection />
           <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={gridHeight} />

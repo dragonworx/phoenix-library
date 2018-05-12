@@ -69,12 +69,22 @@ class TabsView extends React.Component {
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
-            { isAdmin && permissions.isExerciseReadOnly ? null : <ExercisesTab /> }
-            { isAdmin && permissions.isClassReadOnly ? null : <ClassesTab /> }
+            {
+              isAdmin
+                ? [isAdmin && permissions.isExerciseReadOnly ? null : <ExercisesTab key="exerciseTab" />,
+                  isAdmin && permissions.isClassReadOnly ? null : <ClassesTab key="classesTab" />]
+                : [isAdmin && permissions.isClassReadOnly ? null : <ClassesTab key="classesTab" />,
+                  isAdmin && permissions.isExerciseReadOnly ? null : <ExercisesTab key="exerciseTab" />]
+            }
           </Tabs>
         </AppBar>
-        {value === permissions.adminSections.EXERCISES && <Exercises isAdmin={isAdmin} />}
-        {value === permissions.adminSections.CLASSES && <Classes isAdmin={isAdmin} />}
+        {
+          isAdmin
+           ? [value === permissions.adminSections.EXERCISES && <Exercises isAdmin={true} key="exercises"  />,
+             value === permissions.adminSections.CLASSES && <Classes isAdmin={true} key="classes" />]
+           : [value === permissions.adminSections.CLASSES && <Classes isAdmin={false} key="classes" />,
+             value === permissions.adminSections.EXERCISES && <Exercises isAdmin={false} key="exercises" />]
+        }
       </div>
     );
   }
