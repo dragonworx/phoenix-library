@@ -14,8 +14,8 @@ const VERSION = PHOENIX_LIB_VERSION;
 
 class Login extends React.Component {
   state = {
-    email: 'magnoliasoup@gmail.com',
-    password: 'Copacabana1',
+    email: '',
+    password: '',
     isValid: false,
     loginFail: false,
     status: null,

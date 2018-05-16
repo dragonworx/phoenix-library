@@ -122,14 +122,14 @@ class ViewExercise extends React.Component {
             { name }
           </Typography>
           <Typography className={classes.description} component="p" dangerouslySetInnerHTML={{ __html }} />
+          <div className={classes.springsContainer}>
+            { textToSprings(springs) }
+          </div>
         </CardContent>
         <CardActions className={classes.actions}>
           <Button size="small" color="primary" onClick={this.handleClose}>
             Close
           </Button>
-          <div className={classes.springsContainer}>
-            { textToSprings(springs) }
-          </div>
         </CardActions>
       </Card>
     );
@@ -138,9 +138,8 @@ class ViewExercise extends React.Component {
 
 export default withStyles(theme => ({
   springsContainer: {
-    left: 25,
-    bottom: 17,
-    position: 'absolute',
+    marginTop: 15,
+    marginLeft: 5,
   },
   genres: {
     marginTop: theme.spacing.unit * 2,
@@ -236,6 +235,6 @@ export default withStyles(theme => ({
   actions: {
     flexDirection: 'column',
     alignItems: 'flex-end',
-    marginTop: 10,
+    marginTop: -25,
   }
 }))(ViewExercise);

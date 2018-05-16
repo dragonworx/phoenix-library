@@ -13,6 +13,7 @@ import axios from 'axios';
 import HamburgerMenu from '../../common/hamburgerMenu';
 import { toOrdinal, css, plural } from '../../common/util';
 import ViewExercise from '../exercises/view';
+import fscreen from 'fscreen';
 
 const styles = theme => ({
   root: {
@@ -74,8 +75,10 @@ const styles = theme => ({
     marginLeft: 8,
   },
   classMins: {
-    fontSize: '120%',
+    fontSize: '80%',
     color: '#a4eeff',
+    display: 'block',
+    marginLeft: 0,
   },
   ordinal: {
     fontSize: '80%',
@@ -94,12 +97,8 @@ const styles = theme => ({
   },
   revision: {
     fontSize: '70%',
-    opacity: 0.5,
-    display: 'inline-block',
-    fontStyle: 'italic',
-    position: 'absolute',
-    right: 50,
-    top: 23.
+    opacity: 0.4,
+    color: '#fff',
   },
   exerciseList: {
     padding: '0 63px',
@@ -170,13 +169,13 @@ class ViewClass extends React.Component {
   async componentWillMount () {
     const { viewItem } = this.props;
     const { data: program } = await axios.get(`/class/program/${viewItem.id}`);
-    program.forEach(category => category.durationSummary = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0))
+    program.forEach(category => category.durationSummary = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0));
     viewItem.categories = program;
     this.setState({ open: true });
-    
   }
 
   handleClose = () => {
+    fscreen.exitFullscreen();
     this.setState({ open: false });
     this.props.onClose();
   };
@@ -232,13 +231,12 @@ class ViewClass extends React.Component {
                   className={classNames(classes.avatar, classes.bigAvatar)}
                 />
               <Typography variant="title" color="inherit" noWrap className={classes.name}>
-                {name} <span className={classes.revision}>rev. {revision}</span>
-              </Typography>
-              {
+                {name} <span className={classes.revision}>r{revision}</span> {
                 showDurations
                   ? <span className={css(classes.mins, classes.classMins)}>{plural(durationSummary, 'min')}</span>
                   : null
               }
+              </Typography>
               <HamburgerMenu showUser={false} className={classes.menu} options={menuOptions} onSelect={this.onUserMenuSelect} />
             </Toolbar>
           </AppBar>
@@ -278,7 +276,7 @@ class ViewClass extends React.Component {
                                 showNotes && exercise.notes ? <span className={classes.exerciseNotes} dangerouslySetInnerHTML={{__html: exercise.notes}}></span> : null
                               }
                             </li>
-                          )
+                          );
                         })
                       }
                     </ul>

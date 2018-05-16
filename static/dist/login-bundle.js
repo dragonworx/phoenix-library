@@ -7805,7 +7805,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LICENCED_TO = 'Excelsior™ Studios Erina';
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.0.0";
+var VERSION = "1.1.0";
 
 var Login = function (_React$Component) {
   (0, _inherits3.default)(Login, _React$Component);
@@ -7816,8 +7816,8 @@ var Login = function (_React$Component) {
     var _this = (0, _possibleConstructorReturn3.default)(this, (Login.__proto__ || (0, _getPrototypeOf2.default)(Login)).call(this, props));
 
     _this.state = {
-      email: 'magnoliasoup@gmail.com',
-      password: 'Copacabana1',
+      email: '',
+      password: '',
       isValid: false,
       loginFail: false,
       status: null
