@@ -11,6 +11,7 @@
     "server-prod": "pm2 start ./server/index.js --name phoenix_lib",
     "hash": "node ./scripts/hash.js",
     "dbadmin": "node ./scripts/db-admin.js",
+    "adduser": "node ./scripts/adduser.js",
     "test-api": "node ./scripts/api.js",
     "start": "yarn build-dev & yarn server-dev"
   },
