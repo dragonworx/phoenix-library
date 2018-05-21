@@ -273,7 +273,11 @@ class ClassesGrid extends React.Component {
     } else if ((keyCode === KEYS.TILDA) && this.state.selection.length === 1) {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
       if (!isAdmin) {
-        fscreen.requestFullscreen(document.documentElement);
+        try {
+          fscreen.requestFullscreen(document.documentElement);
+        } catch (e) {
+          
+        }
         this.setState({ mode: MODE.VIEW, viewItem: row });
       } else {
         this.setState({ mode: MODE.EDIT, editItem: row });
@@ -364,7 +368,11 @@ class ClassesGrid extends React.Component {
           break;
         }
       }
-      fscreen.requestFullscreen(document.documentElement);
+      try {
+        fscreen.requestFullscreen(document.documentElement);
+      } catch (e) {
+
+      }
       mode = MODE.VIEW;
     } else if (!isMetaDown) {
       for (let i = 0; i < selection.length; i++) {

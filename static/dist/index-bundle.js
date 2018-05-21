@@ -44436,7 +44436,9 @@ var ClassesGrid = function (_React$Component) {
           return row.id === _this.state.selection[0];
         });
         if (!isAdmin) {
-          _fscreen2.default.requestFullscreen(document.documentElement);
+          try {
+            _fscreen2.default.requestFullscreen(document.documentElement);
+          } catch (e) {}
           _this.setState({ mode: MODE.VIEW, viewItem: row });
         } else {
           _this.setState({ mode: MODE.EDIT, editItem: row });
@@ -44577,7 +44579,9 @@ var ClassesGrid = function (_React$Component) {
             break;
           }
         }
-        _fscreen2.default.requestFullscreen(document.documentElement);
+        try {
+          _fscreen2.default.requestFullscreen(document.documentElement);
+        } catch (e) {}
         mode = MODE.VIEW;
       } else if (!isMetaDown) {
         for (var _i = 0; _i < selection.length; _i++) {
@@ -45454,23 +45458,23 @@ var styles = function styles(theme) {
     display: 'flex',
     flexDirection: 'column',
     marginTop: 66,
-    padding: '10px 30px',
+    padding: '0 20px',
     paddingBottom: 50
   }), (0, _defineProperty3.default)(_ref, 'mins', {
-    fontSize: '80%',
+    fontSize: '70%',
     color: '#5475af',
     display: 'inline-block',
-    marginLeft: 8
+    marginLeft: 5
   }), (0, _defineProperty3.default)(_ref, 'classMins', {
     fontSize: '80%',
     color: '#a4eeff',
     display: 'block',
     marginLeft: 0
   }), (0, _defineProperty3.default)(_ref, 'ordinal', {
-    fontSize: '80%',
+    fontSize: '70%',
     opacity: 0.5,
     display: 'inline-block',
-    minWidth: 45
+    minWidth: 35
   }), (0, _defineProperty3.default)(_ref, 'exerciseOrdinal', {
     opacity: 0.3,
     minWidth: 35
@@ -45483,7 +45487,8 @@ var styles = function styles(theme) {
     opacity: 0.4,
     color: '#fff'
   }), (0, _defineProperty3.default)(_ref, 'exerciseList', {
-    padding: '0 63px'
+    padding: '0 55px',
+    paddingRight: 0
   }), (0, _defineProperty3.default)(_ref, 'classNotes', {
     fontSize: '80%',
     display: 'block',
@@ -45556,7 +45561,9 @@ var ViewClass = function (_React$Component) {
       showDurations: options.showDurations,
       viewExercise: null
     }, _this.handleClose = function () {
-      _fscreen2.default.exitFullscreen();
+      try {
+        _fscreen2.default.exitFullscreen();
+      } catch (e) {}
       _this.setState({ open: false });
       _this.props.onClose();
     }, _this.handleImgClose = function () {

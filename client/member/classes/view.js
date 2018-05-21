@@ -65,14 +65,14 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     marginTop: 66,
-    padding: '10px 30px',
+    padding: '0 20px',
     paddingBottom: 50,
   },
   mins: {
-    fontSize: '80%',
+    fontSize: '70%',
     color: '#5475af',
     display: 'inline-block',
-    marginLeft: 8,
+    marginLeft: 5,
   },
   classMins: {
     fontSize: '80%',
@@ -81,10 +81,10 @@ const styles = theme => ({
     marginLeft: 0,
   },
   ordinal: {
-    fontSize: '80%',
+    fontSize: '70%',
     opacity: 0.5,
     display: 'inline-block',
-    minWidth: 45,
+    minWidth: 35,
   },
   exerciseOrdinal: {
     opacity: 0.3,
@@ -101,7 +101,8 @@ const styles = theme => ({
     color: '#fff',
   },
   exerciseList: {
-    padding: '0 63px',
+    padding: '0 55px',
+    paddingRight: 0,
   },
   classNotes: {
     fontSize: '80%',
@@ -175,7 +176,11 @@ class ViewClass extends React.Component {
   }
 
   handleClose = () => {
-    fscreen.exitFullscreen();
+    try {
+      fscreen.exitFullscreen();
+    } catch (e) {
+
+    }
     this.setState({ open: false });
     this.props.onClose();
   };
