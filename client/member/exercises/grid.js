@@ -475,7 +475,7 @@ class ExerciseGrid extends React.Component {
 
     return (
       <Paper id="grid">
-        { this.renderEditControls() }
+        { isAdmin && this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
           <TooltipTypeProvider for={labelColumns} />
@@ -499,15 +499,22 @@ class ExerciseGrid extends React.Component {
           <IntegratedSorting />
           <IntegratedSelection />
           <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={gridHeight} />
-          {<TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />}
+          <TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />
           <TableHeaderRow showSortingControls />
           <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
           <TableFilterRow />
           <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
           <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange}/>
-          <Toolbar />
-          <ColumnChooser />
-          <SearchPanel />
+          {
+            isAdmin ? (
+              <span>
+                <Toolbar />
+                <ColumnChooser />
+                <SearchPanel />
+              </span>
+            )
+            : null
+          }
         </Grid>
         {
           mode === MODE.ADD || mode === MODE.EDIT ? 

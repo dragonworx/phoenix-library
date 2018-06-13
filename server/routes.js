@@ -1,6 +1,6 @@
 const log = require('./log');
 const api = require('./api');
-const readPermissions = require('../common/permissions')
+const readPermissions = require('../common/permissions');
 const PrintedClass = require('./printed');
 
 function encodedUser (req) {
@@ -114,6 +114,16 @@ module.exports = function (app) {
     }
   });
 
+  app.get('/admin/users', (req, res) => {
+    const user = req.session.user;
+    const permissions = readPermissions(user.permissions);
+    if (permissions.isUserReadOnly) {
+      res.redirect('/admin');
+    } else {
+      res.render('admin', { user: encodedUser(req) });
+    }
+  });
+
   app.get('/admin/land', (req, res) => {
     // res.redirect('/admin/classes');
     res.redirect('/');
@@ -159,6 +169,11 @@ module.exports = function (app) {
 
   app.get('/classes/get', async (req, res) => {
     const data = await api.getClasses();
+    res.sendJSON(data);
+  });
+
+  app.get('/users/get', async (req, res) => {
+    const data = await api.getUsers();
     res.sendJSON(data);
   });
 

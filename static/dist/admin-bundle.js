@@ -10981,7 +10981,7 @@ var ViewExercise = function (_React$Component) {
       var lightboxOpen = this.state.lightboxOpen;
       // eslint-disable-next-line no-undef
 
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_full.png';
 
       return _react2.default.createElement(
         'div',
@@ -11020,7 +11020,7 @@ var ViewExercise = function (_React$Component) {
 
       // eslint-disable-next-line no-undef
 
-      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
+      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
 
       // const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
       // const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
@@ -31391,7 +31391,7 @@ var ExerciseGrid = function (_React$Component) {
       return React.createElement(
         _Paper2.default,
         { id: 'grid' },
-        this.renderEditControls(),
+        isAdmin && this.renderEditControls(),
         React.createElement(
           _dxReactGridMaterialUi.Grid,
           { rows: rows, columns: columns, getRowId: getRowId },
@@ -31419,9 +31419,13 @@ var ExerciseGrid = function (_React$Component) {
           React.createElement(_dxReactGridMaterialUi.TableFilterRow, null),
           React.createElement(_dxReactGridMaterialUi.TableSelection, { showSelectAll: isAdmin, highlightRow: true, selectByRowClick: true, showSelectionColumn: isAdmin }),
           React.createElement(_dxReactGridMaterialUi.TableColumnVisibility, { defaultHiddenColumnNames: defaultHiddenColumnNames, onHiddenColumnNamesChange: this.onHiddenColumnNamesChange }),
-          React.createElement(_dxReactGridMaterialUi.Toolbar, null),
-          React.createElement(_dxReactGridMaterialUi.ColumnChooser, null),
-          React.createElement(_dxReactGridMaterialUi.SearchPanel, null)
+          isAdmin ? React.createElement(
+            'span',
+            null,
+            React.createElement(_dxReactGridMaterialUi.Toolbar, null),
+            React.createElement(_dxReactGridMaterialUi.ColumnChooser, null),
+            React.createElement(_dxReactGridMaterialUi.SearchPanel, null)
+          ) : null
         ),
         mode === MODE.ADD || mode === MODE.EDIT ? React.createElement(_addEdit2.default, { name: MODE.EDIT && editItem ? editItem.name : 'New Exercise', mode: mode, labels: labels, editItem: mode === MODE.EDIT && editItem, onAdded: this.onAdded, onSaved: this.onSaved, onClose: this.onAddEditClose }) : null,
         mode === MODE.VIEW ? React.createElement(_view2.default, { viewItem: viewItem, onClose: this.onViewClose }) : null,
@@ -40562,7 +40566,7 @@ module.exports = str => {
     || (userLevel == FORBIDDEN);
 
   const adminSections = {};
-    [EXERCISES, CLASSES]
+    [EXERCISES, CLASSES, USERS]
       .filter(section => {
         if (section === EXERCISES && isExerciseReadOnly) {
           return false;
@@ -41621,7 +41625,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.1.0";
+var VERSION = "1.0.0";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -41766,7 +41770,7 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -41998,9 +42002,9 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_full.png';
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -42224,6 +42228,9 @@ var MemberApp = function (_React$PureComponent) {
               } }),
             _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/admin/classes', component: function component() {
                 return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: _session.permissions.adminSections.CLASSES });
+              } }),
+            _react2.default.createElement(_reactRouterDom.Route, { exact: true, path: '/admin/users', component: function component() {
+                return _react2.default.createElement(_tabView2.default, { isAdmin: true, value: _session.permissions.adminSections.USERS });
               } })
           ),
           _react2.default.createElement(
@@ -43405,7 +43412,7 @@ var ClassExercise = function (_React$Component) {
       var exercises = category.exercises;
       // eslint-disable-next-line no-undef
 
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
       var i = exercise.index;
 
 
@@ -44951,29 +44958,27 @@ var ClassesGrid = function (_React$Component) {
                 });
                 ClassesGrid.labels = labels;
 
-                this.setState({
-                  mode: MODE.READ,
-                  rows: classes,
-                  selection: []
-                });
-
                 this.isMetaDown = false;
 
                 window.addEventListener('keydown', this.onGlobalKeyDown);
                 window.addEventListener('keyup', this.onGlobalKeyUp);
                 window.addEventListener('resize', this.onResize);
 
-                if (!isAdmin) {
-                  defaultHiddenColumnNames.push('status');
-                }
-
                 try {
                   defaultHiddenColumnNames = JSON.parse(localStorage["phoenix_lib_1.0.classes.column.hidden"]);
-                } catch (e) {}
+                } catch (e) {
+                  if (!isAdmin) {
+                    defaultHiddenColumnNames.push('status');
+                  }
+                }
 
-                this.setState({ defaultHiddenColumnNames: defaultHiddenColumnNames });
+                this.setState({
+                  defaultHiddenColumnNames: defaultHiddenColumnNames,
+                  mode: MODE.READ,
+                  rows: classes,
+                  selection: [] });
 
-              case 21:
+              case 19:
               case 'end':
                 return _context3.stop();
             }
@@ -45107,9 +45112,13 @@ var ClassesGrid = function (_React$Component) {
           React.createElement(_dxReactGridMaterialUi.TableFilterRow, null),
           React.createElement(_dxReactGridMaterialUi.TableSelection, { showSelectAll: isAdmin, highlightRow: true, selectByRowClick: true, showSelectionColumn: isAdmin }),
           React.createElement(_dxReactGridMaterialUi.TableColumnVisibility, { defaultHiddenColumnNames: defaultHiddenColumnNames, onHiddenColumnNamesChange: this.onHiddenColumnNamesChange }),
-          React.createElement(_dxReactGridMaterialUi.Toolbar, null),
-          React.createElement(_dxReactGridMaterialUi.ColumnChooser, null),
-          React.createElement(_dxReactGridMaterialUi.SearchPanel, null)
+          isAdmin ? React.createElement(
+            'span',
+            null,
+            React.createElement(_dxReactGridMaterialUi.Toolbar, null),
+            React.createElement(_dxReactGridMaterialUi.ColumnChooser, null),
+            React.createElement(_dxReactGridMaterialUi.SearchPanel, null)
+          ) : null
         ),
         mode === MODE.ADD_SELECT ? React.createElement(_addSelect2.default, { genres: genres, onClose: this.onAddSelectClose }) : null,
         mode === MODE.ADD || mode === MODE.EDIT ? React.createElement(_addEdit2.default, { mode: mode, genreId: editItem && editItem.genreId || selectedGenre.id, program: program, className: mode === MODE.ADD ? 'New ' + selectedGenre.name + ' Class' : editItem.name, editItem: editItem, onAdded: this.onAdded, onSaved: this.onSaved, onClose: this.onAddEditClose }) : null,
@@ -45443,7 +45452,7 @@ var SelectExercises = function (_React$Component) {
 
       var count = exercises.length;
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
 
       return _react2.default.createElement(
         _Dialog2.default,
@@ -47076,6 +47085,10 @@ var _Assignment = __webpack_require__(275);
 
 var _Assignment2 = _interopRequireDefault(_Assignment);
 
+var _Group = __webpack_require__(757);
+
+var _Group2 = _interopRequireDefault(_Group);
+
 var _axios = __webpack_require__(31);
 
 var _axios2 = _interopRequireDefault(_axios);
@@ -47087,6 +47100,10 @@ var _exercises2 = _interopRequireDefault(_exercises);
 var _classes = __webpack_require__(345);
 
 var _classes2 = _interopRequireDefault(_classes);
+
+var _users = __webpack_require__(754);
+
+var _users2 = _interopRequireDefault(_users);
 
 var _session = __webpack_require__(67);
 
@@ -47103,6 +47120,7 @@ var TabsView = function (_React$Component) {
     _this.state = {
       exerciseCount: '...',
       classCount: '...',
+      userCount: '...',
       value: -1
     };
 
@@ -47122,7 +47140,8 @@ var TabsView = function (_React$Component) {
       _axios2.default.get('/counts').then(function (response) {
         _this2.setState({
           exerciseCount: response.data.exercises,
-          classCount: response.data.classes
+          classCount: response.data.classes,
+          userCount: response.data.users
         });
       });
     }
@@ -47135,13 +47154,14 @@ var TabsView = function (_React$Component) {
       var _state = this.state,
           value = _state.value,
           exerciseCount = _state.exerciseCount,
-          classCount = _state.classCount;
+          classCount = _state.classCount,
+          userCount = _state.userCount;
 
 
       var ExercisesTab = (0, _reactRouterDom.withRouter)(function (_ref) {
         var history = _ref.history;
         return _react2.default.createElement(_Tabs.Tab, {
-          style: { opacity: value === 0 ? 1 : 0.7 },
+          style: { opacity: value === _session.permissions.adminSections.EXERCISES ? 1 : 0.7 },
           onClick: function onClick() {
             return history.push((isAdmin ? '/admin/' : '/') + 'exercises');
           },
@@ -47167,7 +47187,7 @@ var TabsView = function (_React$Component) {
       var ClassesTab = (0, _reactRouterDom.withRouter)(function (_ref2) {
         var history = _ref2.history;
         return _react2.default.createElement(_Tabs.Tab, {
-          style: { opacity: value === 1 ? 1 : 0.7 },
+          style: { opacity: value === _session.permissions.adminSections.CLASSES ? 1 : 0.7 },
           onClick: function onClick() {
             return history.push((isAdmin ? '/admin/' : '/') + 'classes');
           },
@@ -47190,6 +47210,32 @@ var TabsView = function (_React$Component) {
         });
       });
 
+      var UsersTab = (0, _reactRouterDom.withRouter)(function (_ref3) {
+        var history = _ref3.history;
+        return _react2.default.createElement(_Tabs.Tab, {
+          style: { opacity: value === _session.permissions.adminSections.USERS ? 1 : 0.7 },
+          onClick: function onClick() {
+            return history.push((isAdmin ? '/admin/' : '/') + 'users');
+          },
+          label: _react2.default.createElement(
+            'span',
+            null,
+            _react2.default.createElement(_Group2.default, {
+              className: classes.icon }),
+            'Users',
+            _react2.default.createElement(
+              _Badge2.default,
+              {
+                className: classes.margin,
+                badgeContent: userCount,
+                color: 'primary',
+                classes: { colorPrimary: classes.badge } },
+              '\xA0'
+            )
+          )
+        });
+      });
+
       return _react2.default.createElement(
         'div',
         { className: classes.root },
@@ -47199,10 +47245,10 @@ var TabsView = function (_React$Component) {
           _react2.default.createElement(
             _Tabs2.default,
             { value: value, onChange: this.handleChange, classes: { indicator: classes.indicator } },
-            isAdmin ? [isAdmin && _session.permissions.isExerciseReadOnly ? null : _react2.default.createElement(ExercisesTab, { key: 'exerciseTab' }), isAdmin && _session.permissions.isClassReadOnly ? null : _react2.default.createElement(ClassesTab, { key: 'classesTab' })] : [isAdmin && _session.permissions.isClassReadOnly ? null : _react2.default.createElement(ClassesTab, { key: 'classesTab' }), isAdmin && _session.permissions.isExerciseReadOnly ? null : _react2.default.createElement(ExercisesTab, { key: 'exerciseTab' })]
+            isAdmin ? [_session.permissions.isExerciseReadOnly ? null : _react2.default.createElement(ExercisesTab, { key: 'exerciseTab' }), _session.permissions.isClassReadOnly ? null : _react2.default.createElement(ClassesTab, { key: 'classesTab' }), _session.permissions.isUserReadOnly ? null : _react2.default.createElement(UsersTab, { key: 'userTab' })] : [_react2.default.createElement(ExercisesTab, { key: 'exerciseTab' }), _react2.default.createElement(ClassesTab, { key: 'classesTab' })]
           )
         ),
-        isAdmin ? [value === _session.permissions.adminSections.EXERCISES && _react2.default.createElement(_exercises2.default, { isAdmin: true, key: 'exercises' }), value === _session.permissions.adminSections.CLASSES && _react2.default.createElement(_classes2.default, { isAdmin: true, key: 'classes' })] : [value === _session.permissions.adminSections.CLASSES && _react2.default.createElement(_classes2.default, { isAdmin: false, key: 'classes' }), value === _session.permissions.adminSections.EXERCISES && _react2.default.createElement(_exercises2.default, { isAdmin: false, key: 'exercises' })]
+        [value === _session.permissions.adminSections.EXERCISES && _react2.default.createElement(_exercises2.default, { isAdmin: isAdmin, key: 'exercises' }), value === _session.permissions.adminSections.CLASSES && _react2.default.createElement(_classes2.default, { isAdmin: isAdmin, key: 'classes' }), value === _session.permissions.adminSections.USERS && _react2.default.createElement(_users2.default, { isAdmin: isAdmin, key: 'users' })]
       );
     }
   }]);
@@ -106484,6 +106530,3356 @@ module.exports = function(originalModule) {
 
 module.exports = __webpack_require__(315);
 
+
+/***/ }),
+/* 748 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = __webpack_require__(46);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _promise = __webpack_require__(80);
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _asyncToGenerator2 = __webpack_require__(45);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Button = __webpack_require__(41);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Menu = __webpack_require__(65);
+
+var _Menu2 = _interopRequireDefault(_Menu);
+
+var _draftJs = __webpack_require__(113);
+
+var _draftJsExportHtml = __webpack_require__(226);
+
+var _draftJsImportHtml = __webpack_require__(227);
+
+var _IconButton = __webpack_require__(50);
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
+
+var _AddCircle = __webpack_require__(272);
+
+var _AddCircle2 = _interopRequireDefault(_AddCircle);
+
+var _ExpandMore = __webpack_require__(175);
+
+var _ExpandMore2 = _interopRequireDefault(_ExpandMore);
+
+var _ExpandLess = __webpack_require__(582);
+
+var _ExpandLess2 = _interopRequireDefault(_ExpandLess);
+
+var _Dialog = __webpack_require__(55);
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _Form = __webpack_require__(75);
+
+var _Input = __webpack_require__(63);
+
+var _Input2 = _interopRequireDefault(_Input);
+
+var _AppBar = __webpack_require__(61);
+
+var _AppBar2 = _interopRequireDefault(_AppBar);
+
+var _Typography = __webpack_require__(29);
+
+var _Typography2 = _interopRequireDefault(_Typography);
+
+var _Grid = __webpack_require__(176);
+
+var _Grid2 = _interopRequireDefault(_Grid);
+
+var _Select = __webpack_require__(97);
+
+var _Select2 = _interopRequireDefault(_Select);
+
+var _styles = __webpack_require__(20);
+
+var _axios = __webpack_require__(31);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _saveButton = __webpack_require__(199);
+
+var _saveButton2 = _interopRequireDefault(_saveButton);
+
+var _classProgram = __webpack_require__(752);
+
+var _classProgram2 = _interopRequireDefault(_classProgram);
+
+var _session = __webpack_require__(67);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ACCEPT_DELAY = 500;
+
+var MODE = {
+  ADD: 'add',
+  EDIT: 'edit'
+};
+
+var AddEdit = function (_React$Component) {
+  (0, _inherits3.default)(AddEdit, _React$Component);
+
+  function AddEdit(props) {
+    var _this2 = this;
+
+    (0, _classCallCheck3.default)(this, AddEdit);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (AddEdit.__proto__ || (0, _getPrototypeOf2.default)(AddEdit)).call(this, props));
+
+    _this.state = {
+      open: true,
+      editorState: _draftJs.EditorState.createEmpty(),
+      value: 1,
+      program: null,
+      addCategories: null,
+      addCategoriesTarget: null,
+      className: null,
+      isSaving: false
+    };
+    _this.handleSave = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
+      var _this$props, genreId, mode, onAdded, onSaved, editItem, _this$state, editorState, program, className, notes, cls, close, _ref2, _ref2$data, id, categorySummary, durationSummary, revision;
+
+      return _regenerator2.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _this$props = _this.props, genreId = _this$props.genreId, mode = _this$props.mode, onAdded = _this$props.onAdded, onSaved = _this$props.onSaved, editItem = _this$props.editItem;
+              _this$state = _this.state, editorState = _this$state.editorState, program = _this$state.program, className = _this$state.className;
+              notes = (0, _draftJsExportHtml.stateToHTML)(editorState.getCurrentContent());
+              cls = {
+                id: editItem && editItem.id,
+                genreId: genreId,
+                createdBy: _session.user.id,
+                name: className,
+                categories: program,
+                status: editItem ? editItem.status : 0,
+                notes: notes
+              };
+
+              close = function close() {
+                setTimeout(function () {
+                  if (mode === MODE.ADD) {
+                    onAdded(cls);
+                  } else {
+                    onSaved(cls);
+                  }
+                }, ACCEPT_DELAY);
+                return _promise2.default.resolve();
+              };
+
+              _context.prev = 5;
+
+              _this.setState({ isSaving: true });
+              _context.next = 9;
+              return _axios2.default.post('/class/' + mode, cls);
+
+            case 9:
+              _ref2 = _context.sent;
+              _ref2$data = _ref2.data;
+              id = _ref2$data.id;
+              categorySummary = _ref2$data.categorySummary;
+              durationSummary = _ref2$data.durationSummary;
+              revision = _ref2$data.revision;
+
+              cls.id = id || cls.id;
+              cls.categorySummary = categorySummary;
+              cls.durationSummary = durationSummary;
+              cls.revision = revision;
+              _this.setState({ isSaving: false });
+              _context.next = 26;
+              break;
+
+            case 22:
+              _context.prev = 22;
+              _context.t0 = _context['catch'](5);
+
+              _this.setState({ isSaving: false });
+              throw _context.t0;
+
+            case 26:
+              return _context.abrupt('return', close());
+
+            case 27:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, _this2, [[5, 22]]);
+    }));
+
+    _this.handleClose = function () {
+      _this.setState({ open: false });
+      setTimeout(function () {
+        return _this.props.onClose();
+      }, ACCEPT_DELAY);
+    };
+
+    _this.handleChange = function (e) {
+      _this.setState({ value: e.target.value });
+    };
+
+    _this.onChange = function (editorState) {
+      return _this.setState({ editorState: editorState });
+    };
+
+    _this.onDeleteCategory = function () {
+      var program = _this.state.program;
+      program.forEach(function (category, i) {
+        return category.index = i;
+      });
+      _this.setState({ program: program });
+    };
+
+    _this.handleEditorKeyCommand = function (command, editorState) {
+      var newState = _draftJs.RichUtils.handleKeyCommand(editorState, command);
+      if (newState) {
+        _this.onChange(newState);
+        return 'handled';
+      }
+      return 'not-handled';
+    };
+
+    _this.handleAddCatClick = function () {
+      var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(e) {
+        var target, _ref4, addCategories;
+
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                target = e.target;
+                _context2.next = 3;
+                return _axios2.default.get('/class/categories/' + _this.props.genreId);
+
+              case 3:
+                _ref4 = _context2.sent;
+                addCategories = _ref4.data;
+
+                _this.setState({ addCategories: addCategories, addCategoriesTarget: target });
+
+              case 6:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, _this2);
+      }));
+
+      return function (_x) {
+        return _ref3.apply(this, arguments);
+      };
+    }();
+
+    _this.handleCloseAddCategories = function (category) {
+      if (category) {
+        var program = _this.state.program;
+        var movementCat = {
+          labelId: category.id,
+          name: category.name,
+          index: program.length,
+          exercises: []
+        };
+        program.push(movementCat);
+        _this.setState({ program: program, addCategories: null, addCategoriesTarget: null });
+      } else {
+        _this.setState({ addCategories: null, addCategoriesTarget: null });
+      }
+    };
+
+    _this.handleNameChange = function (e) {
+      _this.setState({ className: e.target.value });
+    };
+
+    _this.onDurationChange = function () {
+      _this.setState({ program: _this.state.program });
+    };
+
+    _this.expandAll = function () {
+      var program = _this.state.program;
+
+      program.forEach(function (category) {
+        return category.expanded = true;
+      });
+      _this.setState({ program: program });
+    };
+
+    _this.collapseAll = function () {
+      var program = _this.state.program;
+
+      program.forEach(function (category) {
+        return category.expanded = false;
+      });
+      _this.setState({ program: program });
+    };
+
+    _this.handleStatusChange = function (e) {
+      var value = e.target.value;
+      _this.props.editItem.status = value;
+      _this.setState({ value: _this.state.value });
+    };
+
+    _this.state.program = props.program;
+    _this.state.className = props.className;
+    return _this;
+  }
+
+  (0, _createClass3.default)(AddEdit, [{
+    key: 'componentWillMount',
+    value: function () {
+      var _ref5 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
+        var editItem, _ref6, program, state;
+
+        return _regenerator2.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                editItem = this.props.editItem;
+
+                if (!editItem) {
+                  _context3.next = 9;
+                  break;
+                }
+
+                _context3.next = 4;
+                return _axios2.default.get('/class/program/' + editItem.id);
+
+              case 4:
+                _ref6 = _context3.sent;
+                program = _ref6.data;
+
+                program.forEach(function (category) {
+                  return category.expanded = false;
+                });
+                state = (0, _draftJsImportHtml.stateFromHTML)(editItem.notes);
+
+                this.setState({
+                  editorState: _draftJs.EditorState.createWithContent(state),
+                  className: editItem.name,
+                  program: program
+                });
+
+              case 9:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function componentWillMount() {
+        return _ref5.apply(this, arguments);
+      }
+
+      return componentWillMount;
+    }()
+  }, {
+    key: 'render',
+    value: function render() {
+      var classes = this.props.classes;
+      var _state = this.state,
+          className = _state.className,
+          program = _state.program;
+
+
+      if (!program) {
+        return null;
+      }
+
+      return _react2.default.createElement(
+        _Dialog2.default,
+        {
+          open: this.state.open,
+          onClose: this.handleClose,
+          'aria-labelledby': 'form-dialog-title',
+          maxWidth: 'md',
+          disableEscapeKeyDown: true,
+          disableBackdropClick: true
+        },
+        _react2.default.createElement(
+          _AppBar2.default,
+          { position: 'static' },
+          _react2.default.createElement(
+            _Typography2.default,
+            { variant: 'title', color: 'inherit', className: classes.flex },
+            _react2.default.createElement(_Input2.default, { fullWidth: true, defaultValue: className, classes: { root: classes.title }, onChange: this.handleNameChange })
+          )
+        ),
+        this.renderContent()
+      );
+    }
+  }, {
+    key: 'renderContent',
+    value: function renderContent() {
+      var _this3 = this;
+
+      var _state2 = this.state,
+          addCategories = _state2.addCategories,
+          addCategoriesTarget = _state2.addCategoriesTarget,
+          isSaving = _state2.isSaving,
+          program = _state2.program;
+      var _props = this.props,
+          classes = _props.classes,
+          genreId = _props.genreId,
+          editItem = _props.editItem;
+
+      var duration = program.reduce(function (duration, category) {
+        return duration + category.exercises.reduce(function (duration, exercise) {
+          return duration + exercise.duration;
+        }, 0);
+      }, 0);
+
+      return _react2.default.createElement(
+        _react.Fragment,
+        null,
+        _react2.default.createElement(
+          _Dialog.DialogContent,
+          { className: classes.content },
+          _react2.default.createElement(
+            _Grid2.default,
+            { container: true, spacing: 24 },
+            _react2.default.createElement(
+              _Grid2.default,
+              { item: true, xs: 12, style: { position: 'relative', paddingBottom: 0, paddingTop: 0 } },
+              _react2.default.createElement(
+                _Form.FormLabel,
+                { className: classes.primaryDescLabel, component: 'legend' },
+                'Movement Categories'
+              ),
+              _react2.default.createElement(_classProgram2.default, { genreId: genreId, program: program, onDeleteCategory: this.onDeleteCategory, onDurationChange: this.onDurationChange }),
+              _react2.default.createElement(
+                'a',
+                { title: 'Add a movement category' },
+                _react2.default.createElement(
+                  _IconButton2.default,
+                  { variant: 'fab', color: 'primary', 'aria-label': 'add movement category', className: classes.addCat, onClick: this.handleAddCatClick },
+                  _react2.default.createElement(_AddCircle2.default, null)
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: classes.buttons },
+                _react2.default.createElement(
+                  'a',
+                  { title: 'collapse all' },
+                  _react2.default.createElement(
+                    _IconButton2.default,
+                    { variant: 'raised', color: 'primary', 'aria-label': 'collapse all', className: classes.button, onClick: this.collapseAll },
+                    _react2.default.createElement(_ExpandLess2.default, null)
+                  )
+                ),
+                _react2.default.createElement(
+                  'a',
+                  { title: 'expand all' },
+                  _react2.default.createElement(
+                    _IconButton2.default,
+                    { variant: 'raised', color: 'primary', 'aria-label': 'expand all', className: classes.button, onClick: this.expandAll },
+                    _react2.default.createElement(_ExpandMore2.default, null)
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: classes.duration },
+                duration,
+                ' mins Total Duration'
+              ),
+              addCategories ? _react2.default.createElement(
+                _Menu2.default,
+                {
+                  anchorEl: addCategoriesTarget,
+                  open: true,
+                  onClose: function onClose() {
+                    return _this3.handleCloseAddCategories();
+                  }
+                },
+                addCategories.map(function (category) {
+                  return _react2.default.createElement(
+                    _Menu.MenuItem,
+                    { key: 'add-cat-' + category.id, onClick: function onClick() {
+                        return _this3.handleCloseAddCategories(category);
+                      } },
+                    category.name
+                  );
+                })
+              ) : null
+            ),
+            _react2.default.createElement(
+              _Grid2.default,
+              { item: true, xs: 12, style: { paddingTop: 0 } },
+              _react2.default.createElement(
+                _Form.FormLabel,
+                { className: classes.descLabel, component: 'legend' },
+                'Notes'
+              ),
+              _react2.default.createElement(
+                'div',
+                { className: classes.editor },
+                _react2.default.createElement(_draftJs.Editor, {
+                  editorState: this.state.editorState,
+                  handleKeyCommand: this.handleEditorKeyCommand,
+                  onChange: this.onChange })
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _Dialog.DialogActions,
+          { classes: { root: classes.actions } },
+          editItem && _session.permissions.canDeleteClass ? _react2.default.createElement(
+            'div',
+            { style: { position: 'absolute', left: 20 } },
+            _react2.default.createElement(
+              _Form.FormLabel,
+              { style: { display: 'inline-block' }, component: 'legend' },
+              'Status'
+            ),
+            _react2.default.createElement(
+              _Select2.default,
+              {
+                value: editItem.status,
+                onChange: this.handleStatusChange,
+                input: _react2.default.createElement(_Input2.default, { name: 'status', id: 'status' })
+              },
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 0 },
+                'Submitted'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 1 },
+                'Enabled'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 2 },
+                'Disabled'
+              )
+            )
+          ) : null,
+          _react2.default.createElement(
+            _Button2.default,
+            { onClick: this.handleClose, color: 'primary', disabled: isSaving },
+            'Cancel'
+          ),
+          _react2.default.createElement(_saveButton2.default, { onClick: this.handleSave, disabled: program && program.length === 0 })
+        )
+      );
+    }
+  }]);
+  return AddEdit;
+}(_react2.default.Component);
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    select: {
+      width: '100%'
+    },
+    editor: {
+      border: '1px solid #b2b2b2',
+      borderRadius: 5,
+      padding: 5,
+      fontSize: '80%',
+      height: 46,
+      overflow: 'auto',
+      backgroundColor: '#f3f8fc'
+    },
+    primaryDescLabel: {
+      marginTop: theme.spacing.unit * 3,
+      marginBottom: theme.spacing.unit
+    },
+    descLabel: {
+      marginTop: theme.spacing.unit,
+      marginBottom: theme.spacing.unit
+    },
+    flex: {
+      flex: 1,
+      padding: '0 10px'
+    },
+    content: {
+      flexGrow: 1,
+      width: 700,
+      paddingBottom: 0,
+      overflow: 'hidden'
+    },
+    addCat: {
+      position: 'absolute',
+      top: 8,
+      left: 163
+    },
+    title: {
+      fontSize: '100%',
+      flexGrow: 1,
+      color: '#fff'
+    },
+    duration: {
+      bottom: -24,
+      right: 18,
+      color: '#84a0c0',
+      position: 'absolute',
+      fontSize: '80%'
+    },
+    buttons: {
+      height: 20,
+      textAlign: 'right',
+      top: 11,
+      right: 60,
+      position: 'absolute'
+    },
+    actions: {
+      margin: '10px 16px'
+    }
+  };
+})(AddEdit);
+
+/***/ }),
+/* 749 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _promise = __webpack_require__(80);
+
+var _promise2 = _interopRequireDefault(_promise);
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _Button = __webpack_require__(41);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Select = __webpack_require__(97);
+
+var _Select2 = _interopRequireDefault(_Select);
+
+var _Menu = __webpack_require__(65);
+
+var _Dialog = __webpack_require__(55);
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _Form = __webpack_require__(75);
+
+var _AppBar = __webpack_require__(61);
+
+var _AppBar2 = _interopRequireDefault(_AppBar);
+
+var _Typography = __webpack_require__(29);
+
+var _Typography2 = _interopRequireDefault(_Typography);
+
+var _Grid = __webpack_require__(176);
+
+var _Grid2 = _interopRequireDefault(_Grid);
+
+var _styles = __webpack_require__(20);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ACCEPT_DELAY = 500;
+
+var AddSelect = function (_React$Component) {
+  (0, _inherits3.default)(AddSelect, _React$Component);
+
+  function AddSelect() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    (0, _classCallCheck3.default)(this, AddSelect);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = AddSelect.__proto__ || (0, _getPrototypeOf2.default)(AddSelect)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      open: true,
+      value: 1
+    }, _this.handleSave = function () {
+      _this.props.onClose(_this.state.value);
+      return _promise2.default.resolve(true);
+    }, _this.handleClose = function () {
+      _this.setState({ open: false });
+      setTimeout(function () {
+        return _this.props.onClose();
+      }, ACCEPT_DELAY);
+    }, _this.handleChange = function (e) {
+      _this.setState({ value: e.target.value });
+    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+  }
+
+  (0, _createClass3.default)(AddSelect, [{
+    key: 'render',
+    value: function render() {
+      var classes = this.props.classes;
+
+
+      return _react2.default.createElement(
+        _Dialog2.default,
+        {
+          open: this.state.open,
+          onClose: this.handleClose,
+          'aria-labelledby': 'form-dialog-title',
+          maxWidth: 'md'
+        },
+        _react2.default.createElement(
+          _AppBar2.default,
+          { position: 'static' },
+          _react2.default.createElement(
+            _Typography2.default,
+            { variant: 'title', color: 'inherit', className: classes.flex },
+            'Create Class'
+          )
+        ),
+        this.renderContent()
+      );
+    }
+  }, {
+    key: 'renderContent',
+    value: function renderContent() {
+      var value = this.state.value;
+      var _props = this.props,
+          classes = _props.classes,
+          genres = _props.genres;
+
+
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(
+          _Dialog.DialogContent,
+          { className: classes.content },
+          _react2.default.createElement(
+            _Grid2.default,
+            { container: true, spacing: 24 },
+            _react2.default.createElement(
+              _Grid2.default,
+              { item: true, xs: 12 },
+              _react2.default.createElement(
+                _Form.FormLabel,
+                { className: classes.descLabel, component: 'legend' },
+                'Genre'
+              ),
+              _react2.default.createElement(
+                _Select2.default,
+                {
+                  className: classes.select,
+                  value: value,
+                  onChange: this.handleChange
+                },
+                genres.map(function (genre) {
+                  return _react2.default.createElement(
+                    _Menu.MenuItem,
+                    { key: 'genre_' + genre.id, value: genre.id },
+                    genre.name
+                  );
+                })
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _Dialog.DialogActions,
+          null,
+          _react2.default.createElement(
+            _Button2.default,
+            { onClick: this.handleClose, color: 'primary' },
+            'Cancel'
+          ),
+          _react2.default.createElement(
+            _Button2.default,
+            { onClick: this.handleSave, variant: 'raised', color: 'primary' },
+            'Select'
+          )
+        )
+      );
+    }
+  }]);
+  return AddSelect;
+}(_react2.default.Component);
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    select: {
+      width: '100%'
+    },
+    descLabel: {
+      marginTop: theme.spacing.unit * 3,
+      marginBottom: theme.spacing.unit
+    },
+    flex: {
+      padding: theme.spacing.unit * 3,
+      flex: 1
+    },
+    content: {
+      flexGrow: 1,
+      width: 200
+    }
+  };
+})(AddSelect);
+
+/***/ }),
+/* 750 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = __webpack_require__(46);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = __webpack_require__(45);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styles = __webpack_require__(20);
+
+var _List = __webpack_require__(64);
+
+var _Avatar = __webpack_require__(126);
+
+var _Avatar2 = _interopRequireDefault(_Avatar);
+
+var _Image = __webpack_require__(280);
+
+var _Image2 = _interopRequireDefault(_Image);
+
+var _ArrowUpward = __webpack_require__(274);
+
+var _ArrowUpward2 = _interopRequireDefault(_ArrowUpward);
+
+var _ArrowDownward = __webpack_require__(273);
+
+var _ArrowDownward2 = _interopRequireDefault(_ArrowDownward);
+
+var _Cancel = __webpack_require__(276);
+
+var _Cancel2 = _interopRequireDefault(_Cancel);
+
+var _Select = __webpack_require__(97);
+
+var _Select2 = _interopRequireDefault(_Select);
+
+var _IconButton = __webpack_require__(50);
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
+
+var _Form = __webpack_require__(75);
+
+var _Input = __webpack_require__(63);
+
+var _Menu = __webpack_require__(65);
+
+var _axios = __webpack_require__(31);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _view = __webpack_require__(79);
+
+var _view2 = _interopRequireDefault(_view);
+
+var _util = __webpack_require__(44);
+
+var _if = __webpack_require__(135);
+
+var _if2 = _interopRequireDefault(_if);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ClassExercise = function (_React$Component) {
+  (0, _inherits3.default)(ClassExercise, _React$Component);
+
+  function ClassExercise(props) {
+    var _this2 = this;
+
+    (0, _classCallCheck3.default)(this, ClassExercise);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (ClassExercise.__proto__ || (0, _getPrototypeOf2.default)(ClassExercise)).call(this, props));
+
+    _this.state = {
+      viewItem: null,
+      exercise: null,
+      noteEditValue: null
+    };
+
+    _this.handleExerciseClick = function () {
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(exercise) {
+        var _ref2, exerciseWithUsage;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _axios2.default.post('/exercise/usage', {
+                  exercise: exercise
+                });
+
+              case 2:
+                _ref2 = _context.sent;
+                exerciseWithUsage = _ref2.data;
+
+                _this.setState({
+                  viewItem: exerciseWithUsage
+                });
+
+              case 5:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    _this.handleViewClose = function () {
+      _this.setState({ viewItem: null });
+    };
+
+    _this.handleRepsChange = function (e, exercise) {
+      exercise.repetitions = parseInt(e.target.value, 10);
+      _this.setState({ exercise: exercise });
+    };
+
+    _this.handleDurationChange = function (e, exercise) {
+      exercise.duration = parseInt(e.target.value, 10);
+      _this.props.onDurationChange(exercise);
+      _this.setState({ exercise: exercise });
+    };
+
+    _this.handleNotesChange = function (e, exercise) {
+      var html = e.target.innerHTML;
+      exercise.notes = html;
+      _this.setState({ exercise: exercise });
+    };
+
+    _this.handleNotesFocus = function (e) {
+      _this.setState({ noteEditValue: e.target.innerHTML });
+    };
+
+    _this.handleNotesBlur = function () {
+      _this.setState({ noteEditValue: null });
+    };
+
+    _this.onRemoveExercise = function (exercise) {
+      var _this$props = _this.props,
+          category = _this$props.category,
+          onDeleteExercise = _this$props.onDeleteExercise;
+
+      var exercises = category.exercises;
+      var index = exercises.indexOf(exercise);
+      exercises.splice(index, 1);
+      onDeleteExercise(exercise);
+    };
+
+    _this.state.exercise = props.exercise;
+    return _this;
+  }
+
+  (0, _createClass3.default)(ClassExercise, [{
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      var _state = this.state,
+          viewItem = _state.viewItem,
+          exercise = _state.exercise,
+          noteEditValue = _state.noteEditValue;
+      var _props = this.props,
+          classes = _props.classes,
+          hover = _props.hover,
+          category = _props.category,
+          onMoveUpExercise = _props.onMoveUpExercise,
+          onMoveDownExercise = _props.onMoveDownExercise;
+      var exercises = category.exercises;
+      // eslint-disable-next-line no-undef
+
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
+      var i = exercise.index;
+
+
+      return _react2.default.createElement(
+        _List.ListItem,
+        {
+          className: classes.item,
+          style: i === exercises.length - 1 ? { marginBottom: 0, borderBottom: 'none', paddingBottom: 0 } : {},
+          'data-hover-type': 'item',
+          'data-hover-value': exercise.id
+        },
+        _react2.default.createElement(
+          _Avatar2.default,
+          { onClick: function onClick() {
+              return _this3.handleExerciseClick(exercise);
+            }, classes: { root: classes.avatar } },
+          exercise.photo ? _react2.default.createElement('img', { src: thumbnailUrl.replace('%', exercise.id) }) : _react2.default.createElement(_Image2.default, null)
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: (0, _util.combineCss)(classes.listTextContainer, classes.title) },
+          _react2.default.createElement(
+            'h3',
+            { className: classes.listTextH3 },
+            _react2.default.createElement(
+              'span',
+              { className: classes.ordinal },
+              exercise.index + 1,
+              (0, _util.toOrdinal)(exercise.index + 1)
+            ),
+            exercise.name
+          ),
+          _react2.default.createElement('p', { className: classes.listTextP,
+            contentEditable: 'true',
+            suppressContentEditableWarning: true,
+            onInput: function onInput(e) {
+              return _this3.handleNotesChange(e, exercise);
+            },
+            onFocus: this.handleNotesFocus,
+            onBlur: this.handleNotesBlur,
+            dangerouslySetInnerHTML: { __html: noteEditValue ? noteEditValue : exercise.notes }
+          })
+        ),
+        _react2.default.createElement(
+          'form',
+          { className: classes.form, autoComplete: 'off' },
+          _react2.default.createElement(
+            _Form.FormControl,
+            { className: classes.formControl },
+            _react2.default.createElement(
+              _Input.InputLabel,
+              null,
+              'Reps.'
+            ),
+            _react2.default.createElement(
+              _Select2.default,
+              {
+                autoWidth: true,
+                value: exercise.repetitions,
+                onChange: function onChange(e) {
+                  return _this3.handleRepsChange(e, exercise);
+                },
+                classes: { selectMenu: classes.selectMenu, icon: classes.selectIcon }
+              },
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 1 },
+                '1'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 2 },
+                '2'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 3 },
+                '3'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 4 },
+                '4'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 5 },
+                '5'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 6 },
+                '6'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 7 },
+                '7'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 8 },
+                '8'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 9 },
+                '9'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 10 },
+                '10'
+              )
+            )
+          ),
+          _react2.default.createElement(
+            _Form.FormControl,
+            { className: classes.formControl },
+            _react2.default.createElement(
+              _Input.InputLabel,
+              null,
+              'Dur.'
+            ),
+            _react2.default.createElement(
+              _Select2.default,
+              {
+                autoWidth: true,
+                value: exercise.duration,
+                onChange: function onChange(e) {
+                  return _this3.handleDurationChange(e, exercise);
+                },
+                classes: { selectMenu: classes.selectMenu2, icon: classes.selectIcon }
+              },
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 1 },
+                '1 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 2 },
+                '2 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 3 },
+                '3 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 4 },
+                '4 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 5 },
+                '5 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 6 },
+                '6 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 7 },
+                '7 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 8 },
+                '8 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 9 },
+                '9 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 10 },
+                '10 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 15 },
+                '15 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 20 },
+                '20 min'
+              ),
+              _react2.default.createElement(
+                _Menu.MenuItem,
+                { value: 30 },
+                '30 min'
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _if2.default,
+          { test: hover === exercise.id },
+          _react2.default.createElement(
+            'div',
+            { className: classes.subToolbar },
+            _react2.default.createElement(
+              'a',
+              { title: 'move exercise up' },
+              _react2.default.createElement(
+                _IconButton2.default,
+                { variant: 'fab', color: 'primary', 'aria-label': 'move up', className: classes.button, onClick: function onClick() {
+                    return onMoveUpExercise(exercise);
+                  }, disabled: exercise.index === 0 },
+                _react2.default.createElement(_ArrowUpward2.default, null)
+              )
+            ),
+            _react2.default.createElement(
+              'a',
+              { title: 'move exercise down' },
+              _react2.default.createElement(
+                _IconButton2.default,
+                { variant: 'fab', color: 'primary', 'aria-label': 'move down', className: classes.button, onClick: function onClick() {
+                    return onMoveDownExercise(exercise);
+                  }, disabled: exercise.index === exercises.length - 1 },
+                _react2.default.createElement(_ArrowDownward2.default, null)
+              )
+            ),
+            _react2.default.createElement(
+              'a',
+              { title: 'remove exercise' },
+              _react2.default.createElement(
+                _IconButton2.default,
+                { variant: 'fab', color: 'secondary', 'aria-label': 'remove category', className: classes.button, onClick: function onClick() {
+                    return _this3.onRemoveExercise(exercise);
+                  } },
+                _react2.default.createElement(_Cancel2.default, null)
+              )
+            )
+          )
+        ),
+        viewItem ? _react2.default.createElement(_view2.default, { viewItem: viewItem, onClose: this.handleViewClose }) : null
+      );
+    }
+  }]);
+  return ClassExercise;
+}(_react2.default.Component);
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    form: {
+      display: 'flex',
+      flexWrap: 'wrap'
+    },
+    button: {
+      // margin: theme.spacing.unit,
+    },
+    subToolbar: {
+      position: "absolute",
+      top: -7,
+      right: 95
+    },
+    ordinal: {
+      color: '#375ace',
+      fontSize: '80%',
+      display: 'inline-block',
+      marginRight: 10
+    },
+    item: {
+      cursor: 'pointer',
+      padding: 0,
+      paddingBottom: theme.spacing.unit,
+      marginBottom: theme.spacing.unit,
+      borderBottom: '2px dotted #d3e4ea'
+    },
+    listTextContainer: {
+      flex: '1 1 auto',
+      padding: '0 16px',
+      minWidth: 0
+    },
+    listTextH3: {
+      color: 'rgba(0, 0, 0, 0.87)',
+      fontSize: '1rem',
+      fontWeight: 400,
+      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+      lineHeight: '1.5em',
+      margin: 0
+    },
+    listTextP: {
+      fontSize: '0.875rem',
+      fontWeight: 400,
+      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+      lineGeight: '1.46429em',
+      margin: 0,
+      backgroundColor: '#f3fdff',
+      padding: 3,
+      borderRadius: 5,
+      borderTop: '1px solid #b1cbdc',
+      color: '#9ebacf'
+    },
+    formControl: {
+      margin: 8,
+      marginLeft: 5,
+      width: 32
+    },
+    selectMenu: {
+      minWidth: 0,
+      fontSize: '80%'
+    },
+    selectMenu2: {
+      minWidth: 0,
+      fontSize: '80%',
+      width: 40
+    },
+    selectIcon: {
+      display: 'none'
+    },
+    title: {
+      maxWidth: '80%'
+    },
+    avatar: {
+      root: {
+        marginLeft: theme.spacing.unit
+      }
+    }
+  };
+})(ClassExercise);
+
+/***/ }),
+/* 751 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = __webpack_require__(46);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = __webpack_require__(45);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _styles = __webpack_require__(20);
+
+var _List = __webpack_require__(64);
+
+var _ArrowUpward = __webpack_require__(274);
+
+var _ArrowUpward2 = _interopRequireDefault(_ArrowUpward);
+
+var _ArrowDownward = __webpack_require__(273);
+
+var _ArrowDownward2 = _interopRequireDefault(_ArrowDownward);
+
+var _AddCircle = __webpack_require__(272);
+
+var _AddCircle2 = _interopRequireDefault(_AddCircle);
+
+var _Cancel = __webpack_require__(276);
+
+var _Cancel2 = _interopRequireDefault(_Cancel);
+
+var _Progress = __webpack_require__(76);
+
+var _IconButton = __webpack_require__(50);
+
+var _IconButton2 = _interopRequireDefault(_IconButton);
+
+var _ExpandMore = __webpack_require__(175);
+
+var _ExpandMore2 = _interopRequireDefault(_ExpandMore);
+
+var _ExpansionPanel = __webpack_require__(616);
+
+var _ExpansionPanel2 = _interopRequireDefault(_ExpansionPanel);
+
+var _axios = __webpack_require__(31);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _selectExercises = __webpack_require__(755);
+
+var _selectExercises2 = _interopRequireDefault(_selectExercises);
+
+var _util = __webpack_require__(44);
+
+var _hover = __webpack_require__(197);
+
+var _hover2 = _interopRequireDefault(_hover);
+
+var _classExercise = __webpack_require__(750);
+
+var _classExercise2 = _interopRequireDefault(_classExercise);
+
+var _if = __webpack_require__(135);
+
+var _if2 = _interopRequireDefault(_if);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ClassMovementCategory = function (_React$Component) {
+  (0, _inherits3.default)(ClassMovementCategory, _React$Component);
+
+  function ClassMovementCategory() {
+    var _ref,
+        _this2 = this;
+
+    var _temp, _this, _ret;
+
+    (0, _classCallCheck3.default)(this, ClassMovementCategory);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ClassMovementCategory.__proto__ || (0, _getPrototypeOf2.default)(ClassMovementCategory)).call.apply(_ref, [this].concat(args))), _this), _this.state = {
+      showSelectExercise: false,
+      selectableExercises: null,
+      loading: false
+    }, _this.onAddExercisesClick = function () {
+      var _ref2 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(category) {
+        var genreId, _ref3, selectableExercises;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                genreId = _this.props.genreId;
+
+                _this.setState({ loading: true });
+                _context.next = 4;
+                return _axios2.default.get('/class/category/exercises/' + genreId + '/' + category.labelId);
+
+              case 4:
+                _ref3 = _context.sent;
+                selectableExercises = _ref3.data;
+
+                _this.setState({ showSelectExercise: true, selectableExercises: selectableExercises, loading: false });
+
+              case 7:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref2.apply(this, arguments);
+      };
+    }(), _this.onRemoveCategoryClick = function (category) {
+      var _this$props = _this.props,
+          program = _this$props.program,
+          onDeleteCategory = _this$props.onDeleteCategory;
+
+      var index = program.indexOf(category);
+      program.splice(index, 1);
+      onDeleteCategory(category);
+    }, _this.onMoveUpExercise = function (exercise) {
+      var category = _this.props.category;
+      var exercises = category.exercises;
+
+      var index = exercises.indexOf(exercise);
+      exercises.splice(index, 1);
+      exercises.splice(index - 1, 0, exercise);
+      exercises.forEach(function (exercise, i) {
+        return exercise.index = i;
+      });
+      _this.setState({ category: category }, function () {
+        return _this.hover.setState({ hover: exercise.index });
+      });
+    }, _this.onMoveDownExercise = function (exercise) {
+      var category = _this.props.category;
+      var exercises = category.exercises;
+
+      var index = exercises.indexOf(exercise);
+      exercises.splice(index, 1);
+      exercises.splice(index + 1, 0, exercise);
+      exercises.forEach(function (exercise, i) {
+        return exercise.index = i;
+      });
+      _this.hover.setState({ hover: exercise.index });
+      _this.setState({ category: category }, function () {
+        return _this.hover.setState({ hover: exercise.index });
+      });
+    }, _this.onDeleteExercise = function () {
+      var category = _this.props.category;
+
+      category.exercises.forEach(function (exercise, i) {
+        return exercise.index = i;
+      });
+      _this.setState({ category: category, loading: false });
+    }, _this.handleCloseSelectExercise = function (exerciseIds) {
+      var category = _this.props.category;
+
+      if (exerciseIds) {
+        var exercises = _this.state.selectableExercises.filter(function (exercise) {
+          return exerciseIds.indexOf(exercise.id) > -1;
+        });
+        category.exercises.push.apply(category.exercises, exercises);
+        category.exercises.forEach(function (exercise, i) {
+          return exercise.index = i;
+        });
+      }
+      if (exerciseIds && exerciseIds.length) {
+        category.expanded = true;
+      }
+      _this.props.onDurationChange();
+      _this.setState({ showSelectExercise: false });
+    }, _this.handleExpandClick = function () {
+      _this.props.category.expanded = !_this.props.category.expanded;
+      _this.setState({ loading: false });
+    }, _this.handleHoverRef = function (el) {
+      _this.hover = el;
+    }, _this.onDurationChange = function (exercise) {
+      var category = _this.props.category;
+
+      category.duration = category.exercises.reduce(function (duration, exercise) {
+        return duration += exercise.duration;
+      }, 0);
+      _this.props.onDurationChange(exercise);
+      // category.expanded = true;
+      _this.setState({ loading: false });
+    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+  }
+
+  (0, _createClass3.default)(ClassMovementCategory, [{
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      var _state = this.state,
+          showSelectExercise = _state.showSelectExercise,
+          selectableExercises = _state.selectableExercises,
+          loading = _state.loading;
+      var _props = this.props,
+          classes = _props.classes,
+          genreId = _props.genreId,
+          category = _props.category,
+          program = _props.program,
+          hasHover = _props.hasHover,
+          onMoveUp = _props.onMoveUp,
+          onMoveDown = _props.onMoveDown;
+      var name = category.name,
+          exercises = category.exercises,
+          expanded = category.expanded;
+
+      var index = category.index + 1;
+      var ord = (0, _util.toOrdinal)(index);
+      var duration = exercises.reduce(function (duration, exercise) {
+        return duration + exercise.duration;
+      }, 0);
+      var isExpanded = expanded;
+
+      return _react2.default.createElement(
+        _ExpansionPanel2.default,
+        {
+          id: 'class-exercise-group-' + (genreId + '-' + category.labelId),
+          className: classes.root,
+          'data-hover-type': 'item',
+          'data-hover-value': category.index,
+          expanded: isExpanded,
+          style: isExpanded ? { paddingBottom: 22 } : {}
+        },
+        _react2.default.createElement(
+          _ExpansionPanel.ExpansionPanelSummary,
+          { expandIcon: _react2.default.createElement(
+              'a',
+              { title: 'expand / collapse' },
+              _react2.default.createElement(_ExpandMore2.default, { onClick: this.handleExpandClick, style: { height: 50 } })
+            ), classes: { expanded: classes.expanded } },
+          _react2.default.createElement(_List.ListItemText, { primary: _react2.default.createElement(
+              'span',
+              { style: { fontSize: '1.2rem' } },
+              _react2.default.createElement(
+                'span',
+                { className: classes.ordinal },
+                '' + index + ord + '.'
+              ),
+              name,
+              _react2.default.createElement(
+                'span',
+                { className: classes.duration },
+                duration === 0 ? 'Blank' : exercises.length + ' Exercises, ' + duration + ' mins duration'
+              )
+            ) }),
+          loading ? _react2.default.createElement(_Progress.CircularProgress, { className: classes.progress, thickness: 3 }) : null,
+          _react2.default.createElement(
+            _if2.default,
+            { test: hasHover },
+            _react2.default.createElement(
+              'div',
+              { className: classes.toolbar },
+              _react2.default.createElement(
+                'a',
+                { title: 'add exercises to category' },
+                _react2.default.createElement(
+                  _IconButton2.default,
+                  { variant: 'raised', color: 'primary', 'aria-label': 'add exercise', className: classes.button, onClick: function onClick() {
+                      return _this3.onAddExercisesClick(category);
+                    } },
+                  _react2.default.createElement(_AddCircle2.default, null)
+                )
+              ),
+              _react2.default.createElement(
+                'a',
+                { title: 'move category up' },
+                _react2.default.createElement(
+                  _IconButton2.default,
+                  { variant: 'raised', color: 'primary', 'aria-label': 'move up', className: classes.button, onClick: function onClick() {
+                      return onMoveUp(category);
+                    }, disabled: category.index === 0 },
+                  _react2.default.createElement(_ArrowUpward2.default, null)
+                )
+              ),
+              _react2.default.createElement(
+                'a',
+                { title: 'move category down' },
+                _react2.default.createElement(
+                  _IconButton2.default,
+                  { variant: 'raised', color: 'primary', 'aria-label': 'move down', className: classes.button, onClick: function onClick() {
+                      return onMoveDown(category);
+                    }, disabled: category.index === program.length - 1 },
+                  _react2.default.createElement(_ArrowDownward2.default, null)
+                )
+              ),
+              _react2.default.createElement(
+                'a',
+                { title: 'remove category' },
+                _react2.default.createElement(
+                  _IconButton2.default,
+                  { variant: 'raised', color: 'secondary', 'aria-label': 'remove category', className: classes.button, onClick: function onClick() {
+                      return _this3.onRemoveCategoryClick(category);
+                    } },
+                  _react2.default.createElement(_Cancel2.default, null)
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          _ExpansionPanel.ExpansionPanelDetails,
+          { className: classes.details },
+          exercises.length === 0 ? _react2.default.createElement(
+            'span',
+            { className: classes.empty },
+            'Add some exercises!'
+          ) : _react2.default.createElement(_hover2.default, { ref: this.handleHoverRef, render: function render(hover) {
+              return _react2.default.createElement(
+                'div',
+                null,
+                exercises.map(function (exercise) {
+                  return _react2.default.createElement(_classExercise2.default, {
+                    key: category.index + exercise.index + exercise.name,
+                    exercise: exercise,
+                    hover: hover,
+                    category: category,
+                    onMoveUpExercise: _this3.onMoveUpExercise,
+                    onMoveDownExercise: _this3.onMoveDownExercise,
+                    onDeleteExercise: _this3.onDeleteExercise,
+                    onDurationChange: _this3.onDurationChange
+                  });
+                })
+              );
+            } })
+        ),
+        _react2.default.createElement(
+          _if2.default,
+          { test: showSelectExercise },
+          _react2.default.createElement(_selectExercises2.default, {
+            onClose: this.handleCloseSelectExercise,
+            exercises: selectableExercises
+          })
+        )
+      );
+    }
+  }]);
+  return ClassMovementCategory;
+}(_react2.default.Component);
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    root: theme.mixins.gutters({
+      marginBottom: theme.spacing.unit,
+      position: 'relative',
+      borderRadius: 5,
+      cursor: 'default',
+      paddingLeft: 0,
+      paddingRight: 0,
+      backgroundColor: '#e9f4ff'
+    }),
+    button: {
+      // margin: theme.spacing.unit,
+    },
+    toolbar: {
+      position: "absolute",
+      right: 28,
+      top: -4
+    },
+    ordinal: {
+      color: '#375ace',
+      fontSize: '80%',
+      display: 'inline-block',
+      marginRight: 10
+    },
+    details: {
+      display: 'block',
+      backgroundColor: '#fff',
+      borderRadius: 10,
+      padding: 10,
+      border: '1px solid #eee',
+      boxShadow: 'inset 0 0 10px #7ccfff70'
+    },
+    item: {
+      cursor: 'pointer',
+      padding: 0,
+      paddingBottom: theme.spacing.unit,
+      marginBottom: theme.spacing.unit,
+      borderBottom: '1px dashed #ccc'
+    },
+    progress: {
+      position: 'absolute',
+      top: 5,
+      left: -20
+    },
+    empty: {
+      color: '#d5d5d5'
+    },
+    duration: {
+      color: '#90c2d7',
+      fontSize: '70%',
+      marginLeft: 10,
+      position: 'relative',
+      top: -1
+    },
+    expanded: {
+      height: 40,
+      minHeight: 0
+    }
+  };
+})(ClassMovementCategory);
+
+/***/ }),
+/* 752 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _classMovementCategory = __webpack_require__(751);
+
+var _classMovementCategory2 = _interopRequireDefault(_classMovementCategory);
+
+var _styles = __webpack_require__(20);
+
+var _hover = __webpack_require__(197);
+
+var _hover2 = _interopRequireDefault(_hover);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var ClassProgram = function (_React$Component) {
+  (0, _inherits3.default)(ClassProgram, _React$Component);
+
+  function ClassProgram() {
+    var _ref;
+
+    var _temp, _this, _ret;
+
+    (0, _classCallCheck3.default)(this, ClassProgram);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref = ClassProgram.__proto__ || (0, _getPrototypeOf2.default)(ClassProgram)).call.apply(_ref, [this].concat(args))), _this), _this.onMoveUp = function (category) {
+      var program = _this.props.program;
+
+      var index = program.indexOf(category);
+      program.splice(index, 1);
+      program.splice(index - 1, 0, category);
+      program.forEach(function (category, i) {
+        return category.index = i;
+      });
+      _this.hover.setState({ hover: category.index });
+      _this.setState({ program: program });
+    }, _this.onMoveDown = function (category) {
+      var program = _this.props.program;
+
+      var index = program.indexOf(category);
+      program.splice(index, 1);
+      program.splice(index + 1, 0, category);
+      program.forEach(function (category, i) {
+        return category.index = i;
+      });
+      _this.hover.setState({ hover: category.index });
+      _this.setState({ program: program });
+    }, _this.onDeleteCategory = function () {
+      var program = _this.props.program;
+
+      _this.props.onDeleteCategory();
+      program.forEach(function (category, i) {
+        return category.index = i;
+      });
+    }, _this.handleHoverRef = function (el) {
+      _this.hover = el;
+    }, _this.onDurationChange = function (exercise) {
+      _this.props.onDurationChange(exercise);
+    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+  }
+
+  (0, _createClass3.default)(ClassProgram, [{
+    key: 'render',
+    value: function render() {
+      var _this2 = this;
+
+      var _props = this.props,
+          classes = _props.classes,
+          program = _props.program,
+          genreId = _props.genreId;
+
+
+      return _react2.default.createElement(
+        'div',
+        { className: classes.container },
+        _react2.default.createElement(_hover2.default, { ref: this.handleHoverRef, className: classes.root, render: function render(hover) {
+            return _react2.default.createElement(
+              'div',
+              null,
+              program.map(function (category) {
+                return _react2.default.createElement(_classMovementCategory2.default, {
+                  key: 'category_' + category.index + '-' + category.labelId,
+                  genreId: genreId,
+                  program: program,
+                  category: category,
+                  hasHover: hover === category.index,
+                  onMoveUp: _this2.onMoveUp,
+                  onMoveDown: _this2.onMoveDown,
+                  onDeleteCategory: _this2.onDeleteCategory,
+                  onDurationChange: _this2.onDurationChange
+                });
+              })
+            );
+          } })
+      );
+    }
+  }]);
+  return ClassProgram;
+}(_react2.default.Component);
+
+;
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    container: {
+      position: 'relative'
+    },
+    root: theme.mixins.gutters({
+      height: 400,
+      overflowY: 'scroll',
+      border: '1px solid #ccc',
+      borderRadius: 5,
+      paddingTop: theme.spacing.unit * 2,
+      paddingBottom: theme.spacing.unit * 2,
+      backgroundColor: '#f3faff'
+    })
+  };
+})(ClassProgram);
+
+/***/ }),
+/* 753 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _stringify = __webpack_require__(102);
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+var _toConsumableArray2 = __webpack_require__(81);
+
+var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
+
+var _regenerator = __webpack_require__(46);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = __webpack_require__(45);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _extends2 = __webpack_require__(3);
+
+var _extends3 = _interopRequireDefault(_extends2);
+
+var _react = __webpack_require__(0);
+
+var React = _interopRequireWildcard(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _Paper = __webpack_require__(51);
+
+var _Paper2 = _interopRequireDefault(_Paper);
+
+var _dxReactGrid = __webpack_require__(133);
+
+var _dxReactGridMaterialUi = __webpack_require__(189);
+
+var _Button = __webpack_require__(41);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _Add = __webpack_require__(271);
+
+var _Add2 = _interopRequireDefault(_Add);
+
+var _Edit = __webpack_require__(279);
+
+var _Edit2 = _interopRequireDefault(_Edit);
+
+var _Delete = __webpack_require__(277);
+
+var _Delete2 = _interopRequireDefault(_Delete);
+
+var _VpnKey = __webpack_require__(761);
+
+var _VpnKey2 = _interopRequireDefault(_VpnKey);
+
+var _Block = __webpack_require__(759);
+
+var _Block2 = _interopRequireDefault(_Block);
+
+var _RadioButtonUnchecked = __webpack_require__(760);
+
+var _RadioButtonUnchecked2 = _interopRequireDefault(_RadioButtonUnchecked);
+
+var _AddCircleOutline = __webpack_require__(758);
+
+var _AddCircleOutline2 = _interopRequireDefault(_AddCircleOutline);
+
+var _AddCircle = __webpack_require__(272);
+
+var _AddCircle2 = _interopRequireDefault(_AddCircle);
+
+var _Tooltip = __webpack_require__(129);
+
+var _Tooltip2 = _interopRequireDefault(_Tooltip);
+
+var _Progress = __webpack_require__(76);
+
+var _styles = __webpack_require__(20);
+
+var _axios = __webpack_require__(31);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _addSelect = __webpack_require__(749);
+
+var _addSelect2 = _interopRequireDefault(_addSelect);
+
+var _addEdit = __webpack_require__(748);
+
+var _addEdit2 = _interopRequireDefault(_addEdit);
+
+var _alert = __webpack_require__(195);
+
+var _alert2 = _interopRequireDefault(_alert);
+
+var _session = __webpack_require__(67);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Cell = function Cell(props) {
+  return React.createElement(_dxReactGridMaterialUi.VirtualTable.Cell, props);
+};
+
+var getRowId = function getRowId(row) {
+  return row.id;
+};
+
+var MODE = {
+  LOADING: 'loading',
+  READ: 'read',
+  ADD: 'add',
+  EDIT: 'edit',
+  SET_PASSWORD: 'set_password',
+  CONFIRM_DELETE: 'confirm_delete'
+};
+
+var KEYS = {
+  OPTION: 18,
+  ENTER: 13,
+  SPACE: 32,
+  UP: 38,
+  DOWN: 40,
+  TILDA: 192,
+  META: 'Meta'
+};
+
+var PERMISSION_ICONS = {
+  0: _Block2.default,
+  1: _RadioButtonUnchecked2.default,
+  2: _AddCircleOutline2.default,
+  3: _AddCircle2.default
+};
+
+var PERMISSION_TEXT = {
+  0: 'Forbidden',
+  1: 'Read Only',
+  2: 'Read/Write',
+  3: 'Read/Write/Delete'
+};
+
+var PERMISSION_TYPE = {
+  0: 'Exercises',
+  1: 'Classes',
+  2: 'Users'
+};
+
+var PermissionFormatter = function PermissionFormatter(_ref) {
+  var row = _ref.row;
+
+  var rowPermissions = '' + row.permissions;
+  var icons = [];
+  for (var i = 0; i < 3; i++) {
+    var permissionValue = rowPermissions.charAt(i);
+    var CLS = PERMISSION_ICONS[permissionValue];
+    icons.push(React.createElement(
+      _Tooltip2.default,
+      { title: PERMISSION_TYPE[i] + ': ' + PERMISSION_TEXT[permissionValue], key: i + 'permi' + rowPermissions.charAt(i) },
+      React.createElement(CLS, null)
+    ));
+  }
+  return React.createElement(
+    'span',
+    null,
+    icons
+  );
+};
+
+var PermissionTypeProvider = function PermissionTypeProvider(props) {
+  return React.createElement(_dxReactGrid.DataTypeProvider, (0, _extends3.default)({
+    formatterComponent: PermissionFormatter
+  }, props));
+};
+
+var DateFormatter = function DateFormatter(_ref2) {
+  var row = _ref2.row;
+
+  return React.createElement(
+    'span',
+    null,
+    new Date(Date.parse(row.lastLogin)).toLocaleString()
+  );
+};
+
+var DateTypeProvider = function DateTypeProvider(props) {
+  return React.createElement(_dxReactGrid.DataTypeProvider, (0, _extends3.default)({
+    formatterComponent: DateFormatter
+  }, props));
+};
+
+var calcGridHeight = function calcGridHeight() {
+  return window.innerHeight - 230;
+};
+
+var defaultColumnWidths = [{ columnName: 'firstName', width: 100 }, { columnName: 'lastName', width: 100 }, { columnName: 'email', width: 300 }, { columnName: 'permissions', width: 100 }, { columnName: 'lastLogin', width: 100 }];
+
+function setColumnWidths(nextColumnWidths) {
+  var widths = {};
+  defaultColumnWidths.forEach(function (info) {
+    return widths[info.columnName] = info.width;
+  });
+  nextColumnWidths.forEach(function (info) {
+    return widths[info.columnName] = info.width;
+  });
+  defaultColumnWidths = [];
+  for (var k in widths) {
+    defaultColumnWidths.push({ columnName: k, width: widths[k] });
+  }
+}
+
+var defaultHiddenColumnNames = [];
+
+try {
+  defaultColumnWidths = JSON.parse(localStorage["phoenix_lib_1.0.users.column.width"]);
+} catch (e) {}
+
+try {
+  defaultHiddenColumnNames = JSON.parse(localStorage["phoenix_lib_1.0.users.column.hidden"]);
+} catch (e) {}
+
+var UsersGrid = function (_React$Component) {
+  (0, _inherits3.default)(UsersGrid, _React$Component);
+
+  function UsersGrid() {
+    var _ref3,
+        _this2 = this;
+
+    var _temp, _this, _ret;
+
+    (0, _classCallCheck3.default)(this, UsersGrid);
+
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref3 = UsersGrid.__proto__ || (0, _getPrototypeOf2.default)(UsersGrid)).call.apply(_ref3, [this].concat(args))), _this), _this.state = {
+      mode: MODE.LOADING,
+      columns: [{ name: 'firstName', title: 'First Name' }, { name: 'lastName', title: 'Last Name' }, { name: 'email', title: 'Email' }, { name: 'permissions', title: 'Permissions' }, { name: 'lastLogin', title: 'Last Login' }],
+      rows: [],
+      filteringStateColumnExtensions: [
+        // { columnName: 'photo', filteringEnabled: false },
+      ],
+      defaultHiddenColumnNames: defaultHiddenColumnNames,
+      defaultColumnWidths: defaultColumnWidths,
+      dateColumns: ['lastLogin'],
+      permissionColumns: ['permissions'],
+      selection: [],
+      editItem: null,
+      selectedGenre: null,
+      program: null,
+      gridHeight: calcGridHeight()
+    }, _this.onGlobalKeyDown = function (e) {
+      if (e.key === 'Meta') {
+        _this.isMetaDown = true;
+      }
+    }, _this.onGlobalKeyUp = function (e) {
+      var keyCode = e.keyCode,
+          key = e.key;
+      var _this$state = _this.state,
+          selection = _this$state.selection,
+          rows = _this$state.rows;
+      // const { isAdmin } = this.props;
+
+      var ids = rows.map(function (row) {
+        return row.id;
+      });
+      ids.sort();
+      if (key === KEYS.META) {
+        _this.isMetaDown = false;
+      } else if (keyCode === KEYS.TILDA && _this.state.selection.length === 1) {
+        // const row = this.state.rows.find(row => row.id === this.state.selection[0]);
+        // if (!isAdmin) {
+        //   try {
+        //     fscreen.requestFullscreen(document.documentElement);
+        //   } catch (e) {
+
+        //   }
+        //   this.setState({ mode: MODE.VIEW, viewItem: row });
+        // } else {
+        //   this.setState({ mode: MODE.EDIT, editItem: row });
+        // }
+      } else if (selection.length === 1 && keyCode === KEYS.UP) {
+        var selectedRowIndex = ids.indexOf(selection[0]);
+        if (selectedRowIndex > 0) {
+          _this.setState({ selection: [ids[selectedRowIndex + 1]] });
+        }
+      } else if (selection.length === 1 && keyCode === KEYS.DOWN) {
+        var _selectedRowIndex = ids.indexOf(selection[0]);
+        if (_selectedRowIndex <= ids.length - 1) {
+          _this.setState({ selection: [ids[_selectedRowIndex - 1]] });
+        }
+      }
+    }, _this.onResize = function () {
+      _this.setState({ gridHeight: calcGridHeight() });
+    }, _this.onAddClick = function () {
+      _axios2.default.get('/label/get/0').then(function (response) {
+        _this.setState({ genres: response.data, mode: MODE.ADD_SELECT });
+      });
+    }, _this.onEditClick = function () {
+      var row = _this.state.rows.find(function (row) {
+        return row.id === _this.state.selection[0];
+      });
+      _this.setState({
+        mode: MODE.EDIT,
+        editItem: row
+      });
+    }, _this.onDeleteClick = function () {
+      _this.setState({ mode: MODE.CONFIRM_DELETE });
+    }, _this.onAddEditClose = function () {
+      _this.setState({ mode: MODE.READ });
+    }, _this.onAddSelectClose = function () {
+      var _ref4 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(value) {
+        var _ref5, template;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                if (!value) {
+                  _context.next = 9;
+                  break;
+                }
+
+                _context.next = 3;
+                return _axios2.default.get('/template/' + value);
+
+              case 3:
+                _ref5 = _context.sent;
+                template = _ref5.data;
+
+                template.forEach(function (category) {
+                  return category.expanded = false;
+                });
+                _this.setState({
+                  selectedGenre: {
+                    id: value,
+                    name: _this.state.genres.find(function (genre) {
+                      return genre.id === value;
+                    }).name
+                  },
+                  mode: MODE.ADD,
+                  program: template,
+                  editItem: null
+                });
+                _context.next = 10;
+                break;
+
+              case 9:
+                _this.setState({ mode: MODE.READ });
+
+              case 10:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref4.apply(this, arguments);
+      };
+    }(), _this.onViewClose = function () {
+      _this.setState({ mode: MODE.READ });
+    }, _this.onConfirmDeleteClose = function () {
+      var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(didAccept) {
+        var ids, rows;
+        return _regenerator2.default.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                if (!didAccept) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                ids = _this.state.selection;
+                _context2.next = 4;
+                return _axios2.default.post('/class/delete', { ids: ids });
+
+              case 4:
+                rows = _this.state.rows.filter(function (row) {
+                  return ids.indexOf(row.id) === -1;
+                });
+
+                _this.setState({ rows: rows, selection: [] });
+
+              case 6:
+                _this.setState({ mode: MODE.READ });
+
+              case 7:
+              case 'end':
+                return _context2.stop();
+            }
+          }
+        }, _callee2, _this2);
+      }));
+
+      return function (_x2) {
+        return _ref6.apply(this, arguments);
+      };
+    }(), _this.onSelectionChange = function (selection) {
+      // const { selection: selected } = this.state;
+      // const { isMetaDown } = this;
+      // let viewItem;
+      // let mode = MODE.READ;
+      // if (!this.props.isAdmin) {
+      //   if (!selection.length) {
+      //     selection = selected;
+      //   }
+      //   for (let i = 0; i < selection.length; i++) {
+      //     if (selected.indexOf(selection[i]) === -1) {
+      //       selection = [selection[i]];
+      //       break;
+      //     }
+      //   }
+      //   try {
+      //     fscreen.requestFullscreen(document.documentElement);
+      //   } catch (e) {
+
+      //   }
+      //   mode = MODE.VIEW;
+      // } else if (!isMetaDown) {
+      //   for (let i = 0; i < selection.length; i++) {
+      //     if (selected.indexOf(selection[i]) === -1) {
+      //       selection = [selection[i]];
+      //       break;
+      //     }
+      //   }
+      // }
+      // viewItem = this.state.rows.find(row => row.id === selection[0]);
+      _this.setState({ selection: selection });
+    }, _this.onAdded = function (cls) {
+      var rows = [].concat((0, _toConsumableArray3.default)(_this.state.rows));
+      rows.push(cls);
+      _this.setState({ rows: rows, selection: [cls.id], mode: MODE.READ });
+    }, _this.onSaved = function (cls) {
+      var rows = [].concat((0, _toConsumableArray3.default)(_this.state.rows));
+      var row = rows.find(function (row) {
+        return row.id === cls.id;
+      });
+      var index = rows.indexOf(row);
+      rows.splice(index, 1);
+      rows.splice(index, 0, cls);
+      _this.setState({ rows: rows, editItem: null, selection: [], mode: MODE.READ });
+    }, _this.onColumnWidthsChange = function (nextColumnWidths) {
+      try {
+        setColumnWidths(nextColumnWidths);
+        var data = (0, _stringify2.default)(defaultColumnWidths);
+        localStorage['phoenix_lib_1.0.users.column.width'] = data;
+      } catch (e) {
+        // ?
+      }
+    }, _this.onHiddenColumnNamesChange = function (hiddenColumnNames) {
+      try {
+        var data = (0, _stringify2.default)(hiddenColumnNames);
+        localStorage['phoenix_lib_1.0.users.column.hidden'] = data;
+      } catch (e) {
+        // ?
+      }
+    }, _this.onSetPasswordClick = function () {
+      _this.setState({ mode: MODE.SET_PASSWORD });
+    }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
+  }
+
+  (0, _createClass3.default)(UsersGrid, [{
+    key: 'componentWillMount',
+    value: function () {
+      var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
+        var _ref8, data;
+
+        return _regenerator2.default.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return _axios2.default.get('/users/get');
+
+              case 2:
+                _ref8 = _context3.sent;
+                data = _ref8.data;
+
+
+                this.setState({
+                  mode: MODE.READ,
+                  rows: data,
+                  selection: []
+                });
+
+                this.isMetaDown = false;
+
+                window.addEventListener('keydown', this.onGlobalKeyDown);
+                window.addEventListener('keyup', this.onGlobalKeyUp);
+                window.addEventListener('resize', this.onResize);
+
+              case 9:
+              case 'end':
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this);
+      }));
+
+      function componentWillMount() {
+        return _ref7.apply(this, arguments);
+      }
+
+      return componentWillMount;
+    }()
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      window.removeEventListener('keydown', this.onGlobalKeyDown);
+      window.removeEventListener('keyup', this.onGlobalKeyUp);
+      window.removeEventListener('resize', this.onResize);
+    }
+  }, {
+    key: 'renderEditControls',
+    value: function renderEditControls() {
+      var _state = this.state,
+          selection = _state.selection,
+          rows = _state.rows;
+      var _props = this.props,
+          classes = _props.classes,
+          isAdmin = _props.isAdmin;
+
+      var canEdit = selection.length === 1 && (_session.permissions.canDeleteClass || rows.find(function (row) {
+        return row.id === selection[0];
+      }).status === STATUSES.SUBMITTED);
+
+      return React.createElement(
+        'span',
+        { className: classes.root },
+        isAdmin ? React.createElement(
+          'span',
+          null,
+          React.createElement(
+            _Button2.default,
+            { variant: 'fab', color: 'primary', 'aria-label': 'add', className: classes.button, onClick: this.onAddClick },
+            React.createElement(_Add2.default, null)
+          ),
+          React.createElement(
+            _Button2.default,
+            { variant: 'fab', 'aria-label': 'edit', disabled: !canEdit, className: classes.button, onClick: this.onEditClick },
+            React.createElement(_Edit2.default, null)
+          ),
+          _session.permissions.canDeleteClass ? React.createElement(
+            _Button2.default,
+            { variant: 'fab', color: 'secondary', disabled: selection.length === 0, 'aria-label': 'delete', className: classes.button, onClick: this.onDeleteClick },
+            React.createElement(_Delete2.default, null)
+          ) : null,
+          React.createElement(
+            _Button2.default,
+            { variant: 'fab', disabled: selection.length === 0, 'aria-label': 'password', className: classes.button, onClick: this.onSetPasswordClick },
+            React.createElement(_VpnKey2.default, null)
+          )
+        ) : null
+      );
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _state2 = this.state,
+          rows = _state2.rows,
+          columns = _state2.columns,
+          tableColumnExtensions = _state2.tableColumnExtensions,
+          filteringStateColumnExtensions = _state2.filteringStateColumnExtensions,
+          defaultHiddenColumnNames = _state2.defaultHiddenColumnNames,
+          defaultColumnWidths = _state2.defaultColumnWidths,
+          mode = _state2.mode,
+          dateColumns = _state2.dateColumns,
+          permissionColumns = _state2.permissionColumns,
+          selection = _state2.selection,
+          program = _state2.program,
+          editItem = _state2.editItem,
+          genres = _state2.genres,
+          selectedGenre = _state2.selectedGenre,
+          gridHeight = _state2.gridHeight;
+      var _props2 = this.props,
+          isAdmin = _props2.isAdmin,
+          classes = _props2.classes;
+
+
+      if (mode === MODE.LOADING) {
+        return React.createElement(
+          _Paper2.default,
+          null,
+          React.createElement(_Progress.LinearProgress, { classes: { colorPrimary: classes.progressFG, barColorPrimary: classes.progressBG } })
+        );
+      };
+
+      return React.createElement(
+        _Paper2.default,
+        { id: 'grid' },
+        this.renderEditControls(),
+        React.createElement(
+          _dxReactGridMaterialUi.Grid,
+          { rows: rows, columns: columns, getRowId: getRowId },
+          React.createElement(PermissionTypeProvider, { 'for': permissionColumns }),
+          React.createElement(DateTypeProvider, { 'for': dateColumns }),
+          React.createElement(_dxReactGridMaterialUi.DragDropProvider, null),
+          React.createElement(_dxReactGrid.FilteringState, { columnExtensions: filteringStateColumnExtensions }),
+          React.createElement(_dxReactGrid.SearchState, null),
+          React.createElement(_dxReactGrid.SortingState, {
+            defaultSorting: [{ columnName: 'id', direction: 'desc' }, { columnName: 'name', direction: 'asc' }, { columnName: 'status', direction: 'asc' }, { columnName: 'genre', direction: 'asc' }, { columnName: 'designer', direction: 'asc' }]
+          }),
+          React.createElement(_dxReactGrid.SelectionState, { selection: selection, onSelectionChange: this.onSelectionChange }),
+          React.createElement(_dxReactGrid.IntegratedFiltering, null),
+          React.createElement(_dxReactGrid.IntegratedSorting, null),
+          React.createElement(_dxReactGrid.IntegratedSelection, null),
+          React.createElement(_dxReactGridMaterialUi.VirtualTable, { columnExtensions: tableColumnExtensions, cellComponent: Cell, height: gridHeight }),
+          React.createElement(_dxReactGridMaterialUi.TableColumnResizing, { defaultColumnWidths: defaultColumnWidths, onColumnWidthsChange: this.onColumnWidthsChange }),
+          React.createElement(_dxReactGridMaterialUi.TableHeaderRow, { showSortingControls: true }),
+          React.createElement(_dxReactGridMaterialUi.TableColumnReordering, { defaultOrder: columns.map(function (column) {
+              return column.name;
+            }) }),
+          React.createElement(_dxReactGridMaterialUi.TableFilterRow, null),
+          React.createElement(_dxReactGridMaterialUi.TableSelection, { showSelectAll: isAdmin, highlightRow: true, selectByRowClick: true, showSelectionColumn: isAdmin }),
+          React.createElement(_dxReactGridMaterialUi.TableColumnVisibility, { defaultHiddenColumnNames: defaultHiddenColumnNames, onHiddenColumnNamesChange: this.onHiddenColumnNamesChange }),
+          React.createElement(_dxReactGridMaterialUi.Toolbar, null),
+          React.createElement(_dxReactGridMaterialUi.ColumnChooser, null),
+          React.createElement(_dxReactGridMaterialUi.SearchPanel, null)
+        ),
+        mode === MODE.ADD_SELECT ? React.createElement(_addSelect2.default, { genres: genres, onClose: this.onAddSelectClose }) : null,
+        mode === MODE.ADD || mode === MODE.EDIT ? React.createElement(_addEdit2.default, { mode: mode, genreId: editItem && editItem.genreId || selectedGenre.id, program: program, className: mode === MODE.ADD ? 'New ' + selectedGenre.name + ' Class' : editItem.name, editItem: editItem, onAdded: this.onAdded, onSaved: this.onSaved, onClose: this.onAddEditClose }) : null,
+        mode === MODE.CONFIRM_DELETE ? React.createElement(_alert2.default, {
+          title: 'Confirm Delete',
+          message: 'Do you really want to delete ' + (selection.length === 1 ? 'this class' : 'these ' + selection.length + ' classes') + '?',
+          submitText: 'Delete',
+          onClose: this.onConfirmDeleteClose
+        }) : null
+      );
+    }
+  }]);
+  return UsersGrid;
+}(React.Component);
+
+UsersGrid.propTypes = {
+  classes: _propTypes2.default.object.isRequired
+};
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    root: {
+      position: 'absolute',
+      zIndex: 1100
+    },
+    '&:tr': {
+      cursor: 'pointer'
+    },
+    button: {
+      margin: theme.spacing.unit,
+      width: 45,
+      height: 45
+    },
+    count: {
+      display: 'inline-block',
+      marginLeft: 10,
+      color: '#ccc'
+    },
+    pointer: {
+      cursor: 'pointer'
+    },
+    progressFG: {
+      backgroundColor: '#2aff48'
+    },
+    progressBG: {
+      backgroundColor: '#fff'
+    }
+  };
+})(UsersGrid);
+
+/***/ }),
+/* 754 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _grid = __webpack_require__(753);
+
+var _grid2 = _interopRequireDefault(_grid);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Classes = function (_React$Component) {
+  (0, _inherits3.default)(Classes, _React$Component);
+
+  function Classes() {
+    (0, _classCallCheck3.default)(this, Classes);
+    return (0, _possibleConstructorReturn3.default)(this, (Classes.__proto__ || (0, _getPrototypeOf2.default)(Classes)).apply(this, arguments));
+  }
+
+  (0, _createClass3.default)(Classes, [{
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(_grid2.default, { isAdmin: this.props.isAdmin });
+    }
+  }]);
+  return Classes;
+}(_react2.default.Component);
+
+exports.default = Classes;
+;
+
+/***/ }),
+/* 755 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _regenerator = __webpack_require__(46);
+
+var _regenerator2 = _interopRequireDefault(_regenerator);
+
+var _asyncToGenerator2 = __webpack_require__(45);
+
+var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
+
+var _keys = __webpack_require__(34);
+
+var _keys2 = _interopRequireDefault(_keys);
+
+var _getPrototypeOf = __webpack_require__(9);
+
+var _getPrototypeOf2 = _interopRequireDefault(_getPrototypeOf);
+
+var _classCallCheck2 = __webpack_require__(6);
+
+var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
+
+var _createClass2 = __webpack_require__(7);
+
+var _createClass3 = _interopRequireDefault(_createClass2);
+
+var _possibleConstructorReturn2 = __webpack_require__(11);
+
+var _possibleConstructorReturn3 = _interopRequireDefault(_possibleConstructorReturn2);
+
+var _inherits2 = __webpack_require__(10);
+
+var _inherits3 = _interopRequireDefault(_inherits2);
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _propTypes = __webpack_require__(2);
+
+var _propTypes2 = _interopRequireDefault(_propTypes);
+
+var _Button = __webpack_require__(41);
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _List = __webpack_require__(64);
+
+var _List2 = _interopRequireDefault(_List);
+
+var _Avatar = __webpack_require__(126);
+
+var _Avatar2 = _interopRequireDefault(_Avatar);
+
+var _Dialog = __webpack_require__(55);
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
+var _AppBar = __webpack_require__(61);
+
+var _AppBar2 = _interopRequireDefault(_AppBar);
+
+var _Typography = __webpack_require__(29);
+
+var _Typography2 = _interopRequireDefault(_Typography);
+
+var _Image = __webpack_require__(280);
+
+var _Image2 = _interopRequireDefault(_Image);
+
+var _Checkbox = __webpack_require__(127);
+
+var _Checkbox2 = _interopRequireDefault(_Checkbox);
+
+var _styles = __webpack_require__(20);
+
+var _axios = __webpack_require__(31);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+var _view = __webpack_require__(79);
+
+var _view2 = _interopRequireDefault(_view);
+
+var _if = __webpack_require__(135);
+
+var _if2 = _interopRequireDefault(_if);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+/* eslint-disable react/no-multi-comp */
+
+var SelectExercises = function (_React$Component) {
+  (0, _inherits3.default)(SelectExercises, _React$Component);
+
+  function SelectExercises(props, context) {
+    var _this2 = this;
+
+    (0, _classCallCheck3.default)(this, SelectExercises);
+
+    var _this = (0, _possibleConstructorReturn3.default)(this, (SelectExercises.__proto__ || (0, _getPrototypeOf2.default)(SelectExercises)).call(this, props, context));
+
+    _this.state = {
+      selection: {},
+      selectAll: false,
+      viewItem: null
+    };
+    _this.radioGroup = null;
+
+    _this.handleCancel = function () {
+      _this.props.onClose();
+    };
+
+    _this.handleOk = function () {
+      _this.props.onClose((0, _keys2.default)(_this.state.selection).map(function (id) {
+        return parseInt(id, 10);
+      }));
+    };
+
+    _this.handleChange = function (event, value) {
+      var exercises = _this.props.exercises;
+
+      var selection = _this.state.selection;
+      if (selection[value]) {
+        delete selection[value];
+      } else {
+        selection[value] = true;
+      }
+      var selectAll = !!(selectAll && (0, _keys2.default)(selection).length === exercises.length);
+      _this.setState({ selectAll: selectAll, selection: selection });
+    };
+
+    _this.handleSelectAllChange = function (event, value) {
+      var exercises = _this.props.exercises;
+
+      if (value) {
+        var selection = {};
+        exercises.forEach(function (exercise) {
+          return selection[exercise.id] = true;
+        });
+        _this.setState({ selectAll: true, selection: selection });
+      } else {
+        _this.setState({ selectAll: false, selection: {} });
+      }
+    };
+
+    _this.onViewClose = function () {
+      _this.setState({
+        viewItem: null
+      });
+    };
+
+    _this.handleAvatarClick = function () {
+      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(exercise) {
+        var _ref2, exerciseWithUsage;
+
+        return _regenerator2.default.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return _axios2.default.post('/exercise/usage', {
+                  exercise: exercise
+                });
+
+              case 2:
+                _ref2 = _context.sent;
+                exerciseWithUsage = _ref2.data;
+
+                _this.setState({
+                  viewItem: exerciseWithUsage
+                });
+
+              case 5:
+              case 'end':
+                return _context.stop();
+            }
+          }
+        }, _callee, _this2);
+      }));
+
+      return function (_x) {
+        return _ref.apply(this, arguments);
+      };
+    }();
+
+    _this.state.value = _this.props.value;
+    return _this;
+  }
+
+  (0, _createClass3.default)(SelectExercises, [{
+    key: 'componentWillReceiveProps',
+    value: function componentWillReceiveProps(nextProps) {
+      if (nextProps.value !== this.props.value) {
+        this.setState({ value: nextProps.value });
+      }
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      var _this3 = this;
+
+      var _state = this.state,
+          selection = _state.selection,
+          selectAll = _state.selectAll,
+          viewItem = _state.viewItem;
+      var _props = this.props,
+          exercises = _props.exercises,
+          classes = _props.classes;
+
+      var count = exercises.length;
+      // eslint-disable-next-line no-undef
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
+
+      return _react2.default.createElement(
+        _Dialog2.default,
+        {
+          open: true,
+          maxWidth: 'md',
+          'aria-labelledby': 'confirmation-dialog-title',
+          onClose: function onClose() {
+            return _this3.handleCancel();
+          }
+        },
+        _react2.default.createElement(
+          _AppBar2.default,
+          { position: 'static' },
+          _react2.default.createElement(
+            _Typography2.default,
+            { variant: 'title', color: 'inherit', className: classes.flex },
+            count === 0 ? 'No Exercises Available' : count + ' Exercise' + (count === 1 ? '' : 's') + ' Available'
+          )
+        ),
+        _react2.default.createElement(
+          _Dialog.DialogContent,
+          { className: classes.content },
+          count === 0 ? _react2.default.createElement(
+            'span',
+            { className: classes.empty },
+            'This movement category is currently empty.'
+          ) : null,
+          _react2.default.createElement(
+            _List2.default,
+            null,
+            exercises.map(function (exercise) {
+              return _react2.default.createElement(
+                _List.ListItem,
+                { key: exercise.id, className: classes.item, classes: { root: classes.listItemNoPad } },
+                _react2.default.createElement(_Checkbox2.default, {
+                  checked: !!selection[exercise.id],
+                  onClick: function onClick(e) {
+                    return _this3.handleChange(e, exercise.id);
+                  }
+                }),
+                _react2.default.createElement(
+                  _Avatar2.default,
+                  { style: { cursor: 'pointer' }, onClick: function onClick() {
+                      return _this3.handleAvatarClick(exercise);
+                    } },
+                  exercise.photo ? _react2.default.createElement('img', { src: thumbnailUrl.replace('%', exercise.id) }) : _react2.default.createElement(_Image2.default, null)
+                ),
+                _react2.default.createElement(_List.ListItemText, { primary: _react2.default.createElement(
+                    'span',
+                    null,
+                    _react2.default.createElement(
+                      'span',
+                      { className: classes.exerciseId },
+                      '#',
+                      exercise.id,
+                      '.'
+                    ),
+                    exercise.name
+                  ), onClick: function onClick(e) {
+                    return _this3.handleChange(e, exercise.id);
+                  } })
+              );
+            })
+          )
+        ),
+        _react2.default.createElement(
+          _Dialog.DialogActions,
+          { className: classes.relative },
+          _react2.default.createElement(
+            _if2.default,
+            { test: count > 0 },
+            _react2.default.createElement(
+              _Button2.default,
+              { onClick: this.handleCancel, color: 'primary' },
+              'Cancel'
+            )
+          ),
+          _react2.default.createElement(
+            _Button2.default,
+            { onClick: this.handleOk, color: 'primary' },
+            'Ok'
+          ),
+          _react2.default.createElement(
+            'div',
+            { className: classes.selectAll, style: { display: count === 0 ? 'none' : 'block' } },
+            _react2.default.createElement(
+              'label',
+              null,
+              _react2.default.createElement(_Checkbox2.default, { onChange: this.handleSelectAllChange, checked: selectAll }),
+              ' Select All'
+            )
+          )
+        ),
+        viewItem ? _react2.default.createElement(_view2.default, { viewItem: viewItem, onClose: this.onViewClose }) : null
+      );
+    }
+  }]);
+  return SelectExercises;
+}(_react2.default.Component);
+
+SelectExercises.propTypes = {
+  onClose: _propTypes2.default.func,
+  value: _propTypes2.default.string
+};
+
+exports.default = (0, _styles.withStyles)(function (theme) {
+  return {
+    content: {
+      maxHeight: 350,
+      backgroundColor: '#f7feff',
+      borderTop: '1px solid #ccc',
+      borderBottom: '1px solid #ccc',
+      textAlign: 'center'
+    },
+    item: {
+      cursor: 'pointer',
+      padding: 0
+    },
+    relative: {
+      position: 'relative'
+    },
+    selectAll: {
+      position: 'absolute',
+      bottom: -5,
+      left: 16,
+      fontSize: '90%'
+    },
+    flex: {
+      padding: theme.spacing.unit * 3,
+      flex: 1
+    },
+    empty: {
+      color: '#ccc',
+      display: 'inline-block',
+      position: 'relative',
+      top: 20
+    },
+    exerciseId: {
+      color: '#b8d0d5',
+      fontSize: '80%',
+      marginRight: 8,
+      width: 22,
+      display: 'inline-block',
+      textAlign: 'right'
+    },
+    listItemNoPad: {
+      paddingLeft: 10
+    }
+  };
+})(SelectExercises);
+
+/***/ }),
+/* 756 */,
+/* 757 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _pure = __webpack_require__(17);
+
+var _pure2 = _interopRequireDefault(_pure);
+
+var _SvgIcon = __webpack_require__(16);
+
+var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SvgIconCustom = global.__MUI_SvgIcon__ || _SvgIcon2.default;
+
+var _ref = _react2.default.createElement('path', { d: 'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z' });
+
+var Group = function Group(props) {
+  return _react2.default.createElement(
+    SvgIconCustom,
+    props,
+    _ref
+  );
+};
+
+Group = (0, _pure2.default)(Group);
+Group.muiName = 'SvgIcon';
+
+exports.default = Group;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+
+/***/ }),
+/* 758 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _pure = __webpack_require__(17);
+
+var _pure2 = _interopRequireDefault(_pure);
+
+var _SvgIcon = __webpack_require__(16);
+
+var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SvgIconCustom = global.__MUI_SvgIcon__ || _SvgIcon2.default;
+
+var _ref = _react2.default.createElement('path', { d: 'M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z' });
+
+var AddCircleOutline = function AddCircleOutline(props) {
+  return _react2.default.createElement(
+    SvgIconCustom,
+    props,
+    _ref
+  );
+};
+
+AddCircleOutline = (0, _pure2.default)(AddCircleOutline);
+AddCircleOutline.muiName = 'SvgIcon';
+
+exports.default = AddCircleOutline;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+
+/***/ }),
+/* 759 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _pure = __webpack_require__(17);
+
+var _pure2 = _interopRequireDefault(_pure);
+
+var _SvgIcon = __webpack_require__(16);
+
+var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SvgIconCustom = global.__MUI_SvgIcon__ || _SvgIcon2.default;
+
+var _ref = _react2.default.createElement('path', { d: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zM4 12c0-4.42 3.58-8 8-8 1.85 0 3.55.63 4.9 1.69L5.69 16.9C4.63 15.55 4 13.85 4 12zm8 8c-1.85 0-3.55-.63-4.9-1.69L18.31 7.1C19.37 8.45 20 10.15 20 12c0 4.42-3.58 8-8 8z' });
+
+var Block = function Block(props) {
+  return _react2.default.createElement(
+    SvgIconCustom,
+    props,
+    _ref
+  );
+};
+
+Block = (0, _pure2.default)(Block);
+Block.muiName = 'SvgIcon';
+
+exports.default = Block;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+
+/***/ }),
+/* 760 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _pure = __webpack_require__(17);
+
+var _pure2 = _interopRequireDefault(_pure);
+
+var _SvgIcon = __webpack_require__(16);
+
+var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SvgIconCustom = global.__MUI_SvgIcon__ || _SvgIcon2.default;
+
+var _ref = _react2.default.createElement('path', { d: 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z' });
+
+var RadioButtonUnchecked = function RadioButtonUnchecked(props) {
+  return _react2.default.createElement(
+    SvgIconCustom,
+    props,
+    _ref
+  );
+};
+
+RadioButtonUnchecked = (0, _pure2.default)(RadioButtonUnchecked);
+RadioButtonUnchecked.muiName = 'SvgIcon';
+
+exports.default = RadioButtonUnchecked;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+
+/***/ }),
+/* 761 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _react = __webpack_require__(0);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _pure = __webpack_require__(17);
+
+var _pure2 = _interopRequireDefault(_pure);
+
+var _SvgIcon = __webpack_require__(16);
+
+var _SvgIcon2 = _interopRequireDefault(_SvgIcon);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var SvgIconCustom = global.__MUI_SvgIcon__ || _SvgIcon2.default;
+
+var _ref = _react2.default.createElement('path', { d: 'M12.65 10C11.83 7.67 9.61 6 7 6c-3.31 0-6 2.69-6 6s2.69 6 6 6c2.61 0 4.83-1.67 5.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z' });
+
+var VpnKey = function VpnKey(props) {
+  return _react2.default.createElement(
+    SvgIconCustom,
+    props,
+    _ref
+  );
+};
+
+VpnKey = (0, _pure2.default)(VpnKey);
+VpnKey.muiName = 'SvgIcon';
+
+exports.default = VpnKey;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ })
 /******/ ]);

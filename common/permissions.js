@@ -54,7 +54,7 @@ module.exports = str => {
     || (userLevel == FORBIDDEN);
 
   const adminSections = {};
-    [EXERCISES, CLASSES]
+    [EXERCISES, CLASSES, USERS]
       .filter(section => {
         if (section === EXERCISES && isExerciseReadOnly) {
           return false;

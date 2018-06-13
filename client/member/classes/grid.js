@@ -224,12 +224,6 @@ class ClassesGrid extends React.Component {
 
     classes.forEach(cls => cls.categorySummary = cls.categorySummary.split(',').join(', '));
     ClassesGrid.labels = labels;
-
-    this.setState({
-      mode: MODE.READ,
-      rows: classes,
-      selection: [],
-    });
     
     this.isMetaDown = false;
 
@@ -237,17 +231,21 @@ class ClassesGrid extends React.Component {
     window.addEventListener('keyup', this.onGlobalKeyUp);
     window.addEventListener('resize', this.onResize);
 
-    if (!isAdmin) {
-      defaultHiddenColumnNames.push('status');
-    }
-
     try {
       defaultHiddenColumnNames = JSON.parse(
         localStorage["phoenix_lib_1.0.classes.column.hidden"]
       );
-    } catch (e) {}
+    } catch (e) {
+      if (!isAdmin) {
+        defaultHiddenColumnNames.push('status');
+      }
+    }
 
-    this.setState({ defaultHiddenColumnNames });
+    this.setState({
+      defaultHiddenColumnNames,
+      mode: MODE.READ,
+      rows: classes,
+      selection: [], });
   }
 
   componentWillUnmount () {
@@ -532,9 +530,16 @@ class ClassesGrid extends React.Component {
           <TableFilterRow />
           <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
           <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange} />
-          <Toolbar />
-          <ColumnChooser />
-          <SearchPanel />
+          {
+            isAdmin ? (
+              <span>
+                <Toolbar />
+                <ColumnChooser />
+                <SearchPanel />
+              </span>
+            )
+            : null
+          }
         </Grid>
         {
           mode === MODE.ADD_SELECT

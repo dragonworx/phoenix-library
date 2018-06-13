@@ -63,6 +63,7 @@ class MemberApp extends React.PureComponent {
             <Route exact path="/admin" component={() => <TabsView isAdmin={true} value={0} />}/>
             <Route exact path="/admin/exercises" component={() => <TabsView isAdmin={true} value={permissions.adminSections.EXERCISES} />}/>
             <Route exact path="/admin/classes" component={() => <TabsView  isAdmin={true} value={permissions.adminSections.CLASSES} />}/>
+            <Route exact path="/admin/users" component={() => <TabsView  isAdmin={true} value={permissions.adminSections.USERS} />}/>
           </main>
           <footer className={classes.footer}>
           <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>

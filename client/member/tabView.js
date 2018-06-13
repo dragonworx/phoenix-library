@@ -6,15 +6,18 @@ import { withStyles } from 'material-ui/styles';
 import Badge from 'material-ui/Badge';
 import ExerciseIcon from 'material-ui-icons/Dns';
 import ClassIcon from 'material-ui-icons/Assignment';
+import UserIcon from 'material-ui-icons/Group';
 import axios from 'axios';
 import Exercises from './exercises';
 import Classes from './classes';
+import Users from './users';
 import { permissions } from './session';
 
 class TabsView extends React.Component {
   state = {
     exerciseCount: '...',
     classCount: '...',
+    userCount: '...',
     value: -1,
   };
 
@@ -29,6 +32,7 @@ class TabsView extends React.Component {
         this.setState({
           exerciseCount: response.data.exercises,
           classCount: response.data.classes,
+          userCount: response.data.users,
         });
       });
   }
@@ -39,11 +43,11 @@ class TabsView extends React.Component {
 
   render() {
     const { classes, isAdmin } = this.props;
-    const { value, exerciseCount, classCount } = this.state;
+    const { value, exerciseCount, classCount, userCount } = this.state;
 
     const ExercisesTab = withRouter(
       ({ history }) => <Tab 
-        style={{opacity:value === 0 ? 1 : 0.7}} 
+        style={{opacity:value === permissions.adminSections.EXERCISES ? 1 : 0.7}} 
         onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}exercises`)} 
         label={<span><ExerciseIcon 
         className={classes.icon} />Exercises<Badge 
@@ -55,7 +59,7 @@ class TabsView extends React.Component {
 
     const ClassesTab = withRouter(
       ({ history }) => <Tab 
-        style={{ opacity: value === 1 ? 1 : 0.7 }} 
+        style={{ opacity: value === permissions.adminSections.CLASSES ? 1 : 0.7 }} 
         onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}classes`)} 
         label={<span><ClassIcon 
         className={classes.icon} />Classes<Badge 
@@ -65,25 +69,42 @@ class TabsView extends React.Component {
         classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} 
       /> );
 
+      const UsersTab = withRouter(
+        ({ history }) => <Tab 
+          style={{ opacity: value === permissions.adminSections.USERS ? 1 : 0.7 }} 
+          onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}users`)} 
+          label={<span><UserIcon 
+          className={classes.icon} />Users<Badge 
+          className={classes.margin} 
+          badgeContent={userCount} 
+          color="primary" 
+          classes={{ colorPrimary: classes.badge }}>&nbsp;</Badge></span>} 
+        /> );
+
     return (
       <div className={classes.root}>
         <AppBar position="static">
           <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
             {
               isAdmin
-                ? [isAdmin && permissions.isExerciseReadOnly ? null : <ExercisesTab key="exerciseTab" />,
-                  isAdmin && permissions.isClassReadOnly ? null : <ClassesTab key="classesTab" />]
-                : [isAdmin && permissions.isClassReadOnly ? null : <ClassesTab key="classesTab" />,
-                  isAdmin && permissions.isExerciseReadOnly ? null : <ExercisesTab key="exerciseTab" />]
+                ? [
+                    permissions.isExerciseReadOnly ? null : <ExercisesTab key="exerciseTab" />,
+                    permissions.isClassReadOnly ? null : <ClassesTab key="classesTab" />,
+                    permissions.isUserReadOnly ? null : <UsersTab key="userTab" />
+                  ]
+                : [
+                    <ExercisesTab key="exerciseTab" />,
+                    <ClassesTab key="classesTab" />
+                  ]
             }
           </Tabs>
         </AppBar>
         {
-          isAdmin
-           ? [value === permissions.adminSections.EXERCISES && <Exercises isAdmin={true} key="exercises"  />,
-             value === permissions.adminSections.CLASSES && <Classes isAdmin={true} key="classes" />]
-           : [value === permissions.adminSections.CLASSES && <Classes isAdmin={false} key="classes" />,
-             value === permissions.adminSections.EXERCISES && <Exercises isAdmin={false} key="exercises" />]
+          [
+            value === permissions.adminSections.EXERCISES && <Exercises isAdmin={isAdmin} key="exercises"  />,
+            value === permissions.adminSections.CLASSES && <Classes isAdmin={isAdmin} key="classes" />,
+            value === permissions.adminSections.USERS && <Users isAdmin={isAdmin} key="users" />
+          ]
         }
       </div>
     );

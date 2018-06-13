@@ -128,6 +128,14 @@ module.exports = {
     return classes;
   },
 
+  async getUsers () {
+    let users = await model.User.findAll({
+      order: Sequelize.col('id'),
+      raw: true
+    });
+    return users;
+  },
+
   async getClass (id) {
     const cls = await model.Class.findOne({
       where: {
@@ -159,9 +167,11 @@ module.exports = {
   async getCounts () {
     const exercises = await model.Exercise.count();
     const classes = await model.Class.count();
+    const users = await model.User.count();
     return {
       exercises,
       classes,
+      users,
     };
   },
 
