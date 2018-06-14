@@ -45,6 +45,8 @@ class TabsView extends React.Component {
     const { classes, isAdmin, showHeader } = this.props;
     const { value, exerciseCount, classCount, userCount } = this.state;
 
+    const shouldShowHeader = isAdmin ? true : showHeader;
+
     const ExercisesTab = withRouter(
       ({ history }) => <Tab 
         style={{opacity: (isAdmin ? value === permissions.adminSections.EXERCISES : value === 0) ? 1 : 0.7}} 
@@ -84,7 +86,7 @@ class TabsView extends React.Component {
     return (
       <div className={classes.root}>
         {
-          showHeader
+          shouldShowHeader
           ? <AppBar position="static">
               <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
                 {
@@ -106,9 +108,9 @@ class TabsView extends React.Component {
         {
           isAdmin
             ? [
-            value === permissions.adminSections.EXERCISES && <Exercises isAdmin={true} key="exercises"  />,
-            value === permissions.adminSections.CLASSES && <Classes isAdmin={true} key="classes" />,
-            value === permissions.adminSections.USERS && <Users isAdmin={true} key="users" />
+            value === permissions.adminSections.EXERCISES && <Exercises isAdmin={true} showHeader={true} key="exercises"  />,
+            value === permissions.adminSections.CLASSES && <Classes isAdmin={true} showHeader={true} key="classes" />,
+            value === permissions.adminSections.USERS && <Users isAdmin={true} showHeader={true} key="users" />
           ]
           : [
             value === 0 && <Exercises isAdmin={false} showHeader={showHeader} key="exercises"  />,

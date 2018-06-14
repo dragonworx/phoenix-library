@@ -47,6 +47,7 @@ class AddEdit extends React.Component {
     super(props);
     this.state.program = props.program;
     this.state.className = props.className;
+    this.saveCount = 0;
   }
 
   async componentWillMount () {
@@ -63,7 +64,7 @@ class AddEdit extends React.Component {
     }
   }
 
-  handleSave = async () => {
+  handleSave = async e => {
     const { genreId, mode, onAdded, onSaved, editItem } = this.props;
     const { editorState, program, className: className } = this.state;
     const notes = stateToHTML(editorState.getCurrentContent());
@@ -90,6 +91,7 @@ class AddEdit extends React.Component {
     };
 
     try {
+      this.saveCount++;
       this.setState({ isSaving: true });
       const { data: { id, categorySummary, durationSummary, revision } } = await axios.post(`/class/${mode}`, cls);
       cls.id = id || cls.id;
@@ -283,7 +285,7 @@ class AddEdit extends React.Component {
               : null
           }
           <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
-            Cancel
+            Close
           </Button>
           <SaveButton onClick={this.handleSave} disabled={program && program.length === 0} />
         </DialogActions>

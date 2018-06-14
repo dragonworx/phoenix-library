@@ -503,22 +503,20 @@ class ExerciseGrid extends React.Component {
           <TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />
           <TableHeaderRow showSortingControls />
           {
-            showHeader ? <span>
-              <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
-              <TableFilterRow />
-              </span>
+            showHeader ? [
+              <TableColumnReordering defaultOrder={columns.map(column => column.name)} key="g0" />,
+              <TableFilterRow key="g1" />,
+            ]
           : null
           }
           <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
-          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange}/>
+          <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange}/>  
           {
-            isAdmin ? (
-              <span>
-                <Toolbar />
-                <ColumnChooser />
-                <SearchPanel />
-              </span>
-            )
+            showHeader ? [
+              <Toolbar key="g2" />,
+              <ColumnChooser key="g3" />,
+              <SearchPanel key="g4" />,
+            ]
             : null
           }
         </Grid>

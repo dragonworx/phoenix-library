@@ -1,3 +1,8 @@
 #grid tbody td {
   cursor: pointer;
 }
+
+#exercise-description p {
+  margin-top: 5px;
+  margin-bottom: 7px;
+}

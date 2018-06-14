@@ -18,9 +18,9 @@ import EditIcon from 'material-ui-icons/Edit';
 import DeleteIcon from 'material-ui-icons/Delete';
 import PasswordIcon from 'material-ui-icons/VpnKey';
 import PermissionForbiddenIcon from 'material-ui-icons/Block';
-import PermissionReadIcon from 'material-ui-icons/RadioButtonUnchecked';
-import PermissionReadWriteIcon from 'material-ui-icons/AddCircleOutline';
-import PermissionReadWriteDeleteIcon from 'material-ui-icons/AddCircle';
+import PermissionReadIcon from 'material-ui-icons/Visibility';
+import PermissionReadWriteIcon from 'material-ui-icons/Create';
+import PermissionReadWriteDeleteIcon from 'material-ui-icons/Stars';
 import Tooltip from 'material-ui/Tooltip';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
@@ -264,6 +264,12 @@ class UsersGrid extends React.Component {
     this.setState({ mode: MODE.READ });
   };
 
+  isRootSelected = () => {
+    const { selection, rows } = this.state;
+    const rootId = rows.find(row => row.email === 'magnoliasoup@gmail.com').id;
+    return selection.indexOf(rootId) > -1;
+  };
+
   renderEditControls () {
     const { selection } = this.state;
     const { classes, isAdmin } = this.props;
@@ -283,12 +289,12 @@ class UsersGrid extends React.Component {
               </Button>
               {
                 permissions.canDeleteClass
-                  ? <Button variant="fab" color="secondary" disabled={selection.length === 0} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
+                  ? <Button variant="fab" color="secondary" disabled={selection.length === 0 || this.isRootSelected()} aria-label="delete" className={classes.button} onClick={this.onDeleteClick}>
                       <DeleteIcon />
                     </Button>
                   : null
               }
-              <Button variant="fab" disabled={selection.length === 0} aria-label="password" className={classes.button} onClick={this.onSetPasswordClick}>
+              <Button variant="fab" disabled={selection.length === 0 || this.isRootSelected()} aria-label="password" className={classes.button} onClick={this.onSetPasswordClick}>
                 <PasswordIcon />
               </Button>
             </span>
@@ -360,7 +366,7 @@ class UsersGrid extends React.Component {
         </Grid>
         {
           mode === MODE.ADD || mode === MODE.EDIT
-            ? <AddEdit mode={mode} user={user} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
+            ? <AddEdit mode={mode} user={mode === MODE.EDIT && user} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
             : null
         }
         {

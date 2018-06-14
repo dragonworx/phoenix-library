@@ -13,12 +13,15 @@ class SaveButton extends React.Component {
     mode: 0,
   };
 
-  handleButtonClick = () => {
+  handleButtonClick = e => {
+    const metaKey = e.metaKey;
     if (!this.state.loading) {
       this.setState({
         loading: true,
       }, () => {
-        this.props.onClick()
+        this.props.onClick({
+          metaKey,
+        })
           .then(shouldHalt => !shouldHalt && this.setState({ loading: false, mode: 1 }))
           .catch(() => this.setState({ loading: false, mode: -1 }));
       });

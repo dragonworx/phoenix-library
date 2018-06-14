@@ -121,7 +121,7 @@ class ViewExercise extends React.Component {
           <Typography className={classes.name} gutterBottom variant="headline" component="h2">
             { name }
           </Typography>
-          <Typography className={classes.description} component="p" dangerouslySetInnerHTML={{ __html }} />
+          <Typography id="exercise-description" className={classes.description} component="p" dangerouslySetInnerHTML={{ __html }} />
           <div className={classes.springsContainer}>
             { textToSprings(springs) }
           </div>
@@ -138,7 +138,7 @@ class ViewExercise extends React.Component {
 
 export default withStyles(theme => ({
   springsContainer: {
-    marginTop: 15,
+    marginTop: 5,
     marginLeft: 5,
   },
   genres: {

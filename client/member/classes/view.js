@@ -129,6 +129,7 @@ const styles = theme => ({
   },
   exercise: {
     cursor: 'pointer',
+    margin: '10px 0px',
   },
 });
 
@@ -256,13 +257,13 @@ class ViewClass extends React.Component {
                 const categoryOrdinal = i + 1;
                 return (
                   <div key={genreId + category.name + i}>
-                    <h2>
+                    <h3>
                       <span className={classes.ordinal}>{categoryOrdinal + toOrdinal(categoryOrdinal)}.</span> {category.name} {
                         showDurations
                           ? <span className={classes.mins}>{plural(category.durationSummary, 'min')}</span>
                           : null
                       }
-                    </h2>
+                    </h3>
                     <ul className={classes.exerciseList}>
                       {
                         category.exercises.map((exercise, i) => {

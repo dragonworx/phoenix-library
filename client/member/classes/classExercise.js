@@ -54,6 +54,7 @@ class ClassExercise extends React.Component {
 
   handleNotesChange = (e, exercise) => {
     const html = e.target.innerHTML;
+    console.log(html);
     exercise.notes = html;
     this.setState({ exercise });
   };
@@ -106,7 +107,7 @@ class ClassExercise extends React.Component {
             onInput={e => this.handleNotesChange(e, exercise)}
             onFocus={this.handleNotesFocus}
             onBlur={this.handleNotesBlur}
-            dangerouslySetInnerHTML={{__html: noteEditValue ? noteEditValue : exercise.notes}}
+            dangerouslySetInnerHTML={{__html: noteEditValue != null ? noteEditValue : exercise.notes}}
           />
         </div>
         <form className={classes.form} autoComplete="off">

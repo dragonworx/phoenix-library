@@ -17,9 +17,9 @@ import axios from 'axios';
 import SaveButton from '../../common/saveButton';
 import { clone } from '../../common/util';
 import PermissionForbiddenIcon from 'material-ui-icons/Block';
-import PermissionReadIcon from 'material-ui-icons/RadioButtonUnchecked';
-import PermissionReadWriteIcon from 'material-ui-icons/AddCircleOutline';
-import PermissionReadWriteDeleteIcon from 'material-ui-icons/AddCircle';
+import PermissionReadIcon from 'material-ui-icons/Visibility';
+import PermissionReadWriteIcon from 'material-ui-icons/Create';
+import PermissionReadWriteDeleteIcon from 'material-ui-icons/Stars';
 
 const ACCEPT_DELAY = 500;
 
