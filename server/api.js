@@ -24,12 +24,13 @@ module.exports = {
   },
 
   async login (email, plainTextPassword) {
-    const user = await model.User.findOne({ where: { email } });
+    const user = await model.User.findOne({ where: { email: email.toLowerCase() } });
 
     if (user) {
       const verified = await password.verify(plainTextPassword, user.password);
       if (verified) {
         user.lastLogin = new Date();
+        user.logins = user.logins + 1;
         user.save();
         const userData = user.get({ plain: true });
         delete userData.password;
@@ -557,5 +558,56 @@ module.exports = {
     }
     log({ programLength: program.length });
     return program;
+  },
+
+  async getUser (id) {
+    return await model.User.find({
+      where: {
+        id: id
+      }
+    });
+  },
+
+  async addUser (user) {
+    user.password = await password.hash(user.password);
+    user.email = user.email.toLowerCase();
+    log(user);
+    const newUser = await model.User.create(user);
+    return newUser.id;
+  },
+
+  async editUser (user) {
+    log(user);
+    const existingUser = await model.User.findOne({ where: { id: user.id } });
+    existingUser.firstName = user.firstName;
+    existingUser.lastName = user.lastName;
+    existingUser.email = user.email.toLowerCase();
+    existingUser.permissions = user.permissions;
+    await existingUser.save();
+  },
+
+  async deleteUsers (ids) {
+    await model.User.destroy({
+      where: {
+        id: {
+          [Op.or]: ids
+        }
+      }
+    });
+  },
+
+  async setPassword (ids, pwd) {
+    log(ids);
+    log(pwd);
+    const hashed = await password.hash(pwd);
+    await model.User.update({
+      password: hashed
+    }, {
+      where: {
+        id: {
+          [Op.or]: ids
+        }
+      }
+    });
   }
 };

@@ -50,19 +50,19 @@ module.exports = str => {
     || (userLevel >= READ_WRITE);
 
   const isForbidden = (exerciseLevel == FORBIDDEN) 
-    || (classLevel == FORBIDDEN) 
-    || (userLevel == FORBIDDEN);
+    && (classLevel == FORBIDDEN) 
+    && (userLevel == FORBIDDEN);
 
   const adminSections = {};
     [EXERCISES, CLASSES, USERS]
       .filter(section => {
-        if (section === EXERCISES && isExerciseReadOnly) {
+        if (section === EXERCISES && (isExerciseReadOnly || isForbiddenExercise)) {
           return false;
         }
-        if (section === CLASSES && isClassReadOnly) {
+        if (section === CLASSES && (isClassReadOnly || isForbiddenClass)) {
           return false;
         }
-        if (section === USERS && isUserReadOnly) {
+        if (section === USERS && (isUserReadOnly || isForbiddenUser)) {
           return false;
         }
         return true;

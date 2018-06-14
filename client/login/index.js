@@ -30,7 +30,7 @@ class Login extends React.Component {
     const value = event.target.value;
     this.setState({
       email: value,
-      isValid: value || this.state.password
+      isValid: !!(value || this.state.password)
     });
   };
 
@@ -38,7 +38,7 @@ class Login extends React.Component {
     const value = event.target.value;
     this.setState({
       password: event.target.value,
-      isValid: value || this.state.email
+      isValid: !!(value || this.state.email)
     });
   };
 

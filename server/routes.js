@@ -61,6 +61,9 @@ module.exports = function (app) {
   app.post('/login', async (req, res) => {
     const user = await api.login(req.body.email, req.body.password);
     const isForbidden = user && readPermissions(user.permissions).isForbidden;
+    if (isForbidden) {
+      log('user forbidden: ' + user.permissions, 'red');
+    }
     if (user && !isForbidden) {
       log('user found: ' + JSON.stringify(user), 'green');
       req.session.user = user;
@@ -177,6 +180,11 @@ module.exports = function (app) {
     res.sendJSON(data);
   });
 
+  app.get('/user/:userId', async (req, res) => {
+    const user = await api.getUser(req.params.userId);
+    res.sendJSON(user);
+  });
+
   app.get('/template/:genreId', async (req, res) => {
     const { genreId } = req.params;
     const data = await api.getTemplate(genreId);
@@ -218,6 +226,39 @@ module.exports = function (app) {
     const cls = req.body;
     const details = await api.editClass(cls);
     res.sendJSON(details);
+  });
+
+  app.post('/user/add', async (req, res) => {
+    const user = req.body;
+    const id = await api.addUser(user);
+    res.sendJSON(id);
+  });
+
+  app.post('/user/edit', async (req, res) => {
+    const user = req.body;
+    await api.editUser(user);
+    res.end();
+  });
+
+  app.post('/user/delete', async (req, res) => {
+    const ids = req.body.ids;
+    try {
+      await api.deleteUsers(ids);
+      res.end();
+    } catch (error) {
+      res.send500(error);
+    }
+  });
+
+  app.post('/user/password/set', async (req, res) => {
+    const ids = req.body.ids;
+    const password = req.body.password;
+    try {
+      await api.setPassword(ids, password);
+      res.end();
+    } catch (error) {
+      res.send500(error);
+    }
   });
 
   // function createRoute(url, handler) {

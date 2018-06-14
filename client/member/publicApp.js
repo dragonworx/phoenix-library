@@ -17,11 +17,22 @@ import LogoutIcon from 'material-ui-icons/PowerSettingsNew';
 import HamburgerMenu from '../common/hamburgerMenu';
 import { user, permissions } from './session';
 
+const options = {
+  showHeader: true
+};
+
 const adminMenuItem = { 
   value: 'admin', 
   label: 'Admin',
   Icon: AdminIcon
 };
+
+const headerMenuItem = { 
+  value: 'toggleHeader', 
+  label: 'Header',
+  isChecked: () => options.showHeader
+};
+
 const logoutMenuItem = { 
   value: 'logout',
   label: 'Logout',
@@ -41,6 +52,9 @@ class PublicApp extends React.PureComponent {
       location = '/logout';
     } else if (selectedValue === 'admin') {
       location = '/admin';
+    } else if (selectedValue === 'toggleHeader') {
+      options.showHeader = !options.showHeader;
+      this.forceUpdate();
     }
   };
 
@@ -48,8 +62,9 @@ class PublicApp extends React.PureComponent {
     const { classes } = this.props;
 
     const menuOptions = [ 
-      permissions.isAdmin ? adminMenuItem : null, 
-      logoutMenuItem 
+      permissions.isAdmin ? adminMenuItem : null,
+      headerMenuItem,
+      logoutMenuItem
     ].filter(i => i !== null);
   
     return (
@@ -72,12 +87,12 @@ class PublicApp extends React.PureComponent {
           </AppBar>
           <main className={classes.content}>
             <div className={classes.toolbar} />
-            <Route exact path="/" component={() => <TabsView isAdmin={false} value={permissions.adminSections.CLASSES} />}/>
-            <Route exact path="/exercises" component={() => <TabsView isAdmin={false} value={permissions.adminSections.EXERCISES} />}/>
-            <Route exact path="/classes" component={() => <TabsView isAdmin={false} value={permissions.adminSections.CLASSES} />}/>
+            <Route exact path="/" component={() => <TabsView isAdmin={false} showHeader={options.showHeader} value={1} />}/>
+            <Route exact path="/exercises" component={() => <TabsView isAdmin={false} showHeader={options.showHeader} value={0} />}/>
+            <Route exact path="/classes" component={() => <TabsView isAdmin={false} showHeader={options.showHeader} value={1} />}/>
           </main>
           <footer className={classes.footer}>
-            <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
+            <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates &copy; 2018 | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
           </footer>
         </div>
       </Router>

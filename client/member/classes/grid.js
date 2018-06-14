@@ -146,7 +146,7 @@ const TooltipTypeProvider = props => (
   />
 );
 
-const calcGridHeight = () => window.innerHeight - 230;
+const calcGridHeight = showHeader => window.innerHeight - (showHeader ? 170 : 120);
 
 let defaultColumnWidths = [
   { columnName: 'name', width: 300 },
@@ -210,7 +210,7 @@ class ClassesGrid extends React.Component {
     viewItem: null,
     selectedGenre: null,
     program: null,
-    gridHeight: calcGridHeight(),
+    gridHeight: calcGridHeight(true),
   };
 
   async componentWillMount () {
@@ -294,7 +294,7 @@ class ClassesGrid extends React.Component {
   };
 
   onResize = () => {
-    this.setState({ gridHeight: calcGridHeight() });
+    this.setState({ gridHeight: calcGridHeight(this.props.showHeader) });
   };
 
   onAddClick = () => {
@@ -484,10 +484,11 @@ class ClassesGrid extends React.Component {
       viewItem,
       genres,
       selectedGenre,
-      gridHeight,
     } = this.state;
 
-    const { isAdmin, classes } = this.props;
+    
+    const { isAdmin, classes, showHeader } = this.props;
+    const gridHeight = calcGridHeight(showHeader);
 
     if (mode === MODE.LOADING) {
       return (

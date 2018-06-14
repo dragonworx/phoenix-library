@@ -25,8 +25,8 @@ import Tooltip from 'material-ui/Tooltip';
 import { LinearProgress } from 'material-ui/Progress';
 import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
-import AddSelect from './addSelect';
 import AddEdit from './addEdit';
+import SetPassword from './setPassword';
 import Alert from '../../common/alert';
 import { permissions } from '../session';
 
@@ -104,7 +104,7 @@ const DateTypeProvider = props => (
   />
 );
 
-const calcGridHeight = () => window.innerHeight - 230;
+const calcGridHeight = () => window.innerHeight - 170;
 
 let defaultColumnWidths = [
   { columnName: 'firstName', width: 100 },
@@ -112,6 +112,7 @@ let defaultColumnWidths = [
   { columnName: 'email', width: 300 },
   { columnName: 'permissions', width: 100 },
   { columnName: 'lastLogin', width: 100 },
+  { columnName: 'logins', width: 100 },
 ];
 
 function setColumnWidths (nextColumnWidths) {
@@ -124,7 +125,7 @@ function setColumnWidths (nextColumnWidths) {
   }
 }
 
-let defaultHiddenColumnNames = [];
+let defaultHiddenColumnNames = ['logins'];
 
 try {
   defaultColumnWidths = JSON.parse(
@@ -147,6 +148,7 @@ class UsersGrid extends React.Component {
       { name: 'email', title: 'Email' },
       { name: 'permissions', title: 'Permissions' },
       { name: 'lastLogin', title: 'Last Login' },
+      { name: 'logins', title: 'Login Count' },
     ],
     rows: [],
     filteringStateColumnExtensions: [
@@ -157,9 +159,7 @@ class UsersGrid extends React.Component {
     dateColumns: ['lastLogin'],
     permissionColumns: ['permissions'],
     selection: [],
-    editItem: null,
-    selectedGenre: null,
-    program: null,
+    user: null,
     gridHeight: calcGridHeight(),
   };
 
@@ -171,74 +171,27 @@ class UsersGrid extends React.Component {
       rows: data,
       selection: [],
     });
-    
-    this.isMetaDown = false;
 
-    window.addEventListener('keydown', this.onGlobalKeyDown);
-    window.addEventListener('keyup', this.onGlobalKeyUp);
     window.addEventListener('resize', this.onResize);
   }
 
   componentWillUnmount () {
-    window.removeEventListener('keydown', this.onGlobalKeyDown);
-    window.removeEventListener('keyup', this.onGlobalKeyUp);
     window.removeEventListener('resize', this.onResize);
   }
-
-  onGlobalKeyDown = e => {
-    if (e.key === 'Meta') {
-      this.isMetaDown = true;
-    }
-  };
-
-  onGlobalKeyUp = e => {
-    const { keyCode, key } = e;
-    const { selection, rows } = this.state;
-    // const { isAdmin } = this.props;
-    const ids = rows.map(row => row.id);
-    ids.sort();
-    if (key === KEYS.META) {
-      this.isMetaDown = false;
-    } else if ((keyCode === KEYS.TILDA) && this.state.selection.length === 1) {
-      // const row = this.state.rows.find(row => row.id === this.state.selection[0]);
-      // if (!isAdmin) {
-      //   try {
-      //     fscreen.requestFullscreen(document.documentElement);
-      //   } catch (e) {
-          
-      //   }
-      //   this.setState({ mode: MODE.VIEW, viewItem: row });
-      // } else {
-      //   this.setState({ mode: MODE.EDIT, editItem: row });
-      // }
-    } else if (selection.length === 1 && keyCode === KEYS.UP) {
-      const selectedRowIndex = ids.indexOf(selection[0]);
-      if (selectedRowIndex > 0) {
-        this.setState({ selection: [ids[selectedRowIndex + 1]] });
-      }
-    } else if (selection.length === 1 && keyCode === KEYS.DOWN) {
-      const selectedRowIndex = ids.indexOf(selection[0]);
-      if (selectedRowIndex <= ids.length - 1) {
-        this.setState({ selection: [ids[selectedRowIndex - 1]] });
-      }
-    }
-  };
 
   onResize = () => {
     this.setState({ gridHeight: calcGridHeight() });
   };
 
   onAddClick = () => {
-    axios.get('/label/get/0').then(response => {
-      this.setState({ genres: response.data, mode: MODE.ADD_SELECT });
-    });
+    this.setState({ mode: MODE.ADD });
   };
 
   onEditClick = () => {
-    const row = this.state.rows.find(row => row.id === this.state.selection[0]);
+    const user = this.state.rows.find(row => row.id === this.state.selection[0]);
     this.setState({
       mode: MODE.EDIT,
-      editItem: row,
+      user,
     });
   };
 
@@ -250,32 +203,10 @@ class UsersGrid extends React.Component {
     this.setState({ mode: MODE.READ });
   };
 
-  onAddSelectClose = async value => {
-    if (value) {
-      const { data: template } = await axios.get(`/template/${value}`);
-      template.forEach(category => category.expanded = false);
-      this.setState({
-        selectedGenre: {
-          id: value,
-          name: this.state.genres.find(genre => genre.id === value).name,
-        },
-        mode: MODE.ADD,
-        program: template,
-        editItem: null,
-      });
-    } else {
-      this.setState({ mode: MODE.READ });
-    }
-  };
-
-  onViewClose = () => {
-    this.setState({ mode: MODE.READ });
-  };
-
   onConfirmDeleteClose = async didAccept => {
     if (didAccept) {
       const ids = this.state.selection;
-      await axios.post('/class/delete', { ids: ids });
+      await axios.post('/user/delete', { ids: ids });
       const rows = this.state.rows.filter(row => ids.indexOf(row.id) === -1);
       this.setState({ rows, selection: [] });
     }
@@ -283,55 +214,27 @@ class UsersGrid extends React.Component {
   };
 
   onSelectionChange = selection => {
-    // const { selection: selected } = this.state;
-    // const { isMetaDown } = this;
-    // let viewItem;
-    // let mode = MODE.READ;
-    // if (!this.props.isAdmin) {
-    //   if (!selection.length) {
-    //     selection = selected;
-    //   }
-    //   for (let i = 0; i < selection.length; i++) {
-    //     if (selected.indexOf(selection[i]) === -1) {
-    //       selection = [selection[i]];
-    //       break;
-    //     }
-    //   }
-    //   try {
-    //     fscreen.requestFullscreen(document.documentElement);
-    //   } catch (e) {
-
-    //   }
-    //   mode = MODE.VIEW;
-    // } else if (!isMetaDown) {
-    //   for (let i = 0; i < selection.length; i++) {
-    //     if (selected.indexOf(selection[i]) === -1) {
-    //       selection = [selection[i]];
-    //       break;
-    //     }
-    //   }
-    // }
-    // viewItem = this.state.rows.find(row => row.id === selection[0]);
-    this.setState({ selection });
+    const user = this.state.rows.find(row => row.id === selection[0]);
+    this.setState({ selection, user });
   };
 
-  onAdded = (cls) => {
+  onAdded = (user) => {
     const rows = [
       ...this.state.rows,
     ];
-    rows.push(cls);
-    this.setState({ rows, selection: [cls.id], mode: MODE.READ });
+    rows.push(user);
+    this.setState({ rows, selection: [user.id], mode: MODE.READ });
   };
 
-  onSaved = (cls) => {
+  onSaved = (user) => {
     const rows = [
       ...this.state.rows,
     ];
-    const row = rows.find(row => row.id === cls.id);
+    const row = rows.find(row => row.id === user.id);
     const index = rows.indexOf(row);
     rows.splice(index, 1);
-    rows.splice(index, 0, cls);
-    this.setState({ rows, editItem: null, selection: [], mode: MODE.READ });
+    rows.splice(index, 0, user);
+    this.setState({ rows, user: null, selection: [], mode: MODE.READ });
   };
 
   onColumnWidthsChange = nextColumnWidths => {
@@ -357,11 +260,14 @@ class UsersGrid extends React.Component {
     this.setState({ mode: MODE.SET_PASSWORD });
   };
 
+  handleSetPasswordClose = () => {
+    this.setState({ mode: MODE.READ });
+  };
+
   renderEditControls () {
-    const { selection, rows } = this.state;
+    const { selection } = this.state;
     const { classes, isAdmin } = this.props;
-    const canEdit = selection.length === 1 && (permissions.canDeleteClass 
-      || rows.find(row => row.id === selection[0]).status === STATUSES.SUBMITTED);
+    const canEdit = selection.length === 1;
 
     return (
       <span className={classes.root}>
@@ -405,10 +311,7 @@ class UsersGrid extends React.Component {
       dateColumns,
       permissionColumns,
       selection,
-      program,
-      editItem,
-      genres,
-      selectedGenre,
+      user,
       gridHeight,
     } = this.state;
 
@@ -456,23 +359,23 @@ class UsersGrid extends React.Component {
           <SearchPanel />
         </Grid>
         {
-          mode === MODE.ADD_SELECT
-            ? <AddSelect genres={genres} onClose={this.onAddSelectClose} />
-            : null
-        }
-        {
           mode === MODE.ADD || mode === MODE.EDIT
-            ? <AddEdit mode={mode} genreId={(editItem && editItem.genreId) || selectedGenre.id} program={program} className={mode === MODE.ADD ? `New ${selectedGenre.name} Class` : editItem.name} editItem={editItem} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
+            ? <AddEdit mode={mode} user={user} onAdded={this.onAdded} onSaved={this.onSaved} onClose={this.onAddEditClose} />
             : null
         }
         {
           mode === MODE.CONFIRM_DELETE
           ? <Alert 
               title="Confirm Delete" 
-              message={`Do you really want to delete ${selection.length === 1 ? 'this class' : 'these ' + selection.length + ' classes'}?`}
+              message={`Do you really want to delete ${selection.length === 1 ? 'this user' : 'these ' + selection.length + ' users'}?`}
               submitText="Delete" 
               onClose={this.onConfirmDeleteClose} 
             />
+          : null
+        }
+        {
+          mode === MODE.SET_PASSWORD
+          ? <SetPassword selection={selection} onClose={this.handleSetPasswordClose} />
           : null
         }
       </Paper>

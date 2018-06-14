@@ -58,7 +58,7 @@ const KEYS = {
 
 const htmlNode = document.createElement('div');
 
-const calcGridHeight = () => window.innerHeight - 230;
+const calcGridHeight = showHeader => window.innerHeight - (showHeader ? 170 : 120);
 
 const NameFormatter = ({ row }) => {
   return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span><span className={NameFormatter.defaultProps.name}>{row.name}</span></label></Tooltip>;
@@ -203,7 +203,7 @@ class ExerciseGrid extends React.Component {
     selection: [],
     editItem: null,
     viewItem: null,
-    gridHeight: calcGridHeight(),
+    gridHeight: calcGridHeight(true),
   };
 
   constructor (props) {
@@ -274,7 +274,7 @@ class ExerciseGrid extends React.Component {
   };
 
   onResize = () => {
-    this.setState({ gridHeight: calcGridHeight() });
+    this.setState({ gridHeight: calcGridHeight(this.props.showHeader) });
   };
 
   updateRowLabels (row, usage) {
@@ -458,10 +458,11 @@ class ExerciseGrid extends React.Component {
       selection,
       editItem,
       viewItem,
-      gridHeight,
     } = this.state;
 
-    const { isAdmin, classes } = this.props;
+    
+    const { isAdmin, classes, showHeader } = this.props;
+    const gridHeight = calcGridHeight(showHeader);
 
     const labels = this.labels;
 
@@ -501,8 +502,13 @@ class ExerciseGrid extends React.Component {
           <VirtualTable columnExtensions={tableColumnExtensions} cellComponent={Cell} height={gridHeight} />
           <TableColumnResizing defaultColumnWidths={defaultColumnWidths} onColumnWidthsChange={this.onColumnWidthsChange} />
           <TableHeaderRow showSortingControls />
-          <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
-          <TableFilterRow />
+          {
+            showHeader ? <span>
+              <TableColumnReordering defaultOrder={columns.map(column => column.name)} />
+              <TableFilterRow />
+              </span>
+          : null
+          }
           <TableSelection showSelectAll={isAdmin} highlightRow selectByRowClick showSelectionColumn={isAdmin} />
           <TableColumnVisibility defaultHiddenColumnNames={defaultHiddenColumnNames} onHiddenColumnNamesChange={this.onHiddenColumnNamesChange}/>
           {

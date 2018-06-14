@@ -42,12 +42,12 @@ class TabsView extends React.Component {
   };
 
   render() {
-    const { classes, isAdmin } = this.props;
+    const { classes, isAdmin, showHeader } = this.props;
     const { value, exerciseCount, classCount, userCount } = this.state;
 
     const ExercisesTab = withRouter(
       ({ history }) => <Tab 
-        style={{opacity:value === permissions.adminSections.EXERCISES ? 1 : 0.7}} 
+        style={{opacity: (isAdmin ? value === permissions.adminSections.EXERCISES : value === 0) ? 1 : 0.7}} 
         onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}exercises`)} 
         label={<span><ExerciseIcon 
         className={classes.icon} />Exercises<Badge 
@@ -59,7 +59,7 @@ class TabsView extends React.Component {
 
     const ClassesTab = withRouter(
       ({ history }) => <Tab 
-        style={{ opacity: value === permissions.adminSections.CLASSES ? 1 : 0.7 }} 
+        style={{ opacity: (isAdmin ? value === permissions.adminSections.CLASSES : value === 1) ? 1 : 0.7 }} 
         onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}classes`)} 
         label={<span><ClassIcon 
         className={classes.icon} />Classes<Badge 
@@ -71,7 +71,7 @@ class TabsView extends React.Component {
 
       const UsersTab = withRouter(
         ({ history }) => <Tab 
-          style={{ opacity: value === permissions.adminSections.USERS ? 1 : 0.7 }} 
+          style={{ opacity: (isAdmin ? value === permissions.adminSections.USERS : value === 2) ? 1 : 0.7 }} 
           onClick={() => history.push(`${isAdmin ? '/admin/' : '/'}users`)} 
           label={<span><UserIcon 
           className={classes.icon} />Users<Badge 
@@ -83,27 +83,36 @@ class TabsView extends React.Component {
 
     return (
       <div className={classes.root}>
-        <AppBar position="static">
-          <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
-            {
-              isAdmin
-                ? [
-                    permissions.isExerciseReadOnly ? null : <ExercisesTab key="exerciseTab" />,
-                    permissions.isClassReadOnly ? null : <ClassesTab key="classesTab" />,
-                    permissions.isUserReadOnly ? null : <UsersTab key="userTab" />
-                  ]
-                : [
-                    <ExercisesTab key="exerciseTab" />,
-                    <ClassesTab key="classesTab" />
-                  ]
-            }
-          </Tabs>
-        </AppBar>
         {
-          [
-            value === permissions.adminSections.EXERCISES && <Exercises isAdmin={isAdmin} key="exercises"  />,
-            value === permissions.adminSections.CLASSES && <Classes isAdmin={isAdmin} key="classes" />,
-            value === permissions.adminSections.USERS && <Users isAdmin={isAdmin} key="users" />
+          showHeader
+          ? <AppBar position="static">
+              <Tabs value={value} onChange={this.handleChange} classes={{ indicator: classes.indicator}}>
+                {
+                  isAdmin
+                    ? [
+                        permissions.canWriteExercise ? <ExercisesTab key="exerciseTab" /> : null,
+                        permissions.canWriteClass ? <ClassesTab key="classesTab" /> : null,
+                        permissions.canWriteUser ? <UsersTab key="userTab" /> : null
+                      ]
+                    : [
+                        <ExercisesTab key="exerciseTab" />,
+                        <ClassesTab key="classesTab" />
+                      ]
+                }
+              </Tabs>
+            </AppBar>
+          : null
+        }
+        {
+          isAdmin
+            ? [
+            value === permissions.adminSections.EXERCISES && <Exercises isAdmin={true} key="exercises"  />,
+            value === permissions.adminSections.CLASSES && <Classes isAdmin={true} key="classes" />,
+            value === permissions.adminSections.USERS && <Users isAdmin={true} key="users" />
+          ]
+          : [
+            value === 0 && <Exercises isAdmin={false} showHeader={showHeader} key="exercises"  />,
+            value === 1 && <Classes isAdmin={false} showHeader={showHeader} key="classes" />,
           ]
         }
       </div>

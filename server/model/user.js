@@ -6,4 +6,5 @@ module.exports = (sql, SQL) => sql.define('user', {
   password: { type: SQL.TEXT },
   permissions: { type: SQL.TEXT },
   lastLogin: { type: SQL.DATE },
+  logins: { type: SQL.INTEGER },
 });

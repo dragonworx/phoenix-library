@@ -291,7 +291,7 @@ class ViewClass extends React.Component {
             }
           </DialogContent>
           <footer className={classes.footer}>
-            <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates Library &copy; 2018 All rights reserved | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
+            <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates &copy; 2018 | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
           </footer>
         </div>
         {

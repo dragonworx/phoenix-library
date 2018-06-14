@@ -1,13 +1,7 @@
 import React, { Fragment } from 'react';
 import Button from 'material-ui/Button';
-import Menu, { MenuItem } from 'material-ui/Menu';
-import { Editor, EditorState, RichUtils } from 'draft-js';
-import { stateToHTML } from 'draft-js-export-html';
-import { stateFromHTML } from 'draft-js-import-html';
-import IconButton from "material-ui/IconButton";
-import AddIcon from "material-ui-icons/AddCircle";
-import ExpandMoreIcon from 'material-ui-icons/ExpandMore';
-import ExpandLessIcon from 'material-ui-icons/ExpandLess';
+import TextField from 'material-ui/TextField';
+import { MenuItem } from 'material-ui/Menu';
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -21,10 +15,20 @@ import Select from 'material-ui/Select';
 import { withStyles } from "material-ui/styles";
 import axios from 'axios';
 import SaveButton from '../../common/saveButton';
-import ClassProgram from './classProgram';
-import { user, permissions } from '../session';
+import { clone } from '../../common/util';
+import PermissionForbiddenIcon from 'material-ui-icons/Block';
+import PermissionReadIcon from 'material-ui-icons/RadioButtonUnchecked';
+import PermissionReadWriteIcon from 'material-ui-icons/AddCircleOutline';
+import PermissionReadWriteDeleteIcon from 'material-ui-icons/AddCircle';
 
 const ACCEPT_DELAY = 500;
+
+const ICONS = {
+  0: <PermissionForbiddenIcon />,
+  1: <PermissionReadIcon />,
+  2: <PermissionReadWriteIcon />,
+  3: <PermissionReadWriteDeleteIcon />
+};
 
 const MODE = {
   ADD: 'add',
@@ -34,56 +38,61 @@ const MODE = {
 class AddEdit extends React.Component {
   state = {
     open: true,
-    editorState: EditorState.createEmpty(),
-    value: 1,
-    program: null,
-    addCategories: null,
-    addCategoriesTarget: null,
-    className: null,
+    user: null,
     isSaving: false,
+    exerciseLevel: -1,
+    classLevel: -1,
+    userLevel: -1,
+    isValid: false,
   };
 
-  constructor (props) {
-    super(props);
-    this.state.program = props.program;
-    this.state.className = props.className;
+  componentDidMount () {
+    const user = (this.props.user && clone(this.props.user)) || this.defaultItem;
+    user.password = '';
+    this.setState({
+      user,
+      exerciseLevel: parseFloat(user.permissions.charAt(0)),
+      classLevel: parseFloat(user.permissions.charAt(1)),
+      userLevel: parseFloat(user.permissions.charAt(2)),
+      isValid: this.props.mode === 'add' ? false : true
+    });
   }
 
-  async componentWillMount () {
-    const { editItem } = this.props;
-    if (editItem) {
-      const { data: program } = await axios.get(`/class/program/${editItem.id}`);
-      program.forEach(category => category.expanded = false);
-      const state = stateFromHTML(editItem.notes);
-      this.setState({
-        editorState: EditorState.createWithContent(state),
-        className: editItem.name,
-        program
-      });
-    }
+  get defaultItem () {
+    return {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      permissions: '110',
+    };
   }
 
   handleSave = async () => {
-    const { genreId, mode, onAdded, onSaved, editItem } = this.props;
-    const { editorState, program, className: className } = this.state;
-    const notes = stateToHTML(editorState.getCurrentContent());
+    const { mode, onAdded, onSaved } = this.props;
+    const { exerciseLevel, classLevel, userLevel, user: usr } = this.state;
 
-    const cls = {
-      id: editItem && editItem.id,
-      genreId: genreId,
-      createdBy: user.id,
-      name: className,
-      categories: program,
-      status: editItem ? editItem.status : 0,
-      notes,
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const permissions = `${exerciseLevel}${classLevel}${userLevel}`;
+
+    const user = {
+      id: usr.id,
+      firstName,
+      lastName,
+      email,
+      password,
+      permissions,
     };
 
     const close = () => {
       setTimeout(() => {
         if (mode === MODE.ADD) {
-          onAdded(cls);
+          onAdded(user);
         } else {
-          onSaved(cls);
+          onSaved(user);
         }
       }, ACCEPT_DELAY);
       return Promise.resolve();
@@ -91,11 +100,10 @@ class AddEdit extends React.Component {
 
     try {
       this.setState({ isSaving: true });
-      const { data: { id, categorySummary, durationSummary, revision } } = await axios.post(`/class/${mode}`, cls);
-      cls.id = id || cls.id;
-      cls.categorySummary = categorySummary;
-      cls.durationSummary = durationSummary;
-      cls.revision = revision;
+      const response = await axios.post(`/user/${mode}`, user);
+      if (mode === 'add') {
+        user.id = response.data.id;
+      }
       this.setState({ isSaving: false });
     } catch (e) {
       this.setState({ isSaving: false });
@@ -110,80 +118,32 @@ class AddEdit extends React.Component {
     setTimeout(() => this.props.onClose(), ACCEPT_DELAY);
   };
 
-  handleChange = e => {
-    this.setState({ value: e.target.value });
+  handleExerciseLevelChange = e => {
+    this.setState({ exerciseLevel: e.target.value });
   };
 
-  onChange = (editorState) => this.setState({editorState});
-
-  onDeleteCategory = () => {
-    const program = this.state.program;
-    program.forEach((category, i) => category.index = i);
-    this.setState({ program });
+  handleClassLevelChange = e => {
+    this.setState({ classLevel: e.target.value });
   };
 
-  handleEditorKeyCommand = (command, editorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      this.onChange(newState);
-      return 'handled';
-    }
-    return 'not-handled';
+  handleUserLevelChange = e => {
+    this.setState({ userLevel: e.target.value });
   };
 
-  handleAddCatClick = async e => {
-    const target = e.target;
-    const { data: addCategories } = await axios.get(`/class/categories/${this.props.genreId}`);
-    this.setState({ addCategories, addCategoriesTarget: target });
-  };
-
-  handleCloseAddCategories = category => {
-    if (category) {
-      const program = this.state.program;
-      const movementCat = {
-        labelId: category.id, 
-        name: category.name, 
-        index: program.length, 
-        exercises: [],
-      };
-      program.push(movementCat);
-      this.setState({ program, addCategories: null, addCategoriesTarget: null });
-    } else {
-      this.setState({ addCategories: null, addCategoriesTarget: null });
-    }
-  };
-
-  handleNameChange = e => {
-    this.setState({ className: e.target.value });
-  };
-
-  onDurationChange = () => {
-    this.setState({ program: this.state.program });
-  };
-
-  expandAll = () => {
-    const { program } = this.state;
-    program.forEach(category => category.expanded = true);
-    this.setState({ program });
-  };
-
-  collapseAll = () => {
-    const { program } = this.state;
-    program.forEach(category => category.expanded = false);
-    this.setState({ program });
-  };
-
-  handleStatusChange = e => {
-    const value = e.target.value;
-    this.props.editItem.status = value;
-    this.setState({ value: this.state.value });
+  handleTextChange = () => {
+    const { mode } = this.props;
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName = document.getElementById('lastName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    this.setState({ isValid: !!(firstName && lastName && email && (mode === 'add' ? !!password : true)) });
   };
 
   render () {
-    const { classes } = this.props;
-    const { className, program } = this.state;
+    const { user } = this.state;
+    const { classes, mode } = this.props;
 
-    if (!program) {
+    if (!user) {
       return null;
     }
 
@@ -198,7 +158,7 @@ class AddEdit extends React.Component {
         >
         <AppBar position="static">
           <Typography variant="title" color="inherit" className={classes.flex}>
-            <Input fullWidth={true} defaultValue={className} classes={{ root: classes.title }} onChange={this.handleNameChange} />
+            <Input fullWidth={true} defaultValue={`${mode === 'add' ? 'Add' : 'Edit'} User`} classes={{ root: classes.title }} readOnly />
           </Typography>
         </AppBar>
 
@@ -209,83 +169,115 @@ class AddEdit extends React.Component {
   }
 
   renderContent () {
-    const { addCategories, addCategoriesTarget, isSaving, program } = this.state;
-    const { classes, genreId, editItem } = this.props;
-    const duration = program.reduce((duration, category) => duration + category.exercises.reduce((duration, exercise) => duration + exercise.duration, 0), 0);
+    const { isSaving, user, exerciseLevel, classLevel, userLevel, isValid } = this.state;
+    const { classes } = this.props;
 
     return (
       <Fragment>
         <DialogContent className={classes.content}>
           <Grid container spacing={24}>
-            <Grid item xs={12} style={{ position: 'relative', paddingBottom: 0, paddingTop: 0 }}>
-              <FormLabel className={classes.primaryDescLabel} component="legend">Movement Categories</FormLabel>
-              <ClassProgram genreId={genreId} program={program} onDeleteCategory={this.onDeleteCategory} onDurationChange={this.onDurationChange} />
-              <a title="Add a movement category">
-                <IconButton variant="fab" color="primary" aria-label="add movement category" className={classes.addCat} onClick={this.handleAddCatClick}>
-                  <AddIcon />
-                </IconButton>
-              </a>
-              <div className={classes.buttons}>
-                <a title="collapse all">
-                  <IconButton variant="raised" color="primary" aria-label="collapse all" className={classes.button} onClick={this.collapseAll}>
-                    <ExpandLessIcon />
-                  </IconButton>
-                </a>
-                <a title="expand all">
-                  <IconButton variant="raised" color="primary" aria-label="expand all" className={classes.button} onClick={this.expandAll}>
-                    <ExpandMoreIcon />
-                  </IconButton>
-                </a>
-              </div>
-              <div className={classes.duration}>{duration} mins Total Duration</div>
-              {
-                addCategories
-                  ? <Menu
-                      anchorEl={addCategoriesTarget}
-                      open={true}
-                      onClose={() => this.handleCloseAddCategories()}
-                    >
-                      {
-                        addCategories.map(category => <MenuItem key={`add-cat-${category.id}`} onClick={() => this.handleCloseAddCategories(category)}>{category.name}</MenuItem>)
-                      }
-                    </Menu>
-                  : null
-              }
-            </Grid>
-            <Grid item xs={12} style={{ paddingTop: 0 }}>
-              <FormLabel className={classes.descLabel} component="legend">Notes</FormLabel>
-                <div className={classes.editor} >
-                  <Editor
-                    editorState={this.state.editorState}
-                    handleKeyCommand={this.handleEditorKeyCommand}
-                    onChange={this.onChange} />
+          <Grid item xs={6}>
+                <TextField
+                  margin="dense"
+                  id="firstName"
+                  label="First Name"
+                  type="text"
+                  fullWidth
+                  defaultValue={user.firstName}
+                  onChange={this.handleTextChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  margin="dense"
+                  id="lastName"
+                  label="Last Name"
+                  type="text"
+                  fullWidth
+                  defaultValue={user.lastName}
+                  onChange={this.handleTextChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  margin="dense"
+                  id="email"
+                  label="Email"
+                  type="text"
+                  fullWidth
+                  defaultValue={user.email}
+                  onChange={this.handleTextChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  margin="dense"
+                  id="password"
+                  label="Password"
+                  type="text"
+                  fullWidth
+                  defaultValue={user.password}
+                  onChange={this.handleTextChange}
+                  disabled={!!this.props.user}
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <div>
+                  <FormLabel component="legend">Exercise Permissions</FormLabel>
+                  <Select
+                    value={exerciseLevel}
+                    onChange={this.handleExerciseLevelChange}
+                    input={<Input name="exerciseLevel" id="exerciseLevel" />}
+                  >
+                    <MenuItem value={3}>Read / Write / Delete</MenuItem>
+                    <MenuItem value={2}>Read / Write</MenuItem>
+                    <MenuItem value={1}>Read</MenuItem>
+                    <MenuItem value={0}>Forbidden</MenuItem>
+                  </Select>
                 </div>
-            </Grid>
+              </Grid>
+              <Grid item xs={4}>
+                <div>
+                  <FormLabel component="legend">Class Permissions</FormLabel>
+                  <Select
+                    value={classLevel}
+                    onChange={this.handleClassLevelChange}
+                    input={<Input name="classLevel" id="classLevel" />}
+                  >
+                    <MenuItem value={3}>Read / Write / Delete</MenuItem>
+                    <MenuItem value={2}>Read / Write</MenuItem>
+                    <MenuItem value={1}>Read</MenuItem>
+                    <MenuItem value={0}>Forbidden</MenuItem>
+                  </Select>
+                </div>
+              </Grid>
+              <Grid item xs={4}>
+                <div>
+                  <FormLabel component="legend">User Permissions</FormLabel>
+                  <Select
+                    value={userLevel}
+                    onChange={this.handleUserLevelChange}
+                    input={<Input name="userLevel" id="userLevel" />}
+                  >
+                    <MenuItem value={3}>Read / Write / Delete</MenuItem>
+                    <MenuItem value={2}>Read / Write</MenuItem>
+                    <MenuItem value={1}>Read</MenuItem>
+                    <MenuItem value={0}>Forbidden</MenuItem>
+                  </Select>
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                {ICONS[exerciseLevel]}
+                {ICONS[classLevel]}
+                {ICONS[userLevel]}
+              </Grid>
           </Grid>
         </DialogContent>
         <DialogActions classes={{ root: classes.actions }}>
-          {
-            editItem && permissions.canDeleteClass
-              ? (
-                <div style={{ position: 'absolute', left: 20 }}>
-                  <FormLabel style={{ display: 'inline-block' }} component="legend">Status</FormLabel>
-                  <Select
-                    value={editItem.status}
-                    onChange={this.handleStatusChange}
-                    input={<Input name="status" id="status" />}
-                  >
-                    <MenuItem value={0}>Submitted</MenuItem>
-                    <MenuItem value={1}>Enabled</MenuItem>
-                    <MenuItem value={2}>Disabled</MenuItem>
-                  </Select>
-                </div>
-              )
-              : null
-          }
           <Button onClick={this.handleClose} color="primary" disabled={isSaving}>
             Cancel
           </Button>
-          <SaveButton onClick={this.handleSave} disabled={program && program.length === 0} />
+          <SaveButton onClick={this.handleSave} disabled={!isValid} />
         </DialogActions>
       </Fragment>
     );
@@ -308,6 +300,9 @@ export default withStyles(theme => ({
   primaryDescLabel: {
     marginTop: theme.spacing.unit * 3,
     marginBottom: theme.spacing.unit,
+  },
+  topLabel: {
+    marginTop: 0,
   },
   descLabel: {
     marginTop: theme.spacing.unit,
@@ -349,5 +344,8 @@ export default withStyles(theme => ({
   },
   actions: {
     margin: '10px 16px',
+  },
+  icon: {
+    display: 'block',
   }
 }))(AddEdit);

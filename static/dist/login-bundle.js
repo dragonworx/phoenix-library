@@ -7827,7 +7827,7 @@ var Login = function (_React$Component) {
       var value = event.target.value;
       _this.setState({
         email: value,
-        isValid: value || _this.state.password
+        isValid: !!(value || _this.state.password)
       });
     };
 
@@ -7835,7 +7835,7 @@ var Login = function (_React$Component) {
       var value = event.target.value;
       _this.setState({
         password: event.target.value,
-        isValid: value || _this.state.email
+        isValid: !!(value || _this.state.email)
       });
     };
 
