@@ -3,6 +3,7 @@ import Icon from 'material-ui-icons/Cloud';
 import Tooltip from 'material-ui/Tooltip';
 import { withStyles } from "material-ui/styles";
 import axios from 'axios';
+import { user } from '../../member/session';
 
 const PING_INTERVAL_SECS = 30;
 
@@ -34,13 +35,16 @@ class PingStatus extends React.Component {
 
     return (
       <div className={classes.root}>
-      <Tooltip title={title} placement="left">
-        {
-          isConnected
-            ? <Icon className={classes.online} />
-            : <Icon className={classes.offline} />
-        }
-      </Tooltip>
+        <Tooltip title={title} placement="left">
+          {
+            isConnected
+              ? <Icon className={classes.online} />
+              : <Icon className={classes.offline} />
+          }
+        </Tooltip>
+        <div className={classes.title}>
+        {user.firstName}
+        </div>
       </div>
     );
   }
@@ -58,4 +62,9 @@ export default withStyles({
   offline: {
     color: 'red'
   },
+  title: {
+    position: 'absolute',
+    top: 0,
+    right: 35,
+  }
 })(PingStatus);

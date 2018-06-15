@@ -76,6 +76,8 @@ class AddEdit extends React.Component {
       name: className,
       categories: program,
       status: editItem ? editItem.status : 0,
+      createdAt: editItem && editItem.createdAt,
+      updatedAt: new Date(),
       notes,
     };
 

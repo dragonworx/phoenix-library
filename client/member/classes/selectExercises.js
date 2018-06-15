@@ -14,12 +14,23 @@ import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import ViewExercise from '../exercises/view';
 import If from '../../common/if';
+import { clone } from '../../common/util';
 
 class SelectExercises extends React.Component {
   constructor(props, context) {
     super(props, context);
 
     this.state.value = this.props.value;
+    const exercises = clone(props.exercises);
+    exercises.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      } else if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+    this.state.exercises = exercises;
   }
 
   state = {
@@ -45,7 +56,7 @@ class SelectExercises extends React.Component {
   };
 
   handleChange = (event, value) => {
-    const { exercises } = this.props;
+    const { exercises } = this.state;
     const selection = this.state.selection;
     if (selection[value]) {
       delete selection[value];
@@ -57,7 +68,7 @@ class SelectExercises extends React.Component {
   };
 
   handleSelectAllChange = (event, value) => {
-    const { exercises } = this.props;
+    const { exercises } = this.state;
     if (value) {
       const selection = {};
       exercises.forEach(exercise => selection[exercise.id] = true);
@@ -83,8 +94,8 @@ class SelectExercises extends React.Component {
   };
 
   render() {
-    const { selection, selectAll, viewItem } = this.state;
-    const { exercises, classes } = this.props;
+    const { selection, selectAll, viewItem, exercises } = this.state;
+    const { classes } = this.props;
     const count = exercises.length;
     // eslint-disable-next-line no-undef
     const thumbnailUrl = `${PHOENIX_LIB_STORAGE}%_1_thumb.png`;

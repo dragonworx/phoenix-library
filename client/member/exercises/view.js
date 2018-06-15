@@ -116,15 +116,16 @@ class ViewExercise extends React.Component {
           title={viewItem.photo}
           onClick={this.handleImgClick}
           style={{ cursor: 'pointer' }}
-        />
+        >
+        <div className={classes.springsContainer}>
+          { textToSprings(springs) }
+        </div>
+        </CardMedia>
         <CardContent style={{ paddingBottom: 5 }}>
-          <Typography className={classes.name} gutterBottom variant="headline" component="h2">
+          <Typography className={classes.name} gutterBottom variant="headline" component="h4">
             { name }
           </Typography>
           <Typography id="exercise-description" className={classes.description} component="p" dangerouslySetInnerHTML={{ __html }} />
-          <div className={classes.springsContainer}>
-            { textToSprings(springs) }
-          </div>
         </CardContent>
         <CardActions className={classes.actions}>
           <Button size="small" color="primary" onClick={this.handleClose}>
@@ -138,8 +139,13 @@ class ViewExercise extends React.Component {
 
 export default withStyles(theme => ({
   springsContainer: {
-    marginTop: 5,
-    marginLeft: 5,
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+    padding: 5,
+    backgroundColor: 'rgba(255,255,255,0.75)',
+    boxShadow: '5px 5px 10px 5px rgba(0,0,0,0.3)',
+    borderRadius: 5,
   },
   genres: {
     marginTop: theme.spacing.unit * 2,
@@ -228,6 +234,7 @@ export default withStyles(theme => ({
   },
   media: {
     height: 200,
+    position: 'relative',
   },
   name: {
     color: '#377ec2',

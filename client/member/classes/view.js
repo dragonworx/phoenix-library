@@ -248,7 +248,7 @@ class ViewClass extends React.Component {
           </AppBar>
           <DialogContent className={classes.content}>
             {
-              showNotes
+              showNotes && classNotes && classNotes.trim().length
                 ? <span className={classes.classNotes} dangerouslySetInnerHTML={{__html: classNotes}}></span>
                 : null
             }
@@ -279,7 +279,7 @@ class ViewClass extends React.Component {
                                 }
                               </h4>
                               {
-                                showNotes && exercise.notes ? <span className={classes.exerciseNotes} dangerouslySetInnerHTML={{__html: exercise.notes}}></span> : null
+                                showNotes && exercise.notes && exercise.notes.length ? <span className={classes.exerciseNotes} dangerouslySetInnerHTML={{__html: exercise.notes}}></span> : null
                               }
                             </li>
                           );

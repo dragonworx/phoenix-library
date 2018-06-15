@@ -125,7 +125,7 @@ export const textToSprings = (value) => {
     .replace(/#(red|blue|yellow)/gi, `<img style="height:${height}px" src="/img/spring-$1.png" />`)
     .toLowerCase()
     .replace(/mat/gi, `<img style="height:${height}px" src="/img/mat.png" />`);
-  return <Tooltip title={value} placement="top"><span style={{ fontFamily: 'monospace', color: '#a1a1a1' }} dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
+  return <Tooltip title={`Springs: ${value}`} placement="top"><span style={{ fontFamily: 'monospace', color: '#a1a1a1' }} dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
 };
 
 const SpringFormatter = ({ value }) => {
@@ -142,6 +142,17 @@ const SpringTypeProvider = props => (
   />
 );
 
+const DateFormatter = ({ value }) => {
+  return <span>{new Date(Date.parse(value)).toLocaleString()}</span>;
+};
+
+const DateTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={DateFormatter}
+    {...props}
+  />
+);
+
 let defaultColumnWidths = [
   { columnName: 'photo', width: 100 },
   { columnName: 'name', width: 300 },
@@ -151,6 +162,8 @@ let defaultColumnWidths = [
   { columnName: 'description', width: 600 },
   { columnName: 'video', width: 150 },
   { columnName: 'revision', width: 50 },
+  { columnName: 'createdAt', width: 100 },
+  { columnName: 'updatedAt', width: 100 },
 ];
 
 function setColumnWidths (nextColumnWidths) {
@@ -170,6 +183,7 @@ try {
     localStorage["phoenix_lib_1.0.exercise.column.width"]
   );
 } catch (e) {}
+
 try {
   defaultHiddenColumnNames = JSON.parse(
     localStorage["phoenix_lib_1.0.exercise.column.hidden"]
@@ -187,6 +201,8 @@ class ExerciseGrid extends React.Component {
       { name: 'springs', title: 'Springs' },
       { name: 'description', title: 'Description' },
       { name: 'video', title: 'Video URL' },
+      { name: 'createdAt', title: 'Created' },
+      { name: 'updatedAt', title: 'Modified' },
       { name: 'revision', title: 'Rev.' },
     ],
     rows: [],
@@ -200,6 +216,7 @@ class ExerciseGrid extends React.Component {
     htmlColumns: ['description'],
     springColumns: ['springs'],
     labelColumns: ['name', 'genre', 'movement'],
+    dateColumns: ['createdAt', 'updatedAt'],
     selection: [],
     editItem: null,
     viewItem: null,
@@ -360,6 +377,8 @@ class ExerciseGrid extends React.Component {
     const rows = [
       ...this.state.rows,
     ];
+    addedRow.createdAt = new Date().toISOString();
+    addedRow.updatedAt = addedRow.createdAt;
     addedRow.usage = usage;
     addedRow.revision = 1;
     rows.push(addedRow);
@@ -454,6 +473,7 @@ class ExerciseGrid extends React.Component {
       springColumns,
       labelColumns,
       nameColumns,
+      dateColumns,
       photoColumns,
       selection,
       editItem,
@@ -479,6 +499,7 @@ class ExerciseGrid extends React.Component {
         { isAdmin && this.renderEditControls() }
         <Grid rows={rows} columns={columns} getRowId={getRowId}>
           <DescriptionTypeProvider for={htmlColumns} />
+          <DateTypeProvider for={dateColumns} />
           <TooltipTypeProvider for={labelColumns} />
           <SpringTypeProvider for={springColumns} />
           <NameTypeProvider for={nameColumns} classes={classes} />

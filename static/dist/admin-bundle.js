@@ -6867,7 +6867,7 @@ if (typeof __e == 'number') __e = core; // eslint-disable-line no-undef
 var global = __webpack_require__(28);
 var core = __webpack_require__(22);
 var ctx = __webpack_require__(50);
-var hide = __webpack_require__(54);
+var hide = __webpack_require__(55);
 var PROTOTYPE = 'prototype';
 
 var $export = function (type, name, source) {
@@ -7200,7 +7200,7 @@ $exports.store = store;
 
 var CharacterMetadata = __webpack_require__(32);
 var ContentStateInlineStyle = __webpack_require__(459);
-var DraftFeatureFlags = __webpack_require__(55);
+var DraftFeatureFlags = __webpack_require__(56);
 var Immutable = __webpack_require__(18);
 
 var applyEntityToContentState = __webpack_require__(478);
@@ -7805,6 +7805,90 @@ module.exports = {
 "use strict";
 
 
+var _entries = __webpack_require__(142);
+
+var _entries2 = _interopRequireDefault(_entries);
+
+var _stringify = __webpack_require__(83);
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+module.exports = {
+  clone: function clone(obj) {
+    return JSON.parse((0, _stringify2.default)(obj));
+  },
+  distinct: function distinct(array) {
+    return array.reduce(function (a, b) {
+      if (a.indexOf(b) < 0) a.push(b);return a;
+    }, []);
+  },
+  trimUsage: function trimUsage(usage) {
+    var unusedGenres = [];
+    (0, _entries2.default)(usage).forEach(function (_ref) {
+      var genreId = _ref[0],
+          selections = _ref[1];
+
+      var entries = (0, _entries2.default)(selections);
+      entries.forEach(function (_ref2) {
+        var movementId = _ref2[0],
+            isSelected = _ref2[1];
+
+        if (!isSelected) {
+          delete selections[movementId];
+        }
+      });
+      if (entries.filter(function (_ref3) {
+        var isSelected = _ref3[1];
+        return isSelected === true;
+      }).length === 0) {
+        unusedGenres.push(genreId);
+      }
+    });
+    unusedGenres.forEach(function (genreId) {
+      return delete usage[genreId];
+    });
+  },
+  multi: function multi() {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    return [].concat(args).join(' ');
+  },
+  toOrdinal: function toOrdinal(number) {
+    var s = String(number),
+        len = s.length,
+        end = s.substr(len - 1, 1),
+        teen = len > 1 && s.substr(len - 2, 1) === '1';
+    var ord = 'th';
+
+    if (end === "1" && !teen) {
+      ord = "st";
+    } else if (end === "2" && !teen) {
+      ord = "nd";
+    } else if (end === "3" && !teen) {
+      ord = "rd";
+    }
+
+    return ord;
+  },
+  plural: function plural(number, postfix) {
+    return number === 1 ? number + ' ' + postfix : number + ' ' + postfix + 's';
+  }
+};
+
+module.exports.combineCss = module.exports.multi;
+module.exports.css = module.exports.combineCss;
+
+/***/ }),
+/* 35 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 exports.__esModule = true;
 
 var _promise = __webpack_require__(70);
@@ -7843,14 +7927,14 @@ exports.default = function (fn) {
 };
 
 /***/ }),
-/* 35 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(368);
 
 
 /***/ }),
-/* 36 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8009,90 +8093,6 @@ var ContentBlockNode = function (_Record) {
 }(Record(defaultRecord));
 
 module.exports = ContentBlockNode;
-
-/***/ }),
-/* 37 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _entries = __webpack_require__(142);
-
-var _entries2 = _interopRequireDefault(_entries);
-
-var _stringify = __webpack_require__(83);
-
-var _stringify2 = _interopRequireDefault(_stringify);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-module.exports = {
-  clone: function clone(obj) {
-    return JSON.parse((0, _stringify2.default)(obj));
-  },
-  distinct: function distinct(array) {
-    return array.reduce(function (a, b) {
-      if (a.indexOf(b) < 0) a.push(b);return a;
-    }, []);
-  },
-  trimUsage: function trimUsage(usage) {
-    var unusedGenres = [];
-    (0, _entries2.default)(usage).forEach(function (_ref) {
-      var genreId = _ref[0],
-          selections = _ref[1];
-
-      var entries = (0, _entries2.default)(selections);
-      entries.forEach(function (_ref2) {
-        var movementId = _ref2[0],
-            isSelected = _ref2[1];
-
-        if (!isSelected) {
-          delete selections[movementId];
-        }
-      });
-      if (entries.filter(function (_ref3) {
-        var isSelected = _ref3[1];
-        return isSelected === true;
-      }).length === 0) {
-        unusedGenres.push(genreId);
-      }
-    });
-    unusedGenres.forEach(function (genreId) {
-      return delete usage[genreId];
-    });
-  },
-  multi: function multi() {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    return [].concat(args).join(' ');
-  },
-  toOrdinal: function toOrdinal(number) {
-    var s = String(number),
-        len = s.length,
-        end = s.substr(len - 1, 1),
-        teen = len > 1 && s.substr(len - 2, 1) === '1';
-    var ord = 'th';
-
-    if (end === "1" && !teen) {
-      ord = "st";
-    } else if (end === "2" && !teen) {
-      ord = "nd";
-    } else if (end === "3" && !teen) {
-      ord = "rd";
-    }
-
-    return ord;
-  },
-  plural: function plural(number, postfix) {
-    return number === 1 ? number + ' ' + postfix : number + ' ' + postfix + 's';
-  }
-};
-
-module.exports.combineCss = module.exports.multi;
-module.exports.css = module.exports.combineCss;
 
 /***/ }),
 /* 38 */
@@ -8929,6 +8929,31 @@ exports.default = EventListener;
 /* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
+"use strict";
+
+
+var _permissions = __webpack_require__(320);
+
+var _permissions2 = _interopRequireDefault(_permissions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var user = JSON.parse(atob(document.getElementById('phoenix-bundle').getAttribute('data-session')));
+var permissions = (0, _permissions2.default)(user.permissions);
+
+window.phoenix_lib = {
+  user: user
+};
+
+module.exports = {
+  user: user,
+  permissions: permissions
+};
+
+/***/ }),
+/* 55 */
+/***/ (function(module, exports, __webpack_require__) {
+
 var dP = __webpack_require__(40);
 var createDesc = __webpack_require__(89);
 module.exports = __webpack_require__(45) ? function (object, key, value) {
@@ -8940,7 +8965,7 @@ module.exports = __webpack_require__(45) ? function (object, key, value) {
 
 
 /***/ }),
-/* 55 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8964,7 +8989,7 @@ var DraftFeatureFlags = __webpack_require__(470);
 module.exports = DraftFeatureFlags;
 
 /***/ }),
-/* 56 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8986,7 +9011,7 @@ Object.defineProperty(exports, 'default', {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 57 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9026,7 +9051,7 @@ Object.defineProperty(exports, 'InputLabel', {
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /***/ }),
-/* 58 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9064,31 +9089,6 @@ Object.defineProperty(exports, 'MenuItem', {
 });
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-/***/ }),
-/* 59 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _permissions = __webpack_require__(320);
-
-var _permissions2 = _interopRequireDefault(_permissions);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-var user = JSON.parse(atob(document.getElementById('phoenix-bundle').getAttribute('data-session')));
-var permissions = (0, _permissions2.default)(user.permissions);
-
-window.phoenix_lib = {
-  user: user
-};
-
-module.exports = {
-  user: user,
-  permissions: permissions
-};
 
 /***/ }),
 /* 60 */
@@ -10895,11 +10895,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -10949,7 +10949,7 @@ var _Typography2 = _interopRequireDefault(_Typography);
 
 var _styles = __webpack_require__(20);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 var _lightbox = __webpack_require__(204);
 
@@ -11108,27 +11108,30 @@ var ViewExercise = function (_React$Component) {
       return _react2.default.createElement(
         _Card2.default,
         { className: classes.card },
-        _react2.default.createElement(_Card.CardMedia, {
-          className: classes.media,
-          image: photoUrl,
-          title: viewItem.photo,
-          onClick: this.handleImgClick,
-          style: { cursor: 'pointer' }
-        }),
         _react2.default.createElement(
-          _Card.CardContent,
-          { style: { paddingBottom: 5 } },
-          _react2.default.createElement(
-            _Typography2.default,
-            { className: classes.name, gutterBottom: true, variant: 'headline', component: 'h2' },
-            name
-          ),
-          _react2.default.createElement(_Typography2.default, { id: 'exercise-description', className: classes.description, component: 'p', dangerouslySetInnerHTML: { __html: __html } }),
+          _Card.CardMedia,
+          {
+            className: classes.media,
+            image: photoUrl,
+            title: viewItem.photo,
+            onClick: this.handleImgClick,
+            style: { cursor: 'pointer' }
+          },
           _react2.default.createElement(
             'div',
             { className: classes.springsContainer },
             (0, _grid.textToSprings)(springs)
           )
+        ),
+        _react2.default.createElement(
+          _Card.CardContent,
+          { style: { paddingBottom: 5 } },
+          _react2.default.createElement(
+            _Typography2.default,
+            { className: classes.name, gutterBottom: true, variant: 'headline', component: 'h4' },
+            name
+          ),
+          _react2.default.createElement(_Typography2.default, { id: 'exercise-description', className: classes.description, component: 'p', dangerouslySetInnerHTML: { __html: __html } })
         ),
         _react2.default.createElement(
           _Card.CardActions,
@@ -11148,8 +11151,13 @@ var ViewExercise = function (_React$Component) {
 exports.default = (0, _styles.withStyles)(function (theme) {
   return {
     springsContainer: {
-      marginTop: 5,
-      marginLeft: 5
+      position: 'absolute',
+      bottom: 10,
+      right: 10,
+      padding: 5,
+      backgroundColor: 'rgba(255,255,255,0.75)',
+      boxShadow: '5px 5px 10px 5px rgba(0,0,0,0.3)',
+      borderRadius: 5
     },
     genres: {
       marginTop: theme.spacing.unit * 2,
@@ -11237,7 +11245,8 @@ exports.default = (0, _styles.withStyles)(function (theme) {
       maxWidth: 600
     },
     media: {
-      height: 200
+      height: 200,
+      position: 'relative'
     },
     name: {
       color: '#377ec2'
@@ -19046,9 +19055,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_material_ui_Chip___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_material_ui_Chip__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_material_ui_styles__ = __webpack_require__(20);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_material_ui_styles___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_material_ui_styles__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_material_ui_Input__ = __webpack_require__(57);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_material_ui_Input__ = __webpack_require__(58);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_material_ui_Input___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_material_ui_Input__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_material_ui_Menu__ = __webpack_require__(58);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_material_ui_Menu__ = __webpack_require__(59);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_material_ui_Menu___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_material_ui_Menu__);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_material_ui_Select__ = __webpack_require__(79);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_material_ui_Select___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_material_ui_Select__);
@@ -23083,7 +23092,7 @@ module.exports = Object('z').propertyIsEnumerable(0) ? Object : function (it) {
 var LIBRARY = __webpack_require__(106);
 var $export = __webpack_require__(23);
 var redefine = __webpack_require__(222);
-var hide = __webpack_require__(54);
+var hide = __webpack_require__(55);
 var has = __webpack_require__(61);
 var Iterators = __webpack_require__(87);
 var $iterCreate = __webpack_require__(398);
@@ -23246,7 +23255,7 @@ exports.f = Object.getOwnPropertySymbols;
 /* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var hide = __webpack_require__(54);
+var hide = __webpack_require__(55);
 module.exports = function (target, src, safe) {
   for (var key in src) {
     if (safe && target[key]) target[key] = src[key];
@@ -23342,7 +23351,7 @@ exports.f = __webpack_require__(29);
 
 __webpack_require__(410);
 var global = __webpack_require__(28);
-var hide = __webpack_require__(54);
+var hide = __webpack_require__(55);
 var Iterators = __webpack_require__(87);
 var TO_STRING_TAG = __webpack_require__(29)('toStringTag');
 
@@ -23494,9 +23503,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var BlockMapBuilder = __webpack_require__(91);
 var CharacterMetadata = __webpack_require__(32);
 var ContentBlock = __webpack_require__(63);
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var DraftEntity = __webpack_require__(116);
-var DraftFeatureFlags = __webpack_require__(55);
+var DraftFeatureFlags = __webpack_require__(56);
 var Immutable = __webpack_require__(18);
 var SelectionState = __webpack_require__(74);
 
@@ -30406,7 +30415,7 @@ var _Checkbox = __webpack_require__(130);
 
 var _Checkbox2 = _interopRequireDefault(_Checkbox);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -30426,7 +30435,7 @@ var _AccountBox = __webpack_require__(585);
 
 var _AccountBox2 = _interopRequireDefault(_AccountBox);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -30596,11 +30605,11 @@ var _objectWithoutProperties2 = __webpack_require__(4);
 
 var _objectWithoutProperties3 = _interopRequireDefault(_objectWithoutProperties2);
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -30936,11 +30945,11 @@ var _toConsumableArray2 = __webpack_require__(71);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -31036,9 +31045,9 @@ var _thumbnailLink = __webpack_require__(341);
 
 var _thumbnailLink2 = _interopRequireDefault(_thumbnailLink);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -31182,7 +31191,7 @@ var textToSprings = exports.textToSprings = function textToSprings(value) {
   sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:' + height + 'px" src="/img/spring-$1.png" />').toLowerCase().replace(/mat/gi, '<img style="height:' + height + 'px" src="/img/mat.png" />');
   return React.createElement(
     _Tooltip2.default,
-    { title: value, placement: 'top' },
+    { title: 'Springs: ' + value, placement: 'top' },
     React.createElement('span', { style: { fontFamily: 'monospace', color: '#a1a1a1' }, dangerouslySetInnerHTML: { __html: sub } })
   );
 };
@@ -31202,7 +31211,23 @@ var SpringTypeProvider = function SpringTypeProvider(props) {
   }, props));
 };
 
-var defaultColumnWidths = [{ columnName: 'photo', width: 100 }, { columnName: 'name', width: 300 }, { columnName: 'genre', width: 200 }, { columnName: 'movement', width: 200 }, { columnName: 'springs', width: 200 }, { columnName: 'description', width: 600 }, { columnName: 'video', width: 150 }, { columnName: 'revision', width: 50 }];
+var DateFormatter = function DateFormatter(_ref6) {
+  var value = _ref6.value;
+
+  return React.createElement(
+    'span',
+    null,
+    new Date(Date.parse(value)).toLocaleString()
+  );
+};
+
+var DateTypeProvider = function DateTypeProvider(props) {
+  return React.createElement(_dxReactGrid.DataTypeProvider, (0, _extends3.default)({
+    formatterComponent: DateFormatter
+  }, props));
+};
+
+var defaultColumnWidths = [{ columnName: 'photo', width: 100 }, { columnName: 'name', width: 300 }, { columnName: 'genre', width: 200 }, { columnName: 'movement', width: 200 }, { columnName: 'springs', width: 200 }, { columnName: 'description', width: 600 }, { columnName: 'video', width: 150 }, { columnName: 'revision', width: 50 }, { columnName: 'createdAt', width: 100 }, { columnName: 'updatedAt', width: 100 }];
 
 function setColumnWidths(nextColumnWidths) {
   var widths = {};
@@ -31223,6 +31248,7 @@ var defaultHiddenColumnNames = ['video'];
 try {
   defaultColumnWidths = JSON.parse(localStorage["phoenix_lib_1.0.exercise.column.width"]);
 } catch (e) {}
+
 try {
   defaultHiddenColumnNames = JSON.parse(localStorage["phoenix_lib_1.0.exercise.column.hidden"]);
 } catch (e) {}
@@ -31239,7 +31265,7 @@ var ExerciseGrid = function (_React$Component) {
 
     _this.state = {
       mode: MODE.LOADING,
-      columns: [{ name: 'photo', title: 'Photo' }, { name: 'name', title: 'Name' }, { name: 'genre', title: 'Genre' }, { name: 'movement', title: 'Movement Cat.' }, { name: 'springs', title: 'Springs' }, { name: 'description', title: 'Description' }, { name: 'video', title: 'Video URL' }, { name: 'revision', title: 'Rev.' }],
+      columns: [{ name: 'photo', title: 'Photo' }, { name: 'name', title: 'Name' }, { name: 'genre', title: 'Genre' }, { name: 'movement', title: 'Movement Cat.' }, { name: 'springs', title: 'Springs' }, { name: 'description', title: 'Description' }, { name: 'video', title: 'Video URL' }, { name: 'createdAt', title: 'Created' }, { name: 'updatedAt', title: 'Modified' }, { name: 'revision', title: 'Rev.' }],
       rows: [],
       filteringStateColumnExtensions: [{ columnName: 'photo', filteringEnabled: false }],
       defaultHiddenColumnNames: defaultHiddenColumnNames,
@@ -31249,6 +31275,7 @@ var ExerciseGrid = function (_React$Component) {
       htmlColumns: ['description'],
       springColumns: ['springs'],
       labelColumns: ['name', 'genre', 'movement'],
+      dateColumns: ['createdAt', 'updatedAt'],
       selection: [],
       editItem: null,
       viewItem: null,
@@ -31328,7 +31355,7 @@ var ExerciseGrid = function (_React$Component) {
     };
 
     _this.onConfirmDeleteClose = function () {
-      var _ref6 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(didAccept) {
+      var _ref7 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(didAccept) {
         var ids, rows;
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
@@ -31362,7 +31389,7 @@ var ExerciseGrid = function (_React$Component) {
       }));
 
       return function (_x) {
-        return _ref6.apply(this, arguments);
+        return _ref7.apply(this, arguments);
       };
     }();
 
@@ -31400,6 +31427,8 @@ var ExerciseGrid = function (_React$Component) {
     _this.onAdded = function (addedRow, usage) {
       _this.updateRowLabels(addedRow, usage);
       var rows = [].concat((0, _toConsumableArray3.default)(_this.state.rows));
+      addedRow.createdAt = new Date().toISOString();
+      addedRow.updatedAt = addedRow.createdAt;
       addedRow.usage = usage;
       addedRow.revision = 1;
       rows.push(addedRow);
@@ -31494,13 +31523,13 @@ var ExerciseGrid = function (_React$Component) {
       this.labels.forEach(function (label) {
         return labels[label.id] = label;
       });
-      var genres = (0, _entries2.default)(usage).map(function (_ref7) {
-        var id = _ref7[0];
+      var genres = (0, _entries2.default)(usage).map(function (_ref8) {
+        var id = _ref8[0];
         return labels[id].name;
       });
       var movementCategories = [];
-      (0, _entries2.default)(usage).map(function (_ref8) {
-        var selections = _ref8[1];
+      (0, _entries2.default)(usage).map(function (_ref9) {
+        var selections = _ref9[1];
         return (0, _keys2.default)(selections);
       }).forEach(function (ids) {
         return ids.forEach(function (id) {
@@ -31565,6 +31594,7 @@ var ExerciseGrid = function (_React$Component) {
           springColumns = _state.springColumns,
           labelColumns = _state.labelColumns,
           nameColumns = _state.nameColumns,
+          dateColumns = _state.dateColumns,
           photoColumns = _state.photoColumns,
           selection = _state.selection,
           editItem = _state.editItem,
@@ -31594,6 +31624,7 @@ var ExerciseGrid = function (_React$Component) {
           _dxReactGridMaterialUi.Grid,
           { rows: rows, columns: columns, getRowId: getRowId },
           React.createElement(DescriptionTypeProvider, { 'for': htmlColumns }),
+          React.createElement(DateTypeProvider, { 'for': dateColumns }),
           React.createElement(TooltipTypeProvider, { 'for': labelColumns }),
           React.createElement(SpringTypeProvider, { 'for': springColumns }),
           React.createElement(NameTypeProvider, { 'for': nameColumns, classes: classes }),
@@ -31909,7 +31940,7 @@ module.exports = function (C, x) {
 /* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(54);
+module.exports = __webpack_require__(55);
 
 
 /***/ }),
@@ -33155,10 +33186,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var CharacterMetadata = __webpack_require__(32);
 var ContentBlock = __webpack_require__(63);
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var DefaultDraftBlockRenderMap = __webpack_require__(165);
 var DraftEntity = __webpack_require__(116);
-var DraftFeatureFlags = __webpack_require__(55);
+var DraftFeatureFlags = __webpack_require__(56);
 var Immutable = __webpack_require__(18);
 
 var _require = __webpack_require__(18),
@@ -34162,7 +34193,7 @@ module.exports = getFragmentFromSelection;
  * production systems. This file may be update/removed without notice.
  */
 
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 
 var getNextDelimiterBlockKey = function getNextDelimiterBlockKey(block, blockMap) {
   var isExperimentalTreeBlock = block instanceof ContentBlockNode;
@@ -34694,7 +34725,7 @@ module.exports = moveSelectionForward;
 
 
 
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var Immutable = __webpack_require__(18);
 
 var generateRandomKey = __webpack_require__(51);
@@ -38760,7 +38791,7 @@ var _withStyles = __webpack_require__(10);
 
 var _withStyles2 = _interopRequireDefault(_withStyles);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 
@@ -41768,12 +41799,14 @@ var _axios = __webpack_require__(26);
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _session = __webpack_require__(54);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.0";
+var VERSION = "1.2.1";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -41821,6 +41854,11 @@ var PingStatus = function (_React$Component) {
           _Tooltip2.default,
           { title: title, placement: 'left' },
           isConnected ? _react2.default.createElement(_Cloud2.default, { className: classes.online }) : _react2.default.createElement(_Cloud2.default, { className: classes.offline })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: classes.title },
+          _session.user.firstName
         )
       );
     }
@@ -41839,6 +41877,11 @@ exports.default = (0, _styles.withStyles)({
   },
   offline: {
     color: 'red'
+  },
+  title: {
+    position: 'absolute',
+    top: 0,
+    right: 35
   }
 })(PingStatus);
 
@@ -41893,7 +41936,7 @@ var _red = __webpack_require__(133);
 
 var _red2 = _interopRequireDefault(_red);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42031,7 +42074,7 @@ var _view = __webpack_require__(82);
 
 var _view2 = _interopRequireDefault(_view);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42252,7 +42295,7 @@ var _classnames2 = _interopRequireDefault(_classnames);
 
 var _styles = __webpack_require__(20);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -42284,12 +42327,12 @@ var _hamburgerMenu = __webpack_require__(202);
 
 var _hamburgerMenu2 = _interopRequireDefault(_hamburgerMenu);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.0";
+var VERSION = "1.2.1";
 var logoutMenuItem = {
   value: 'logout',
   label: 'Logout',
@@ -42505,7 +42548,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -42513,7 +42556,7 @@ var _promise = __webpack_require__(70);
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -42545,7 +42588,7 @@ var _Button = __webpack_require__(31);
 
 var _Button2 = _interopRequireDefault(_Button);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
@@ -42577,11 +42620,11 @@ var _Dialog2 = _interopRequireDefault(_Dialog);
 
 var _Form = __webpack_require__(66);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -42611,7 +42654,7 @@ var _classProgram = __webpack_require__(347);
 
 var _classProgram2 = _interopRequireDefault(_classProgram);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -42661,6 +42704,8 @@ var AddEdit = function (_React$Component) {
                   name: className,
                   categories: program,
                   status: editItem ? editItem.status : 0,
+                  createdAt: editItem && editItem.createdAt,
+                  updatedAt: new Date(),
                   notes: notes
                 };
 
@@ -43194,7 +43239,7 @@ var _Select = __webpack_require__(79);
 
 var _Select2 = _interopRequireDefault(_Select);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _Dialog = __webpack_require__(47);
 
@@ -43202,7 +43247,7 @@ var _Dialog2 = _interopRequireDefault(_Dialog);
 
 var _Form = __webpack_require__(66);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -43371,11 +43416,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -43437,9 +43482,9 @@ var _IconButton2 = _interopRequireDefault(_IconButton);
 
 var _Form = __webpack_require__(66);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _axios = __webpack_require__(26);
 
@@ -43449,7 +43494,7 @@ var _view = __webpack_require__(82);
 
 var _view2 = _interopRequireDefault(_view);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 var _if = __webpack_require__(139);
 
@@ -43912,11 +43957,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -43986,7 +44031,7 @@ var _selectExercises = __webpack_require__(350);
 
 var _selectExercises2 = _interopRequireDefault(_selectExercises);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 var _hover = __webpack_require__(203);
 
@@ -44518,11 +44563,11 @@ var _toConsumableArray2 = __webpack_require__(71);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -44614,7 +44659,7 @@ var _alert = __webpack_require__(138);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 var _fscreen = __webpack_require__(264);
 
@@ -44799,11 +44844,27 @@ var TooltipTypeProvider = function TooltipTypeProvider(props) {
   }, props));
 };
 
+var DateFormatter = function DateFormatter(_ref7) {
+  var value = _ref7.value;
+
+  return React.createElement(
+    'span',
+    null,
+    new Date(Date.parse(value)).toLocaleString()
+  );
+};
+
+var DateTypeProvider = function DateTypeProvider(props) {
+  return React.createElement(_dxReactGrid.DataTypeProvider, (0, _extends3.default)({
+    formatterComponent: DateFormatter
+  }, props));
+};
+
 var calcGridHeight = function calcGridHeight(showHeader) {
   return window.innerHeight - (showHeader ? 170 : 120);
 };
 
-var defaultColumnWidths = [{ columnName: 'name', width: 300 }, { columnName: 'genre', width: 100 }, { columnName: 'categorySummary', width: 100 }, { columnName: 'durationSummary', width: 100 }, { columnName: 'status', width: 200 }, { columnName: 'notes', width: 200 }, { columnName: 'revision', width: 50 }];
+var defaultColumnWidths = [{ columnName: 'name', width: 300 }, { columnName: 'genre', width: 100 }, { columnName: 'categorySummary', width: 100 }, { columnName: 'durationSummary', width: 100 }, { columnName: 'status', width: 200 }, { columnName: 'notes', width: 200 }, { columnName: 'revision', width: 50 }, { columnName: 'createdAt', width: 100 }, { columnName: 'updatedAt', width: 100 }];
 
 function setColumnWidths(nextColumnWidths) {
   var widths = {};
@@ -44819,7 +44880,7 @@ function setColumnWidths(nextColumnWidths) {
   }
 }
 
-var defaultHiddenColumnNames = ['notes'];
+var defaultHiddenColumnNames = ['notes', 'status', 'created', 'modified'];
 
 try {
   defaultColumnWidths = JSON.parse(localStorage["phoenix_lib_1.0.classes.column.width"]);
@@ -44829,7 +44890,7 @@ var ClassesGrid = function (_React$Component) {
   (0, _inherits3.default)(ClassesGrid, _React$Component);
 
   function ClassesGrid() {
-    var _ref7,
+    var _ref8,
         _this2 = this;
 
     var _temp, _this, _ret;
@@ -44840,9 +44901,9 @@ var ClassesGrid = function (_React$Component) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref7 = ClassesGrid.__proto__ || (0, _getPrototypeOf2.default)(ClassesGrid)).call.apply(_ref7, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref8 = ClassesGrid.__proto__ || (0, _getPrototypeOf2.default)(ClassesGrid)).call.apply(_ref8, [this].concat(args))), _this), _this.state = {
       mode: MODE.LOADING,
-      columns: [{ name: 'name', title: 'Name' }, { name: 'genre', title: 'Genre' }, { name: 'categorySummary', title: 'Movement Cats.' }, { name: 'durationSummary', title: 'Duration' }, { name: 'status', title: 'Status' }, { name: 'notes', title: 'Notes' }, { name: 'revision', title: 'Rev.' }],
+      columns: [{ name: 'name', title: 'Name' }, { name: 'genre', title: 'Genre' }, { name: 'categorySummary', title: 'Movement Cats.' }, { name: 'durationSummary', title: 'Duration' }, { name: 'status', title: 'Status' }, { name: 'notes', title: 'Notes' }, { name: 'createdAt', title: 'Created' }, { name: 'updatedAt', title: 'Modified' }, { name: 'revision', title: 'Rev.' }],
       integratedFilteringColumnExtensions: [{ columnName: 'status', predicate: function predicate(rowValue, filter) {
           return STATUS[rowValue].indexOf(filter.value) > -1;
         } }],
@@ -44858,6 +44919,7 @@ var ClassesGrid = function (_React$Component) {
       htmlColumns: ['notes'],
       durationColumns: ['durationSummary'],
       statusColumns: ['status'],
+      dateColumns: ['createdAt', 'updatedAt'],
       selection: [],
       editItem: null,
       viewItem: null,
@@ -44924,8 +44986,8 @@ var ClassesGrid = function (_React$Component) {
     }, _this.onAddEditClose = function () {
       _this.setState({ mode: MODE.READ });
     }, _this.onAddSelectClose = function () {
-      var _ref8 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(value) {
-        var _ref9, template;
+      var _ref9 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(value) {
+        var _ref10, template;
 
         return _regenerator2.default.wrap(function _callee$(_context) {
           while (1) {
@@ -44940,8 +45002,8 @@ var ClassesGrid = function (_React$Component) {
                 return _axios2.default.get('/template/' + value);
 
               case 3:
-                _ref9 = _context.sent;
-                template = _ref9.data;
+                _ref10 = _context.sent;
+                template = _ref10.data;
 
                 template.forEach(function (category) {
                   return category.expanded = false;
@@ -44972,12 +45034,12 @@ var ClassesGrid = function (_React$Component) {
       }));
 
       return function (_x) {
-        return _ref8.apply(this, arguments);
+        return _ref9.apply(this, arguments);
       };
     }(), _this.onViewClose = function () {
       _this.setState({ mode: MODE.READ });
     }, _this.onConfirmDeleteClose = function () {
-      var _ref10 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(didAccept) {
+      var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee2(didAccept) {
         var ids, rows;
         return _regenerator2.default.wrap(function _callee2$(_context2) {
           while (1) {
@@ -45011,7 +45073,7 @@ var ClassesGrid = function (_React$Component) {
       }));
 
       return function (_x2) {
-        return _ref10.apply(this, arguments);
+        return _ref11.apply(this, arguments);
       };
     }(), _this.onSelectionChange = function (selection) {
       var selected = _this.state.selection;
@@ -45047,6 +45109,8 @@ var ClassesGrid = function (_React$Component) {
       });
       _this.setState({ selection: selection, viewItem: viewItem, mode: mode });
     }, _this.onAdded = function (cls) {
+      cls.createdAt = new Date().toISOString();
+      cls.updatedAt = cls.createdAt;
       var rows = [].concat((0, _toConsumableArray3.default)(_this.state.rows));
       rows.push(cls);
       _this.setState({ rows: rows, selection: [cls.id], mode: MODE.READ });
@@ -45082,8 +45146,8 @@ var ClassesGrid = function (_React$Component) {
   (0, _createClass3.default)(ClassesGrid, [{
     key: 'componentWillMount',
     value: function () {
-      var _ref11 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
-        var isAdmin, _ref12, data, classes, _ref13, labels;
+      var _ref12 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee3() {
+        var isAdmin, _ref13, data, classes, _ref14, labels;
 
         return _regenerator2.default.wrap(function _callee3$(_context3) {
           while (1) {
@@ -45094,21 +45158,29 @@ var ClassesGrid = function (_React$Component) {
                 return _axios2.default.get('/classes/get');
 
               case 3:
-                _ref12 = _context3.sent;
-                data = _ref12.data;
+                _ref13 = _context3.sent;
+                data = _ref13.data;
                 classes = data;
 
-                if (!isAdmin) {
+                if (isAdmin) {
+                  if (!_session.permissions.canDeleteClass) {
+                    // if you dont have full access you can only edit your own submitted classes
+                    classes = classes.filter(function (cls) {
+                      return cls.status === STATUSES.SUBMITTED && cls.createdBy === _session.user.id;
+                    });
+                  }
+                } else {
+                  // filter based on rights
                   classes = classes.filter(function (cls) {
-                    return cls.status !== STATUSES.DISABLED;
+                    return cls.status === STATUSES.ENABLED;
                   });
                 }
                 _context3.next = 9;
                 return _axios2.default.get('/labels/get');
 
               case 9:
-                _ref13 = _context3.sent;
-                labels = _ref13.data;
+                _ref14 = _context3.sent;
+                labels = _ref14.data;
 
 
                 classes.forEach(function (cls) {
@@ -45124,11 +45196,7 @@ var ClassesGrid = function (_React$Component) {
 
                 try {
                   defaultHiddenColumnNames = JSON.parse(localStorage["phoenix_lib_1.0.classes.column.hidden"]);
-                } catch (e) {
-                  if (!isAdmin) {
-                    defaultHiddenColumnNames.push('status');
-                  }
-                }
+                } catch (e) {}
 
                 this.setState({
                   defaultHiddenColumnNames: defaultHiddenColumnNames,
@@ -45145,7 +45213,7 @@ var ClassesGrid = function (_React$Component) {
       }));
 
       function componentWillMount() {
-        return _ref11.apply(this, arguments);
+        return _ref12.apply(this, arguments);
       }
 
       return componentWillMount;
@@ -45215,6 +45283,7 @@ var ClassesGrid = function (_React$Component) {
           htmlColumns = _state2.htmlColumns,
           durationColumns = _state2.durationColumns,
           statusColumns = _state2.statusColumns,
+          dateColumns = _state2.dateColumns,
           genreColumns = _state2.genreColumns,
           tooltipColumns = _state2.tooltipColumns,
           nameColumns = _state2.nameColumns,
@@ -45251,6 +45320,7 @@ var ClassesGrid = function (_React$Component) {
           React.createElement(HTMLTypeProvider, { 'for': htmlColumns }),
           React.createElement(DurationTypeProvider, { 'for': durationColumns }),
           React.createElement(StatusTypeProvider, { 'for': statusColumns }),
+          React.createElement(DateTypeProvider, { 'for': dateColumns }),
           React.createElement(GenreTypeProvider, { 'for': genreColumns }),
           React.createElement(_dxReactGridMaterialUi.DragDropProvider, null),
           React.createElement(_dxReactGrid.FilteringState, { columnExtensions: filteringStateColumnExtensions }),
@@ -45394,11 +45464,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -45450,7 +45520,7 @@ var _Dialog = __webpack_require__(47);
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -45480,105 +45550,31 @@ var _if = __webpack_require__(139);
 
 var _if2 = _interopRequireDefault(_if);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _util = __webpack_require__(34);
 
-/* eslint-disable react/no-multi-comp */
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var SelectExercises = function (_React$Component) {
   (0, _inherits3.default)(SelectExercises, _React$Component);
 
   function SelectExercises(props, context) {
-    var _this2 = this;
-
     (0, _classCallCheck3.default)(this, SelectExercises);
 
     var _this = (0, _possibleConstructorReturn3.default)(this, (SelectExercises.__proto__ || (0, _getPrototypeOf2.default)(SelectExercises)).call(this, props, context));
 
-    _this.state = {
-      selection: {},
-      selectAll: false,
-      viewItem: null
-    };
-    _this.radioGroup = null;
-
-    _this.handleCancel = function () {
-      _this.props.onClose();
-    };
-
-    _this.handleOk = function () {
-      _this.props.onClose((0, _keys2.default)(_this.state.selection).map(function (id) {
-        return parseInt(id, 10);
-      }));
-    };
-
-    _this.handleChange = function (event, value) {
-      var exercises = _this.props.exercises;
-
-      var selection = _this.state.selection;
-      if (selection[value]) {
-        delete selection[value];
-      } else {
-        selection[value] = true;
-      }
-      var selectAll = !!(selectAll && (0, _keys2.default)(selection).length === exercises.length);
-      _this.setState({ selectAll: selectAll, selection: selection });
-    };
-
-    _this.handleSelectAllChange = function (event, value) {
-      var exercises = _this.props.exercises;
-
-      if (value) {
-        var selection = {};
-        exercises.forEach(function (exercise) {
-          return selection[exercise.id] = true;
-        });
-        _this.setState({ selectAll: true, selection: selection });
-      } else {
-        _this.setState({ selectAll: false, selection: {} });
-      }
-    };
-
-    _this.onViewClose = function () {
-      _this.setState({
-        viewItem: null
-      });
-    };
-
-    _this.handleAvatarClick = function () {
-      var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(exercise) {
-        var _ref2, exerciseWithUsage;
-
-        return _regenerator2.default.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return _axios2.default.post('/exercise/usage', {
-                  exercise: exercise
-                });
-
-              case 2:
-                _ref2 = _context.sent;
-                exerciseWithUsage = _ref2.data;
-
-                _this.setState({
-                  viewItem: exerciseWithUsage
-                });
-
-              case 5:
-              case 'end':
-                return _context.stop();
-            }
-          }
-        }, _callee, _this2);
-      }));
-
-      return function (_x) {
-        return _ref.apply(this, arguments);
-      };
-    }();
+    _initialiseProps.call(_this);
 
     _this.state.value = _this.props.value;
+    var exercises = (0, _util.clone)(props.exercises);
+    exercises.sort(function (a, b) {
+      if (a.name < b.name) {
+        return -1;
+      } else if (a.name > b.name) {
+        return 1;
+      }
+      return 0;
+    });
+    _this.state.exercises = exercises;
     return _this;
   }
 
@@ -45592,15 +45588,14 @@ var SelectExercises = function (_React$Component) {
   }, {
     key: 'render',
     value: function render() {
-      var _this3 = this;
+      var _this2 = this;
 
       var _state = this.state,
           selection = _state.selection,
           selectAll = _state.selectAll,
-          viewItem = _state.viewItem;
-      var _props = this.props,
-          exercises = _props.exercises,
-          classes = _props.classes;
+          viewItem = _state.viewItem,
+          exercises = _state.exercises;
+      var classes = this.props.classes;
 
       var count = exercises.length;
       // eslint-disable-next-line no-undef
@@ -45613,7 +45608,7 @@ var SelectExercises = function (_React$Component) {
           maxWidth: 'md',
           'aria-labelledby': 'confirmation-dialog-title',
           onClose: function onClose() {
-            return _this3.handleCancel();
+            return _this2.handleCancel();
           }
         },
         _react2.default.createElement(
@@ -45643,13 +45638,13 @@ var SelectExercises = function (_React$Component) {
                 _react2.default.createElement(_Checkbox2.default, {
                   checked: !!selection[exercise.id],
                   onClick: function onClick(e) {
-                    return _this3.handleChange(e, exercise.id);
+                    return _this2.handleChange(e, exercise.id);
                   }
                 }),
                 _react2.default.createElement(
                   _Avatar2.default,
                   { style: { cursor: 'pointer' }, onClick: function onClick() {
-                      return _this3.handleAvatarClick(exercise);
+                      return _this2.handleAvatarClick(exercise);
                     } },
                   exercise.photo ? _react2.default.createElement('img', { src: thumbnailUrl.replace('%', exercise.id) }) : _react2.default.createElement(_Image2.default, null)
                 ),
@@ -45665,7 +45660,7 @@ var SelectExercises = function (_React$Component) {
                     ),
                     exercise.name
                   ), onClick: function onClick(e) {
-                    return _this3.handleChange(e, exercise.id);
+                    return _this2.handleChange(e, exercise.id);
                   } })
               );
             })
@@ -45704,7 +45699,95 @@ var SelectExercises = function (_React$Component) {
     }
   }]);
   return SelectExercises;
-}(_react2.default.Component);
+}(_react2.default.Component); /* eslint-disable react/no-multi-comp */
+
+var _initialiseProps = function _initialiseProps() {
+  var _this3 = this;
+
+  this.state = {
+    selection: {},
+    selectAll: false,
+    viewItem: null
+  };
+  this.radioGroup = null;
+
+  this.handleCancel = function () {
+    _this3.props.onClose();
+  };
+
+  this.handleOk = function () {
+    _this3.props.onClose((0, _keys2.default)(_this3.state.selection).map(function (id) {
+      return parseInt(id, 10);
+    }));
+  };
+
+  this.handleChange = function (event, value) {
+    var exercises = _this3.state.exercises;
+
+    var selection = _this3.state.selection;
+    if (selection[value]) {
+      delete selection[value];
+    } else {
+      selection[value] = true;
+    }
+    var selectAll = !!(selectAll && (0, _keys2.default)(selection).length === exercises.length);
+    _this3.setState({ selectAll: selectAll, selection: selection });
+  };
+
+  this.handleSelectAllChange = function (event, value) {
+    var exercises = _this3.state.exercises;
+
+    if (value) {
+      var selection = {};
+      exercises.forEach(function (exercise) {
+        return selection[exercise.id] = true;
+      });
+      _this3.setState({ selectAll: true, selection: selection });
+    } else {
+      _this3.setState({ selectAll: false, selection: {} });
+    }
+  };
+
+  this.onViewClose = function () {
+    _this3.setState({
+      viewItem: null
+    });
+  };
+
+  this.handleAvatarClick = function () {
+    var _ref = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee(exercise) {
+      var _ref2, exerciseWithUsage;
+
+      return _regenerator2.default.wrap(function _callee$(_context) {
+        while (1) {
+          switch (_context.prev = _context.next) {
+            case 0:
+              _context.next = 2;
+              return _axios2.default.post('/exercise/usage', {
+                exercise: exercise
+              });
+
+            case 2:
+              _ref2 = _context.sent;
+              exerciseWithUsage = _ref2.data;
+
+              _this3.setState({
+                viewItem: exerciseWithUsage
+              });
+
+            case 5:
+            case 'end':
+              return _context.stop();
+          }
+        }
+      }, _callee, _this3);
+    }));
+
+    return function (_x) {
+      return _ref.apply(this, arguments);
+    };
+  }();
+};
 
 SelectExercises.propTypes = {
   onClose: _propTypes2.default.func,
@@ -45768,11 +45851,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -45808,7 +45891,7 @@ var _Dialog = __webpack_require__(47);
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -45842,7 +45925,7 @@ var _hamburgerMenu = __webpack_require__(202);
 
 var _hamburgerMenu2 = _interopRequireDefault(_hamburgerMenu);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 var _view = __webpack_require__(82);
 
@@ -45963,7 +46046,7 @@ var styles = function styles(theme) {
 };
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.0";
+var VERSION = "1.2.1";
 
 var options = {
   showNotes: false,
@@ -46143,7 +46226,7 @@ var ViewClass = function (_React$Component) {
           _react2.default.createElement(
             _Dialog.DialogContent,
             { className: classes.content },
-            showNotes ? _react2.default.createElement('span', { className: classes.classNotes, dangerouslySetInnerHTML: { __html: classNotes } }) : null,
+            showNotes && classNotes && classNotes.trim().length ? _react2.default.createElement('span', { className: classes.classNotes, dangerouslySetInnerHTML: { __html: classNotes } }) : null,
             categories && categories.map(function (category, i) {
               var categoryOrdinal = i + 1;
               return _react2.default.createElement(
@@ -46201,7 +46284,7 @@ var ViewClass = function (_React$Component) {
                           (0, _util.plural)(exercise.duration, 'min')
                         ) : null
                       ),
-                      showNotes && exercise.notes ? _react2.default.createElement('span', { className: classes.exerciseNotes, dangerouslySetInnerHTML: { __html: exercise.notes } }) : null
+                      showNotes && exercise.notes && exercise.notes.length ? _react2.default.createElement('span', { className: classes.exerciseNotes, dangerouslySetInnerHTML: { __html: exercise.notes } }) : null
                     );
                   })
                 )
@@ -46295,11 +46378,11 @@ var _Dialog2 = _interopRequireDefault(_Dialog);
 
 var _Form = __webpack_require__(66);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -46337,7 +46420,7 @@ var _usage = __webpack_require__(354);
 
 var _usage2 = _interopRequireDefault(_usage);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47011,11 +47094,11 @@ var _MoreVert = __webpack_require__(285);
 
 var _MoreVert2 = _interopRequireDefault(_MoreVert);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _Menu2 = _interopRequireDefault(_Menu);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47214,7 +47297,7 @@ var _react = __webpack_require__(0);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -47258,7 +47341,7 @@ var _users = __webpack_require__(359);
 
 var _users2 = _interopRequireDefault(_users);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47449,7 +47532,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
@@ -47457,7 +47540,7 @@ var _promise = __webpack_require__(70);
 
 var _promise2 = _interopRequireDefault(_promise);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -47493,7 +47576,7 @@ var _TextField = __webpack_require__(185);
 
 var _TextField2 = _interopRequireDefault(_TextField);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _Dialog = __webpack_require__(47);
 
@@ -47501,11 +47584,11 @@ var _Dialog2 = _interopRequireDefault(_Dialog);
 
 var _Form = __webpack_require__(66);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _AppBar = __webpack_require__(56);
+var _AppBar = __webpack_require__(57);
 
 var _AppBar2 = _interopRequireDefault(_AppBar);
 
@@ -47531,7 +47614,7 @@ var _saveButton = __webpack_require__(140);
 
 var _saveButton2 = _interopRequireDefault(_saveButton);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 var _Block = __webpack_require__(280);
 
@@ -48045,11 +48128,11 @@ var _toConsumableArray2 = __webpack_require__(71);
 
 var _toConsumableArray3 = _interopRequireDefault(_toConsumableArray2);
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -48153,7 +48236,7 @@ var _alert = __webpack_require__(138);
 
 var _alert2 = _interopRequireDefault(_alert);
 
-var _session = __webpack_require__(59);
+var _session = __webpack_require__(54);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
@@ -48676,11 +48759,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _regenerator = __webpack_require__(35);
+var _regenerator = __webpack_require__(36);
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
 
-var _asyncToGenerator2 = __webpack_require__(34);
+var _asyncToGenerator2 = __webpack_require__(35);
 
 var _asyncToGenerator3 = _interopRequireDefault(_asyncToGenerator2);
 
@@ -48720,7 +48803,7 @@ var _Dialog = __webpack_require__(47);
 
 var _Dialog2 = _interopRequireDefault(_Dialog);
 
-var _util = __webpack_require__(37);
+var _util = __webpack_require__(34);
 
 var _axios = __webpack_require__(26);
 
@@ -50150,7 +50233,7 @@ var global = __webpack_require__(28);
 var $export = __webpack_require__(23);
 var meta = __webpack_require__(150);
 var fails = __webpack_require__(60);
-var hide = __webpack_require__(54);
+var hide = __webpack_require__(55);
 var redefineAll = __webpack_require__(153);
 var forOf = __webpack_require__(86);
 var anInstance = __webpack_require__(143);
@@ -50276,7 +50359,7 @@ var setToStringTag = __webpack_require__(90);
 var IteratorPrototype = {};
 
 // 25.1.2.1.1 %IteratorPrototype%[@@iterator]()
-__webpack_require__(54)(IteratorPrototype, __webpack_require__(29)('iterator'), function () { return this; });
+__webpack_require__(55)(IteratorPrototype, __webpack_require__(29)('iterator'), function () { return this; });
 
 module.exports = function (Constructor, NAME, next) {
   Constructor.prototype = create(IteratorPrototype, { next: descriptor(1, next) });
@@ -51301,7 +51384,7 @@ $JSON && $export($export.S + $export.F * (!USE_NATIVE || $fails(function () {
 });
 
 // 19.4.3.4 Symbol.prototype[@@toPrimitive](hint)
-$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(54)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
+$Symbol[PROTOTYPE][TO_PRIMITIVE] || __webpack_require__(55)($Symbol[PROTOTYPE], TO_PRIMITIVE, $Symbol[PROTOTYPE].valueOf);
 // 19.4.3.5 Symbol.prototype[@@toStringTag]
 setToStringTag($Symbol, 'Symbol');
 // 20.2.1.9 Math[@@toStringTag]
@@ -53847,8 +53930,8 @@ var _extends = _assign || function (target) { for (var i = 1; i < arguments.leng
 var BlockMapBuilder = __webpack_require__(91);
 var CharacterMetadata = __webpack_require__(32);
 var ContentBlock = __webpack_require__(63);
-var ContentBlockNode = __webpack_require__(36);
-var DraftFeatureFlags = __webpack_require__(55);
+var ContentBlockNode = __webpack_require__(37);
+var DraftFeatureFlags = __webpack_require__(56);
 var DraftModifier = __webpack_require__(30);
 var EditorState = __webpack_require__(19);
 var Immutable = __webpack_require__(18);
@@ -54652,7 +54735,7 @@ module.exports = DraftEditor;
 
 
 
-var DraftFeatureFlags = __webpack_require__(55);
+var DraftFeatureFlags = __webpack_require__(56);
 var DraftModifier = __webpack_require__(30);
 var EditorState = __webpack_require__(19);
 var Keys = __webpack_require__(171);
@@ -55826,8 +55909,8 @@ var _extends = _assign || function (target) { for (var i = 1; i < arguments.leng
 
 var CharacterMetadata = __webpack_require__(32);
 var ContentBlock = __webpack_require__(63);
-var ContentBlockNode = __webpack_require__(36);
-var DraftFeatureFlags = __webpack_require__(55);
+var ContentBlockNode = __webpack_require__(37);
+var DraftFeatureFlags = __webpack_require__(56);
 var Immutable = __webpack_require__(18);
 
 var convertFromHTMLtoContentBlocks = __webpack_require__(241);
@@ -56312,7 +56395,7 @@ var _assign = __webpack_require__(25);
 var _extends = _assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var ContentBlock = __webpack_require__(63);
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var DraftStringKey = __webpack_require__(239);
 
 var encodeEntityRanges = __webpack_require__(496);
@@ -56459,10 +56542,10 @@ var _assign = __webpack_require__(25);
 var _extends = _assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 var ContentBlock = __webpack_require__(63);
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var ContentState = __webpack_require__(164);
 var DraftEntity = __webpack_require__(116);
-var DraftFeatureFlags = __webpack_require__(55);
+var DraftFeatureFlags = __webpack_require__(56);
 var DraftTreeAdapter = __webpack_require__(473);
 var Immutable = __webpack_require__(18);
 var SelectionState = __webpack_require__(74);
@@ -57319,7 +57402,7 @@ module.exports = editOnFocus;
 
 
 
-var DraftFeatureFlags = __webpack_require__(55);
+var DraftFeatureFlags = __webpack_require__(56);
 var DraftModifier = __webpack_require__(30);
 var DraftOffsetKey = __webpack_require__(117);
 var EditorState = __webpack_require__(19);
@@ -58544,7 +58627,7 @@ module.exports = getVisibleSelectionRect;
 
 
 var BlockMapBuilder = __webpack_require__(91);
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var Immutable = __webpack_require__(18);
 
 var insertIntoList = __webpack_require__(251);
@@ -59424,7 +59507,7 @@ module.exports = modifyBlockForContentState;
 
 
 
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var Immutable = __webpack_require__(18);
 
 var getNextDelimiterBlockKey = __webpack_require__(245);
@@ -59624,7 +59707,7 @@ module.exports = moveBlockInContentState;
 
 
 
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var Immutable = __webpack_require__(18);
 
 var getNextDelimiterBlockKey = __webpack_require__(245);
@@ -60188,7 +60271,7 @@ module.exports = setDraftEditorSelection;
 
 
 
-var ContentBlockNode = __webpack_require__(36);
+var ContentBlockNode = __webpack_require__(37);
 var Immutable = __webpack_require__(18);
 
 var generateRandomKey = __webpack_require__(51);
@@ -77702,11 +77785,11 @@ var _withStyles = __webpack_require__(10);
 
 var _withStyles2 = _interopRequireDefault(_withStyles);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 
-var _Menu = __webpack_require__(58);
+var _Menu = __webpack_require__(59);
 
 var _Select = __webpack_require__(79);
 
@@ -79689,7 +79772,7 @@ var _propTypes = __webpack_require__(2);
 
 var _propTypes2 = _interopRequireDefault(_propTypes);
 
-var _Input = __webpack_require__(57);
+var _Input = __webpack_require__(58);
 
 var _Input2 = _interopRequireDefault(_Input);
 

@@ -25,7 +25,7 @@ import AddSelect from './addSelect';
 import AddEdit from './addEdit';
 import ViewClass from './view';
 import Alert from '../../common/alert';
-import { permissions } from '../session';
+import { user, permissions } from '../session';
 import fscreen from 'fscreen';
 
 const Cell = (props) => {
@@ -146,6 +146,17 @@ const TooltipTypeProvider = props => (
   />
 );
 
+const DateFormatter = ({ value }) => {
+  return <span>{new Date(Date.parse(value)).toLocaleString()}</span>;
+};
+
+const DateTypeProvider = props => (
+  <DataTypeProvider
+    formatterComponent={DateFormatter}
+    {...props}
+  />
+);
+
 const calcGridHeight = showHeader => window.innerHeight - (showHeader ? 170 : 120);
 
 let defaultColumnWidths = [
@@ -156,6 +167,8 @@ let defaultColumnWidths = [
   { columnName: 'status', width: 200 },
   { columnName: 'notes', width: 200 },
   { columnName: 'revision', width: 50 },
+  { columnName: 'createdAt', width: 100 },
+  { columnName: 'updatedAt', width: 100 },
 ];
 
 function setColumnWidths (nextColumnWidths) {
@@ -168,7 +181,7 @@ function setColumnWidths (nextColumnWidths) {
   }
 }
 
-let defaultHiddenColumnNames = ['notes'];
+let defaultHiddenColumnNames = ['notes', 'status', 'created', 'modified'];
 
 try {
   defaultColumnWidths = JSON.parse(
@@ -186,6 +199,8 @@ class ClassesGrid extends React.Component {
       { name: 'durationSummary', title: 'Duration' },
       { name: 'status', title: 'Status' },
       { name: 'notes', title: 'Notes' },
+      { name: 'createdAt', title: 'Created' },
+      { name: 'updatedAt', title: 'Modified' },
       { name: 'revision', title: 'Rev.' },
     ],
     integratedFilteringColumnExtensions: [
@@ -205,6 +220,7 @@ class ClassesGrid extends React.Component {
     htmlColumns: ['notes'],
     durationColumns: ['durationSummary'],
     statusColumns: ['status'],
+    dateColumns: ['createdAt', 'updatedAt'],
     selection: [],
     editItem: null,
     viewItem: null,
@@ -217,8 +233,14 @@ class ClassesGrid extends React.Component {
     const { isAdmin } = this.props;
     const { data } = await axios.get('/classes/get');
     let classes = data;
-    if (!isAdmin) {
-      classes = classes.filter(cls => cls.status !== STATUSES.DISABLED);
+    if (isAdmin) {
+      if (!permissions.canDeleteClass) {
+        // if you dont have full access you can only edit your own submitted classes
+        classes = classes.filter(cls => cls.status === STATUSES.SUBMITTED && cls.createdBy === user.id);
+      }
+    } else {
+      // filter based on rights
+      classes = classes.filter(cls => cls.status === STATUSES.ENABLED);
     }
     const { data: labels } = await axios.get('/labels/get');
 
@@ -236,9 +258,7 @@ class ClassesGrid extends React.Component {
         localStorage["phoenix_lib_1.0.classes.column.hidden"]
       );
     } catch (e) {
-      if (!isAdmin) {
-        defaultHiddenColumnNames.push('status');
-      }
+
     }
 
     this.setState({
@@ -385,6 +405,8 @@ class ClassesGrid extends React.Component {
   };
 
   onAdded = (cls) => {
+    cls.createdAt = new Date().toISOString();
+    cls.updatedAt = cls.createdAt;
     const rows = [
       ...this.state.rows,
     ];
@@ -475,6 +497,7 @@ class ClassesGrid extends React.Component {
       htmlColumns,
       durationColumns,
       statusColumns,
+      dateColumns,
       genreColumns,
       tooltipColumns,
       nameColumns,
@@ -507,6 +530,7 @@ class ClassesGrid extends React.Component {
           <HTMLTypeProvider for={htmlColumns} />
           <DurationTypeProvider for={durationColumns} />
           <StatusTypeProvider for={statusColumns} />
+          <DateTypeProvider for={dateColumns} />
           <GenreTypeProvider for={genreColumns} />
           <DragDropProvider />
           <FilteringState columnExtensions={filteringStateColumnExtensions} />
