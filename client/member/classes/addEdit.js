@@ -62,6 +62,14 @@ class AddEdit extends React.Component {
         program
       });
     }
+
+    window.onbeforeunload = function() {
+      return "Are you sure you want to navigate away?";
+    };
+  }
+
+  componentWillUnmount () {
+    window.onbeforeunload = null;
   }
 
   handleSave = async e => {

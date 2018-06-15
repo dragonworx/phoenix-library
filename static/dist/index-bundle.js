@@ -31449,6 +31449,7 @@ var ExerciseGrid = function (_React$Component) {
       row.id = id;
       row.usage = usage;
       row.revision = savedRow.revision;
+      row.updatedAt = new Date().toISOString();
       _this.updateRowLabels(row, usage);
       _this.setState({ rows: rows, editItem: null, selection: [] });
     };
@@ -41806,7 +41807,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.1";
+var VERSION = "1.2.2";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -42630,6 +42631,12 @@ var AddEdit = function (_React$Component) {
                 });
 
               case 9:
+
+                window.onbeforeunload = function () {
+                  return "Are you sure you want to navigate away?";
+                };
+
+              case 10:
               case 'end':
                 return _context3.stop();
             }
@@ -42643,6 +42650,11 @@ var AddEdit = function (_React$Component) {
 
       return componentWillMount;
     }()
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      window.onbeforeunload = null;
+    }
   }, {
     key: 'render',
     value: function render() {
@@ -45757,7 +45769,7 @@ var styles = function styles(theme) {
 };
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.1";
+var VERSION = "1.2.2";
 
 var options = {
   showNotes: false,
@@ -46284,6 +46296,15 @@ var AddEdit = function (_React$Component) {
         this.usage = usage;
         this.setState({ editorState: _draftJs.EditorState.createWithContent(state) });
       }
+
+      window.onbeforeunload = function () {
+        return "Are you sure you want to navigate away?";
+      };
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      window.onbeforeunload = null;
     }
   }, {
     key: 'getSelectedLabels',
@@ -47087,7 +47108,7 @@ var logoutMenuItem = {
 var drawerWidth = 180;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.1";
+var VERSION = "1.2.2";
 
 var PublicApp = function (_React$PureComponent) {
   (0, _inherits3.default)(PublicApp, _React$PureComponent);
@@ -47799,6 +47820,15 @@ var AddEdit = function (_React$Component) {
         userLevel: parseFloat(user.permissions.charAt(2)),
         isValid: this.props.mode === 'add' ? false : true
       });
+
+      window.onbeforeunload = function () {
+        return "Are you sure you want to navigate away?";
+      };
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      window.onbeforeunload = null;
     }
   }, {
     key: 'render',

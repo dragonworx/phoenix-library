@@ -56,6 +56,14 @@ class AddEdit extends React.Component {
       userLevel: parseFloat(user.permissions.charAt(2)),
       isValid: this.props.mode === 'add' ? false : true
     });
+
+    window.onbeforeunload = function() {
+      return "Are you sure you want to navigate away?";
+    };
+  }
+
+  componentWillUnmount () {
+    window.onbeforeunload = null;
   }
 
   get defaultItem () {

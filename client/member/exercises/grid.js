@@ -399,6 +399,7 @@ class ExerciseGrid extends React.Component {
     row.id = id;
     row.usage = usage;
     row.revision = savedRow.revision;
+    row.updatedAt = new Date().toISOString();
     this.updateRowLabels(row, usage);
     this.setState({ rows, editItem: null, selection: [] });
   };

@@ -63,6 +63,14 @@ class AddEdit extends React.Component {
       this.usage = usage;
       this.setState({editorState: EditorState.createWithContent(state)});
     }
+
+    window.onbeforeunload = function() {
+      return "Are you sure you want to navigate away?";
+    };
+  }
+
+  componentWillUnmount () {
+    window.onbeforeunload = null;
   }
 
   get defaultItem () {
