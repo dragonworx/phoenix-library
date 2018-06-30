@@ -11036,7 +11036,7 @@ var ViewExercise = function (_React$Component) {
       var lightboxOpen = this.state.lightboxOpen;
       // eslint-disable-next-line no-undef
 
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_full.png';
 
       return _react2.default.createElement(
         'div',
@@ -11075,7 +11075,7 @@ var ViewExercise = function (_React$Component) {
 
       // eslint-disable-next-line no-undef
 
-      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
+      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
 
       // const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
       // const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
@@ -41807,7 +41807,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.0";
+var VERSION = "1.2.2";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -41962,7 +41962,7 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -42194,9 +42194,9 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_full.png';
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -42333,7 +42333,7 @@ var _session = __webpack_require__(54);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.1.0";
+var VERSION = "1.2.2";
 var logoutMenuItem = {
   value: 'logout',
   label: 'Logout',
@@ -43627,7 +43627,7 @@ var ClassExercise = function (_React$Component) {
       var exercises = category.exercises;
       // eslint-disable-next-line no-undef
 
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
       var i = exercise.index;
 
 
@@ -45611,7 +45611,7 @@ var SelectExercises = function (_React$Component) {
 
       var count = exercises.length;
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
 
       return _react2.default.createElement(
         _Dialog2.default,
