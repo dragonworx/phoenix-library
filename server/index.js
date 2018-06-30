@@ -28,8 +28,8 @@ database.then(() => {
   }));
   app.use(favicon(path.resolve(__dirname, '../static/favicon.ico')));
   app.use(logger('dev'));
-  app.use(bodyParser.json());
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.json({limit: '50mb'}));
+  app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 
   app.use(express.static(path.resolve(__dirname, '../static')));
 

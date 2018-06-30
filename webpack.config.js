@@ -91,8 +91,10 @@ log('Building ' + config.envName, 'green');
 module.exports = [
   /* /login */
   config('client/main_login.js', './login-bundle.js'),
-  /* /admin */
+  /* /admin... */
   config('client/main_admin.js', './admin-bundle.js'),
-  /* /index */
+  /* /[index]... */
   config('client/main_index.js', './index-bundle.js'),
+  /* /class/slide/:id */
+  config('client/slide_index.js', './slide-bundle.js'),
 ];

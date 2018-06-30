@@ -23,7 +23,7 @@ import { withStyles } from 'material-ui/styles';
 import axios from 'axios';
 import AddSelect from './addSelect';
 import AddEdit from './addEdit';
-import ViewClass from './view';
+import ViewList from './viewList';
 import Alert from '../../common/alert';
 import { user, permissions } from '../session';
 import fscreen from 'fscreen';
@@ -69,8 +69,8 @@ const STATUSES = {
 const htmlNode = document.createElement('div');
 
 const NameFormatter = ({ row }) => {
-  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span><a href={`/class/${row.id}`} target="_blank" onClick={e => {
-    window.open('/class/' + row.id);
+  return <Tooltip title={row.name}><label><span style={{ fontSize: '80%', color: '#ccc', marginRight: 2 }}>#{row.id}.</span><a href={`/class/slide/${row.id}`} target="_blank" onClick={e => {
+    window.open('/class/slide/' + row.id);
     e.persist();
     e.preventDefault();
     e.cancel = true;
@@ -581,7 +581,7 @@ class ClassesGrid extends React.Component {
         }
         {
           mode === MODE.VIEW
-            ? <ViewClass viewItem={viewItem} onClose={this.onViewClose} />
+            ? <ViewList viewItem={viewItem} onClose={this.onViewClose} />
             : null
         }
         {

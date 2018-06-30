@@ -144,6 +144,16 @@ module.exports = function (app) {
     res.render('index', { user: encodedUser(req) });
   });
 
+  app.get('/class/slide/:classId', (req, res) => {
+    res.render('slide', { user: encodedUser(req), classId: req.params.classId });
+  });
+
+  app.get('/class/:classId', async (req, res) => {
+    const classId = parseInt(req.params.classId, 10);
+    const cls = await api.getClass(classId);
+    res.sendJSON(cls);
+  });
+
   app.get('/class/program/:classId', async (req, res) => {
     const classId = parseInt(req.params.classId, 10);
     const program = await api.getClassProgram(classId);
@@ -214,6 +224,24 @@ module.exports = function (app) {
     const genreId = parseInt(req.params.genreId, 10);
     const data = await api.getClassCategories(genreId);
     res.sendJSON(data);
+  });
+
+  app.get('/class/pdf/:classId', async (req, res) => {
+    const id = parseInt(req.params.classId, 10);
+    const cls = await api.getClass(id);
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Accept-Ranges', 'bytes');
+    res.setHeader('Cache-Control', 'no-cache');
+
+    const printed = new PrintedClass(cls);
+    const doc = printed.doc;
+
+    // send to http response
+    doc.pipe(res);
+
+    // Finalize PDF file
+    doc.end();
   });
 
   app.post('/class/add', async (req, res) => {
@@ -356,23 +384,5 @@ module.exports = function (app) {
     } catch (error) {
       res.send500(error);
     }
-  });
-
-  app.get('/class/:classId', async (req, res) => {
-    const id = parseInt(req.params.classId, 10);
-    const cls = await api.getClass(id);
-
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader('Accept-Ranges', 'bytes');
-    res.setHeader('Cache-Control', 'no-cache');
-
-    const printed = new PrintedClass(cls);
-    const doc = printed.doc;
-
-    // send to http response
-    doc.pipe(res);
-
-    // Finalize PDF file
-    doc.end();
   });
 };

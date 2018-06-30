@@ -11036,7 +11036,7 @@ var ViewExercise = function (_React$Component) {
       var lightboxOpen = this.state.lightboxOpen;
       // eslint-disable-next-line no-undef
 
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_full.png';
 
       return _react2.default.createElement(
         'div',
@@ -11075,7 +11075,7 @@ var ViewExercise = function (_React$Component) {
 
       // eslint-disable-next-line no-undef
 
-      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
+      var photoUrl = photo ? '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + viewItem.id + '_1_preview.png' : '/img/image-placeholder.png';
 
       // const genres = viewItem.genre.map(genre => <Chip key={`genre_${genre}`} label={genre} className={multi(classes.chip, classes.genre)} />);
       // const movements = viewItem.movement.map(movement => <Chip key={`movement_${movement}`} label={movement} className={multi(classes.chip, classes.movement)} />);
@@ -41807,7 +41807,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.2";
+var VERSION = "1.2.0";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -41962,7 +41962,7 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -42194,9 +42194,9 @@ var LightLink = function (_React$Component) {
 
       var cache = '?now=' + Date.now();
       // eslint-disable-next-line no-undef
-      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_full.png';
+      var photoUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_full.png';
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + id + '_1_thumb.png';
+      var thumbnailUrl = '' + "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + id + '_1_thumb.png';
 
       return _react2.default.createElement(
         'span',
@@ -42333,7 +42333,7 @@ var _session = __webpack_require__(54);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.2";
+var VERSION = "1.1.0";
 var logoutMenuItem = {
   value: 'logout',
   label: 'Logout',
@@ -43627,7 +43627,7 @@ var ClassExercise = function (_React$Component) {
       var exercises = category.exercises;
       // eslint-disable-next-line no-undef
 
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
       var i = exercise.index;
 
 
@@ -44663,9 +44663,9 @@ var _addEdit = __webpack_require__(343);
 
 var _addEdit2 = _interopRequireDefault(_addEdit);
 
-var _view = __webpack_require__(351);
+var _viewList = __webpack_require__(351);
 
-var _view2 = _interopRequireDefault(_view);
+var _viewList2 = _interopRequireDefault(_viewList);
 
 var _alert = __webpack_require__(138);
 
@@ -44741,8 +44741,8 @@ var NameFormatter = function NameFormatter(_ref) {
       ),
       React.createElement(
         'a',
-        { href: '/class/' + row.id, target: '_blank', onClick: function onClick(e) {
-            window.open('/class/' + row.id);
+        { href: '/class/slide/' + row.id, target: '_blank', onClick: function onClick(e) {
+            window.open('/class/slide/' + row.id);
             e.persist();
             e.preventDefault();
             e.cancel = true;
@@ -45356,7 +45356,7 @@ var ClassesGrid = function (_React$Component) {
         ),
         mode === MODE.ADD_SELECT ? React.createElement(_addSelect2.default, { genres: genres, onClose: this.onAddSelectClose }) : null,
         mode === MODE.ADD || mode === MODE.EDIT ? React.createElement(_addEdit2.default, { mode: mode, genreId: editItem && editItem.genreId || selectedGenre.id, program: program, className: mode === MODE.ADD ? 'New ' + selectedGenre.name + ' Class' : editItem.name, editItem: editItem, onAdded: this.onAdded, onSaved: this.onSaved, onClose: this.onAddEditClose }) : null,
-        mode === MODE.VIEW ? React.createElement(_view2.default, { viewItem: viewItem, onClose: this.onViewClose }) : null,
+        mode === MODE.VIEW ? React.createElement(_viewList2.default, { viewItem: viewItem, onClose: this.onViewClose }) : null,
         mode === MODE.CONFIRM_DELETE ? React.createElement(_alert2.default, {
           title: 'Confirm Delete',
           message: 'Do you really want to delete ' + (selection.length === 1 ? 'this class' : 'these ' + selection.length + ' classes') + '?',
@@ -45611,7 +45611,7 @@ var SelectExercises = function (_React$Component) {
 
       var count = exercises.length;
       // eslint-disable-next-line no-undef
-      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/prod/excelsior/" + '%_1_thumb.png';
+      var thumbnailUrl = "https://masstorage.sgp1.digitaloceanspaces.com/phoenix_lib/dev/excelsior/" + '%_1_thumb.png';
 
       return _react2.default.createElement(
         _Dialog2.default,
@@ -46083,21 +46083,21 @@ var menuOptions = [{
   Icon: _Input2.default
 }];
 
-var ViewClass = function (_React$Component) {
-  (0, _inherits3.default)(ViewClass, _React$Component);
+var ViewList = function (_React$Component) {
+  (0, _inherits3.default)(ViewList, _React$Component);
 
-  function ViewClass() {
+  function ViewList() {
     var _ref2;
 
     var _temp, _this, _ret;
 
-    (0, _classCallCheck3.default)(this, ViewClass);
+    (0, _classCallCheck3.default)(this, ViewList);
 
     for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
       args[_key] = arguments[_key];
     }
 
-    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref2 = ViewClass.__proto__ || (0, _getPrototypeOf2.default)(ViewClass)).call.apply(_ref2, [this].concat(args))), _this), _this.state = {
+    return _ret = (_temp = (_this = (0, _possibleConstructorReturn3.default)(this, (_ref2 = ViewList.__proto__ || (0, _getPrototypeOf2.default)(ViewList)).call.apply(_ref2, [this].concat(args))), _this), _this.state = {
       open: false,
       lightboxOpen: false,
       showNotes: options.showNotes,
@@ -46129,7 +46129,7 @@ var ViewClass = function (_React$Component) {
     }, _temp), (0, _possibleConstructorReturn3.default)(_this, _ret);
   }
 
-  (0, _createClass3.default)(ViewClass, [{
+  (0, _createClass3.default)(ViewList, [{
     key: 'componentWillMount',
     value: function () {
       var _ref3 = (0, _asyncToGenerator3.default)( /*#__PURE__*/_regenerator2.default.mark(function _callee() {
@@ -46324,10 +46324,10 @@ var ViewClass = function (_React$Component) {
       );
     }
   }]);
-  return ViewClass;
+  return ViewList;
 }(_react2.default.Component);
 
-exports.default = (0, _styles.withStyles)(styles)(ViewClass);
+exports.default = (0, _styles.withStyles)(styles)(ViewList);
 
 /***/ }),
 /* 352 */

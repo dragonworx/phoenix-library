@@ -24,196 +24,43 @@ const styles = theme => ({
     position: 'relative',
     display: 'flex',
   },
-  avatar: {
-    margin: 10,
-  },
-  bigAvatar: {
-    width: 48,
-    height: 48,
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: 'orange'
-  },
-  footer: {
-		width: '100%',
-		color: '#989898',
-		bottom: 0,
-		height: 30,
-		padding: 5,
-		position: 'fixed',
-		fontSize: '80%',
-		boxSizing: 'border-box',
-		textAlign: 'center',
-		backgroundColor: 'rgba(44, 59, 76, 0.25)',
-  },
-  footerHighlight: {
-    color: '#fff',
-  },  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: '#4089ff'
-  },
-  menu: {
-    position: 'absolute',
-    right: 0,
-  },
-  content: {
-    flexGrow: 1,
-    backgroundColor: '#2e5594',
-    background: 'linear-gradient(180deg, #ffffff 0, #dbf8ff 100%)',
-    minWidth: 0, // So the Typography noWrap works
-    display: 'flex',
-    flexDirection: 'column',
-    marginTop: 66,
-    padding: '0 20px',
-    paddingBottom: 50,
-  },
-  mins: {
-    fontSize: '70%',
-    color: '#5475af',
-    display: 'inline-block',
-    marginLeft: 5,
-  },
-  classMins: {
-    fontSize: '80%',
-    color: '#a4eeff',
-    display: 'block',
-    marginLeft: 0,
-  },
-  ordinal: {
-    fontSize: '70%',
-    opacity: 0.5,
-    display: 'inline-block',
-    minWidth: 35,
-  },
-  exerciseOrdinal: {
-    opacity: 0.3,
-    minWidth: 35,
-  },
-  reps: {
-    color: '#459ae2',
-    minWidth: 25,
-    display: 'inline-block',
-  },
-  revision: {
-    fontSize: '70%',
-    opacity: 0.4,
-    color: '#fff',
-  },
-  exerciseList: {
-    padding: '0 55px',
-    paddingRight: 0,
-  },
-  classNotes: {
-    fontSize: '80%',
-    display: 'block',
-    backgroundColor: '#f1faff',
-    padding: '0 5px',
-    borderRadius: 5,
-    marginTop: 10,
-    border: '1px solid #ccc',
-  },
-  exerciseNotes: {
-    fontSize: '70%',
-    backgroundColor: '#f1faff',
-    padding: 5,
-    borderRadius: 5,
-    border: '1px solid #ccc',
-  },
-  notesLabel: {
-    fontSize: '65%',
-    color: '#ccc',
-    display: 'inline-block',
-    textDecoration: 'underline',
-    marginRight: 10,
-  },
-  exercise: {
-    cursor: 'pointer',
-    margin: '10px 0px',
-  },
 });
 
 // eslint-disable-next-line no-undef
 const VERSION = PHOENIX_LIB_VERSION;
 
-const options = {
-  showNotes: false,
-  showDurations: true,
-};
-
-const menuOptions = [
-  { 
-    value: 'toggleNotes',
-    label: 'Notes',
-    isChecked: () => options.showNotes
-  },
-  { 
-    value: 'toggleDurations',
-    label: 'Durations',
-    isChecked: () => options.showDurations
-  },
-  {
-    value: 'close',
-    label: 'Close',
-    Icon: CloseIcon,
-  }
-];
-
-class ViewClass extends React.Component {
+class ViewSlide extends React.Component {
   state = {
-    open: false,
-    lightboxOpen: false,
-    showNotes: options.showNotes,
-    showDurations: options.showDurations,
-    viewExercise: null,
+    cls: null,
+    error: false,
   };
 
   async componentWillMount () {
-    const { viewItem } = this.props;
-    const { data: program } = await axios.get(`/class/program/${viewItem.id}`);
-    program.forEach(category => category.durationSummary = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0));
-    viewItem.categories = program;
-    this.setState({ open: true });
+    let classId;
+    try {
+      classId = JSON.parse(document.getElementById('phoenix-bundle').getAttribute('data-class-id'));
+    } catch (e) {
+      return this.setState({ error: true });
+    }
+    const { data: cls } = await axios.get(`/class/${classId}`);
+    cls.program.forEach(category => category.durationSummary = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0));
+    console.log(cls);
+    this.setState({ cls });
   }
 
-  handleClose = () => {
-    try {
-      fscreen.exitFullscreen();
-    } catch (e) {
-
-    }
-    this.setState({ open: false });
-    this.props.onClose();
-  };
-
-  handleImgClose = () => {
-    this.setState({ lightboxOpen: false });
-  };
-
-  handleImgClick = () => {
-    this.setState({ lightboxOpen: true });
-  };
-
-  onUserMenuSelect = selectedValue => {
-    if (selectedValue === 'toggleNotes') {
-      options.showNotes = !options.showNotes;
-    } else if (selectedValue === 'toggleDurations') {
-      options.showDurations = !options.showDurations;
-    } else if (selectedValue === 'close') {
-      this.handleClose();
-    }
-    this.setState({ showNotes: options.showNotes, showDurations: options.showDurations });
-  };
-
-  onExerciseClick = exercise => {
-    this.setState({ viewExercise: exercise });
-  };
-
-  onViewExerciseClose = () => {
-    this.setState({ viewExercise: null });
-  };
-
   render () {
+    const { error, cls } = this.state;
+
+    if (error) {
+      return <h2>Class not found.</h2>;
+    } else if (!cls) {
+      return null;
+    }
+
+    return <p>{cls.name}</p>;
+  }
+
+  render2 () {alert(this.props.match.id);
     const { viewItem, classes} = this.props;
     const { showNotes, showDurations, viewExercise } = this.state;
     const { name, categories, genreId, durationSummary, revision, notes: classNotes } = viewItem;
@@ -303,4 +150,4 @@ class ViewClass extends React.Component {
   }
 }
 
-export default withStyles(styles)(ViewClass);
+export default withStyles(styles)(ViewSlide);
