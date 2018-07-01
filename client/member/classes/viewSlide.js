@@ -18,6 +18,7 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
+    justifyContent: 'center',
     height: '100%',
   },
   className: {
@@ -46,7 +47,7 @@ const styles = theme => ({
     position: 'absolute',
     top: 20,
     right: 20,
-    fontSize: '150%',
+    fontSize: '200%',
   },
   colorPrimary: {
     backgroundColor: 'darkgreen',
@@ -230,7 +231,7 @@ class ViewSlide extends React.Component {
         <h2 className={classes.exerciseRepetitions}>x {exercise.repetitions}</h2>
         <LinearProgress className={classes.progress} variant="determinate" value={Math.round((index + 1 / exercises.length) * 100)} classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} />
         <div id="springs" className={classes.springsContainer}>
-          { textToSprings(exercise.springs) }
+          { textToSprings(exercise.springs, 45, '#fff') }
         </div>
       </div>
     );

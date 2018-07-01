@@ -25332,21 +25332,23 @@ var TooltipTypeProvider = function TooltipTypeProvider(props) {
 };
 
 var textToSprings = exports.textToSprings = function textToSprings(value) {
-  var height = 24;
+  var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 24;
+  var color = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '#a1a1a1';
+
   var regex = /([1-9]) (red|blue|yellow)/gi;
   var results = void 0;
   var sub = value;
   while ((results = regex.exec(value)) !== null) {
     var count = parseInt(results[1], 10);
-    var color = results[2];
-    var imgs = ('#' + color).repeat(count);
+    var _color = results[2];
+    var imgs = ('#' + _color).repeat(count);
     sub = sub.replace(results[0], imgs);
   }
   sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:' + height + 'px" src="/img/spring-$1.png" />').toLowerCase().replace(/mat/gi, '<img style="height:' + height + 'px" src="/img/mat.png" />');
   return React.createElement(
     _Tooltip2.default,
     { title: 'Springs: ' + value, placement: 'top' },
-    React.createElement('span', { style: { fontFamily: 'monospace', color: '#a1a1a1' }, dangerouslySetInnerHTML: { __html: sub } })
+    React.createElement('span', { style: { fontFamily: 'monospace', color: color }, dangerouslySetInnerHTML: { __html: sub } })
   );
 };
 
@@ -25542,7 +25544,7 @@ var ExerciseGrid = function (_React$Component) {
         }, _callee, _this2);
       }));
 
-      return function (_x) {
+      return function (_x3) {
         return _ref7.apply(this, arguments);
       };
     }();
@@ -39460,6 +39462,7 @@ var styles = function styles(theme) {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
+      justifyContent: 'center',
       height: '100%'
     },
     className: {},
@@ -39482,7 +39485,7 @@ var styles = function styles(theme) {
       position: 'absolute',
       top: 20,
       right: 20,
-      fontSize: '150%'
+      fontSize: '200%'
     },
     colorPrimary: {
       backgroundColor: 'darkgreen'
@@ -39766,7 +39769,7 @@ var ViewSlide = function (_React$Component) {
         _react2.default.createElement(
           'div',
           { id: 'springs', className: classes.springsContainer },
-          (0, _grid.textToSprings)(exercise.springs)
+          (0, _grid.textToSprings)(exercise.springs, 45, '#fff')
         )
       );
     }

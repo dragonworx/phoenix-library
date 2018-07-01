@@ -110,8 +110,7 @@ const TooltipTypeProvider = props => (
   />
 );
 
-export const textToSprings = (value) => {
-  const height = 24;
+export const textToSprings = (value, height = 24, color = '#a1a1a1') => {
   const regex = /([1-9]) (red|blue|yellow)/gi;
   let results;
   let sub = value;
@@ -125,7 +124,7 @@ export const textToSprings = (value) => {
     .replace(/#(red|blue|yellow)/gi, `<img style="height:${height}px" src="/img/spring-$1.png" />`)
     .toLowerCase()
     .replace(/mat/gi, `<img style="height:${height}px" src="/img/mat.png" />`);
-  return <Tooltip title={`Springs: ${value}`} placement="top"><span style={{ fontFamily: 'monospace', color: '#a1a1a1' }} dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
+  return <Tooltip title={`Springs: ${value}`} placement="top"><span style={{ fontFamily: 'monospace', color }} dangerouslySetInnerHTML={{ __html: sub }}></span></Tooltip>;
 };
 
 const SpringFormatter = ({ value }) => {

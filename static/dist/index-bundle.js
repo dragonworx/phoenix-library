@@ -31178,21 +31178,23 @@ var TooltipTypeProvider = function TooltipTypeProvider(props) {
 };
 
 var textToSprings = exports.textToSprings = function textToSprings(value) {
-  var height = 24;
+  var height = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 24;
+  var color = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '#a1a1a1';
+
   var regex = /([1-9]) (red|blue|yellow)/gi;
   var results = void 0;
   var sub = value;
   while ((results = regex.exec(value)) !== null) {
     var count = parseInt(results[1], 10);
-    var color = results[2];
-    var imgs = ('#' + color).repeat(count);
+    var _color = results[2];
+    var imgs = ('#' + _color).repeat(count);
     sub = sub.replace(results[0], imgs);
   }
   sub = sub.replace(/#(red|blue|yellow)/gi, '<img style="height:' + height + 'px" src="/img/spring-$1.png" />').toLowerCase().replace(/mat/gi, '<img style="height:' + height + 'px" src="/img/mat.png" />');
   return React.createElement(
     _Tooltip2.default,
     { title: 'Springs: ' + value, placement: 'top' },
-    React.createElement('span', { style: { fontFamily: 'monospace', color: '#a1a1a1' }, dangerouslySetInnerHTML: { __html: sub } })
+    React.createElement('span', { style: { fontFamily: 'monospace', color: color }, dangerouslySetInnerHTML: { __html: sub } })
   );
 };
 
@@ -31388,7 +31390,7 @@ var ExerciseGrid = function (_React$Component) {
         }, _callee, _this2);
       }));
 
-      return function (_x) {
+      return function (_x3) {
         return _ref7.apply(this, arguments);
       };
     }();
@@ -41739,7 +41741,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var PING_INTERVAL_SECS = 30;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.3.0";
+var VERSION = "1.3.1";
 
 var PingStatus = function (_React$Component) {
   (0, _inherits3.default)(PingStatus, _React$Component);
@@ -45697,7 +45699,7 @@ var styles = function styles(theme) {
 };
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.3.0";
+var VERSION = "1.3.1";
 
 var options = {
   showNotes: false,
@@ -47036,7 +47038,7 @@ var logoutMenuItem = {
 var drawerWidth = 180;
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.3.0";
+var VERSION = "1.3.1";
 
 var PublicApp = function (_React$PureComponent) {
   (0, _inherits3.default)(PublicApp, _React$PureComponent);
