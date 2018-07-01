@@ -26,7 +26,7 @@ import AddEdit from './addEdit';
 import ViewList from './viewList';
 import Alert from '../../common/alert';
 import { user, permissions } from '../session';
-import fscreen from 'fscreen';
+// import fscreen from 'fscreen';
 
 const Cell = (props) => {
   return <VirtualTable.Cell {...props} />;
@@ -292,7 +292,7 @@ class ClassesGrid extends React.Component {
       const row = this.state.rows.find(row => row.id === this.state.selection[0]);
       if (!isAdmin) {
         try {
-          fscreen.requestFullscreen(document.documentElement);
+          // fscreen.requestFullscreen(document.documentElement);
         } catch (e) {
           
         }
@@ -387,7 +387,7 @@ class ClassesGrid extends React.Component {
         }
       }
       try {
-        fscreen.requestFullscreen(document.documentElement);
+        // fscreen.requestFullscreen(document.documentElement);
       } catch (e) {
 
       }

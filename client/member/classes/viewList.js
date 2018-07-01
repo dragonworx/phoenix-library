@@ -13,7 +13,7 @@ import axios from 'axios';
 import HamburgerMenu from '../../common/hamburgerMenu';
 import { toOrdinal, css, plural } from '../../common/util';
 import ViewExercise from '../exercises/view';
-import fscreen from 'fscreen';
+// import fscreen from 'fscreen';
 
 const styles = theme => ({
   root: {
@@ -178,7 +178,7 @@ class ViewList extends React.Component {
 
   handleClose = () => {
     try {
-      fscreen.exitFullscreen();
+      // fscreen.exitFullscreen();
     } catch (e) {
 
     }

@@ -34,7 +34,8 @@ module.exports = {
         Bucket: 'masstorage',
         Key: key,
         Body: buffer,
-        ACL: 'public-read'
+        ACL: 'public-read',
+        CacheControl: 'max-age=86400',
       };
       storage.putObject(params, (err, data) => {
         if (err) {

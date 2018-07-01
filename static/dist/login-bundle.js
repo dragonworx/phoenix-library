@@ -7805,7 +7805,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 var LICENCED_TO = 'Excelsior™ Studios Erina';
 
 // eslint-disable-next-line no-undef
-var VERSION = "1.2.2";
+var VERSION = "1.3.0";
 
 var Login = function (_React$Component) {
   (0, _inherits3.default)(Login, _React$Component);

@@ -144,8 +144,15 @@ module.exports = function (app) {
     res.render('index', { user: encodedUser(req) });
   });
 
-  app.get('/class/slide/:classId', (req, res) => {
-    res.render('slide', { user: encodedUser(req), classId: req.params.classId });
+  app.get('/class/slide/:classId/:categoryId?/:exerciseId?', (req, res) => {
+    const { classId, categoryId, exerciseId } = req.params;
+    log({ classId, categoryId, exerciseId });
+    res.render('slide', {
+      user: encodedUser(req),
+      classId,
+      categoryId,
+      exerciseId
+    });
   });
 
   app.get('/class/:classId', async (req, res) => {

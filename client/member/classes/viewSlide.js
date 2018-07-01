@@ -1,151 +1,238 @@
 import React from 'react';
-import Dialog, {
-  DialogContent,
-} from 'material-ui/Dialog';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import Typography from 'material-ui/Typography';
-import Avatar from 'material-ui/Avatar';
 import { withStyles } from "material-ui/styles";
-import CloseIcon from 'material-ui-icons/Input';
-import classNames from 'classnames';
 import axios from 'axios';
-import HamburgerMenu from '../../common/hamburgerMenu';
-import { toOrdinal, css, plural } from '../../common/util';
-import ViewExercise from '../exercises/view';
 import fscreen from 'fscreen';
+import { clone } from '../../common/util';
+import LinearProgress from 'material-ui/Progress/LinearProgress';
+import { textToSprings } from '../exercises/grid';
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1,
-    height: '100%',
-    zIndex: 1,
-    overflow: 'hidden',
-    position: 'relative',
+  startRoot: {
     display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100%',
   },
+  exerciseRoot: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    height: '100%',
+  },
+  className: {
+
+  },
+  exerciseName: {
+    
+  },
+  exercisePhoto: {
+    backgroundColor: 'rgb(242, 242, 242)',
+    maxHeight: '80%',
+    maxWidth: '80%',
+    minHeight: '40%',
+    minWidth: '60%',
+    boxShadow: '0px 5px 15px 10px rgba(0,0,0,0.3)',
+  },
+  exerciseRepetitions: {
+
+  },
+  progress: {
+    width: '100%',
+    position: 'absolute',
+    bottom: 0,
+  },
+  springsContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    fontSize: '150%',
+  },
+  colorPrimary: {
+    backgroundColor: 'darkgreen',
+  },
+  barColorPrimary: {
+    backgroundColor: 'lightgreen',
+  }
 });
 
 // eslint-disable-next-line no-undef
-const VERSION = PHOENIX_LIB_VERSION;
+// const VERSION = PHOENIX_LIB_VERSION;
+
+const getParam = (name, shouldThrow) => {
+  try {
+    return JSON.parse(document.getElementById('phoenix-bundle').getAttribute(`data-${name}-id`));
+  } catch (e) {
+    if (shouldThrow) {
+      throw e;
+    }
+    return null;
+  }
+};
 
 class ViewSlide extends React.Component {
   state = {
     cls: null,
-    error: false,
+    exercises: [],
+    index: -1,
+    isClassNotFound: false,
+    imageTimeout: false,
   };
 
   async componentWillMount () {
-    let classId;
+    let classId, isClassNotFound = false;
     try {
-      classId = JSON.parse(document.getElementById('phoenix-bundle').getAttribute('data-class-id'));
+      classId = getParam('class', true);
     } catch (e) {
-      return this.setState({ error: true });
+      isClassNotFound = true;
     }
+
+    // const categoryIndex = getParam('category');
+    // const exerciseIndex = getParam('exercise');
+
     const { data: cls } = await axios.get(`/class/${classId}`);
-    cls.program.forEach(category => category.durationSummary = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0));
-    console.log(cls);
-    this.setState({ cls });
+    const exercises = [];
+
+    if (cls) {
+      cls.program.forEach(category => {
+        category.durationSummary = category.exercises.reduce((duration, exercise) => duration += exercise.duration, 0);
+        category.exercises.forEach(exercise => {
+          const exc = clone(exercise);
+          exc.category = category;
+          exercises.push(exc);
+        });
+      });
+    } else {
+      isClassNotFound = true;
+    }
+
+    this.setState({ isClassNotFound, cls, exercises });
+
+    window.addEventListener('keyup', this.onWindowKeyUp);
+    window.addEventListener('click', this.onWindowClick);
+  }
+
+  componentDidMount () {
+    window.removeEventListener('keyup', this.onWindowKeyUp);
+    window.removeEventListener('click', this.onWindowClick);
+  }
+
+  onWindowKeyUp = e => {
+    const keyCode = e.keyCode;
+    // 39, 40 =>
+    // 37, 38 <=
+    if (keyCode === 39) {
+      this.nextSlide();
+    } else if (keyCode === 37) {
+      this.prevSlide();
+    } else if (keyCode === 38) {
+      this.startSlide();
+    } else if (keyCode === 40) {
+      this.endSlide();
+    }
+  };
+
+  onWindowClick = () => {
+    this.nextSlide();
+  };
+
+  nextSlide () {
+    const index = Math.min(this.state.index + 1, this.state.exercises.length);
+    if (index === 0) {
+      try {
+        fscreen.requestFullscreen(document.documentElement);
+      } catch (e) {
+  
+      }
+    }
+    this.setState({ index });
+  }
+
+  prevSlide () {
+    const index = Math.max(this.state.index - 1, -1);
+    this.setState({ index });
+  }
+
+  startSlide () {
+    this.setState({ index: -1 });
+  }
+
+  endSlide () {
+    this.setState({ index: this.state.exercises.length });
   }
 
   render () {
-    const { error, cls } = this.state;
+    const { isClassNotFound, cls, exercises, index } = this.state;
 
-    if (error) {
-      return <h2>Class not found.</h2>;
+    if (isClassNotFound) {
+      return <h2>Class not found</h2>;
     } else if (!cls) {
       return null;
     }
 
-    return <p>{cls.name}</p>;
+    if (index === -1) {
+      return this.renderStart();
+    } else if (index === exercises.length) {
+      return this.renderEnd();
+    } else {
+      return this.renderExercise();
+    }
   }
 
-  render2 () {alert(this.props.match.id);
-    const { viewItem, classes} = this.props;
-    const { showNotes, showDurations, viewExercise } = this.state;
-    const { name, categories, genreId, durationSummary, revision, notes: classNotes } = viewItem;
+  renderStart () {
+    const { classes } = this.props;
+    const { cls } = this.state;
 
     return (
-      <Dialog
-        fullScreen
-        open={this.state.open}
-        onClose={this.handleClose}
-        aria-labelledby="form-dialog-title"
-        maxWidth={false}
-        disableEscapeKeyDown={false}
-        disableBackdropClick={false}
-        >
-        <div className={classes.root}>
-          <AppBar position="absolute" className={classes.appBar}>
-            <Toolbar>
-              <Avatar
-                  alt={`Phoenix Pilates Courseware`}
-                  src="/img/icon/48x48.png"
-                  className={classNames(classes.avatar, classes.bigAvatar)}
-                />
-              <Typography variant="title" color="inherit" noWrap className={classes.name}>
-                {name} <span className={classes.revision}>r{revision}</span> {
-                showDurations
-                  ? <span className={css(classes.mins, classes.classMins)}>{plural(durationSummary, 'min')}</span>
-                  : null
-              }
-              </Typography>
-              <HamburgerMenu showUser={false} className={classes.menu} options={menuOptions} onSelect={this.onUserMenuSelect} />
-            </Toolbar>
-          </AppBar>
-          <DialogContent className={classes.content}>
-            {
-              showNotes && classNotes && classNotes.trim().length
-                ? <span className={classes.classNotes} dangerouslySetInnerHTML={{__html: classNotes}}></span>
-                : null
-            }
-            {
-              categories && categories.map((category, i) => {
-                const categoryOrdinal = i + 1;
-                return (
-                  <div key={genreId + category.name + i}>
-                    <h3>
-                      <span className={classes.ordinal}>{categoryOrdinal + toOrdinal(categoryOrdinal)}.</span> {category.name} {
-                        showDurations
-                          ? <span className={classes.mins}>{plural(category.durationSummary, 'min')}</span>
-                          : null
-                      }
-                    </h3>
-                    <ul className={classes.exerciseList}>
-                      {
-                        category.exercises.map((exercise, i) => {
-                          const exerciseOrdinal = i + 1;
-                          return (
-                            <li key={genreId + category.name + i + exercise.id}>
-                              <h4 className={classes.exercise} onClick={() => this.onExerciseClick(exercise)}>
-                                <span className={css(classes.ordinal, classes.exerciseOrdinal)}>{exerciseOrdinal + toOrdinal(exerciseOrdinal)}.</span>
-                                <span className={classes.reps}>{exercise.repetitions} x</span> {exercise.name} {
-                                  showDurations
-                                    ? <span className={classes.mins}>{plural(exercise.duration, 'min')}</span>
-                                    : null
-                                }
-                              </h4>
-                              {
-                                showNotes && exercise.notes && exercise.notes.length ? <span className={classes.exerciseNotes} dangerouslySetInnerHTML={{__html: exercise.notes}}></span> : null
-                              }
-                            </li>
-                          );
-                        })
-                      }
-                    </ul>
-                  </div>
-                );
-              })
-            }
-          </DialogContent>
-          <footer className={classes.footer}>
-            <span className={classes.footerHighlight}>v{VERSION}</span> | Phoenix Pilates &copy; 2018 | <a className={classes.footerHighlight} href="mailto:musicartscience@gmail.com?subject=Phoenix Pilates Library - Contact">Contact</a>
-          </footer>
+      <div className={classes.startRoot}>
+        <h1>{cls.name}</h1>
+        <h2>{cls.durationSummary} mins</h2>
+        <h3>
+        Roll Down<br/>
+        Check into your<br/>
+        body and out of<br/>
+        the world.  
+      </h3>
+      </div>
+    );
+  }
+
+  renderEnd () {
+    const { classes } = this.props;
+    const { cls } = this.state;
+
+    return (
+      <div className={classes.startRoot}>
+        <h1>{cls.name} Completed.</h1>
+        <h3>
+        Roll Down<br/>
+        Check into the<br/>
+        world. Stay in<br/>
+        your body. 
+        </h3>
+      </div>
+    );
+  }
+
+  renderExercise () {
+    const { classes } = this.props;
+    const { exercises, index } = this.state;
+
+    const exercise = exercises[index];
+
+    // eslint-disable-next-line no-undef
+    const photoUrl = exercise.photo ? `${PHOENIX_LIB_STORAGE}${exercise.id}_1_full.png` : '/img/image-placeholder.png';
+
+    return (
+      <div className={classes.exerciseRoot}>
+        <h1 className={classes.exerciseName}>{exercise.name}</h1>
+        <img id="photo" className={classes.exercisePhoto} src={photoUrl} />
+        <h2 className={classes.exerciseRepetitions}>x {exercise.repetitions}</h2>
+        <LinearProgress className={classes.progress} variant="determinate" value={Math.round((index + 1 / exercises.length) * 100)} classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} />
+        <div id="springs" className={classes.springsContainer}>
+          { textToSprings(exercise.springs) }
         </div>
-        {
-          viewExercise ? <ViewExercise viewItem={viewExercise} onClose={this.onViewExerciseClose} /> : null
-        }
-      </Dialog>
+      </div>
     );
   }
 }

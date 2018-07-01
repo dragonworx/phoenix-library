@@ -144,11 +144,10 @@ module.exports = {
       },
       raw: true
     });
-    if (!cls) {
-      throw new Error('Class not found: ' + id);
-    }
     log(cls);
-    cls.program = await this.getClassProgram(id);
+    if (cls) {
+      cls.program = await this.getClassProgram(id);
+    }
     return cls;
   },
 

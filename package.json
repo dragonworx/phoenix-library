@@ -1,6 +1,6 @@
 {
   "name": "phoenix_lib",
-  "version": "1.2.2",
+  "version": "1.3.0",
   "description": "For Liz",
   "main": "client/main.jsx",
   "scripts": {
