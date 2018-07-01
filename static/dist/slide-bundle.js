@@ -39765,7 +39765,7 @@ var ViewSlide = function (_React$Component) {
           'x ',
           exercise.repetitions
         ),
-        _react2.default.createElement(_LinearProgress2.default, { className: classes.progress, variant: 'determinate', value: Math.round((index + 1 / exercises.length) * 100), classes: { colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary } }),
+        _react2.default.createElement(_LinearProgress2.default, { className: classes.progress, variant: 'determinate', value: Math.round((index + 1) / exercises.length * 100), classes: { colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary } }),
         _react2.default.createElement(
           'div',
           { id: 'springs', className: classes.springsContainer },

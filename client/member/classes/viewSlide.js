@@ -229,7 +229,7 @@ class ViewSlide extends React.Component {
         <h1 className={classes.exerciseName}>{exercise.name}</h1>
         <img id="photo" className={classes.exercisePhoto} src={photoUrl} />
         <h2 className={classes.exerciseRepetitions}>x {exercise.repetitions}</h2>
-        <LinearProgress className={classes.progress} variant="determinate" value={Math.round((index + 1 / exercises.length) * 100)} classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} />
+        <LinearProgress className={classes.progress} variant="determinate" value={Math.round(((index + 1) / exercises.length) * 100)} classes={{ colorPrimary: classes.colorPrimary, barColorPrimary: classes.barColorPrimary }} />
         <div id="springs" className={classes.springsContainer}>
           { textToSprings(exercise.springs, 45, '#fff') }
         </div>
