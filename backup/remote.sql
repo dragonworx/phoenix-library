@@ -1,4 +1,4 @@
-DROP TABLE public.exercise_labels;
+-- DROP TABLE public.exercise_labels;
 CREATE TABLE public.exercise_labels (id SERIAL NOT NULL, exerciseId INTEGER, genreId INTEGER, movementId INTEGER, createdAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, updatedAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, PRIMARY KEY (id));
 INSERT INTO public.exercise_labels (id, exerciseId, genreId, movementId, createdAt, updatedAt) VALUES (1165, 18, 1, 7, '2018-04-01 15:02:09', '2018-04-01 15:02:09');
 INSERT INTO public.exercise_labels (id, exerciseId, genreId, movementId, createdAt, updatedAt) VALUES (1167, 18, 4, 7, '2018-04-01 15:02:09', '2018-04-01 15:02:09');
@@ -487,7 +487,7 @@ INSERT INTO public.exercise_labels (id, exerciseId, genreId, movementId, created
 INSERT INTO public.exercise_labels (id, exerciseId, genreId, movementId, createdAt, updatedAt) VALUES (1403, 159, 2, 7, '2018-04-03 21:45:51', '2018-04-03 21:45:51');
 INSERT INTO public.exercise_labels (id, exerciseId, genreId, movementId, createdAt, updatedAt) VALUES (1410, 162, 1, 12, '2018-04-04 08:08:41', '2018-04-04 08:08:41');
 INSERT INTO public.exercise_labels (id, exerciseId, genreId, movementId, createdAt, updatedAt) VALUES (1411, 162, 2, 12, '2018-04-04 08:08:41', '2018-04-04 08:08:41');
-DROP TABLE public.exercises;
+-- DROP TABLE public.exercises;
 CREATE TABLE public.exercises (id SERIAL NOT NULL, name TEXT, description TEXT, springs TEXT, photo TEXT, video TEXT, createdAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, updatedAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, PRIMARY KEY (id));
 INSERT INTO public.exercises (id, name, description, springs, photo, video, createdAt, updatedAt) VALUES (10, 'Pelvic Curl Single Leg', '<p><u><strong>Set up</strong></u></p>
 <p>Supine. Heels on foot bar. Spine neutral. Arms by sides. Head rest down.&nbsp;One leg at table top.&nbsp;</p>
@@ -1481,7 +1481,7 @@ INSERT INTO public.exercises (id, name, description, springs, photo, video, crea
 <p>Step up onto box 15 seconds slow 20 seconds fast.&nbsp;</p>
 <p><br></p>
 <p><em><strong>NOTE; Make sure box is pressed up against the reformer to ensure the box doesn''t slip.&nbsp;</strong></em></p>', 'MAT ', null, '', '2018-04-03 21:59:17', '2018-04-03 21:59:17');
-DROP TABLE public.labels;
+-- DROP TABLE public.labels;
 CREATE TABLE public.labels (id SERIAL NOT NULL, type INTEGER, name TEXT, description TEXT, color TEXT, createdAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, updatedAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, PRIMARY KEY (id));
 INSERT INTO public.labels (id, type, name, description, color, createdAt, updatedAt) VALUES (1, 0, 'Pump', null, null, '2018-03-22 03:02:59', '2018-03-22 03:02:59');
 INSERT INTO public.labels (id, type, name, description, color, createdAt, updatedAt) VALUES (2, 0, 'Jump', null, null, '2018-03-22 03:02:59', '2018-03-22 03:02:59');
@@ -1495,9 +1495,9 @@ INSERT INTO public.labels (id, type, name, description, color, createdAt, update
 INSERT INTO public.labels (id, type, name, description, color, createdAt, updatedAt) VALUES (10, 1, 'Seated / Knealing', null, null, '2018-03-22 03:02:59', '2018-03-22 03:02:59');
 INSERT INTO public.labels (id, type, name, description, color, createdAt, updatedAt) VALUES (11, 1, 'Prone', null, null, '2018-03-22 03:02:59', '2018-03-22 03:02:59');
 INSERT INTO public.labels (id, type, name, description, color, createdAt, updatedAt) VALUES (12, 1, 'Full Body / Standing', null, null, '2018-03-22 03:02:59', '2018-03-22 03:02:59');
-DROP TABLE public.ping;
+-- DROP TABLE public.ping;
 CREATE TABLE public.ping (id SERIAL NOT NULL, lastPing TIMESTAMP(6) WITH TIME ZONE, PRIMARY KEY (id));
 INSERT INTO public.ping (id, lastPing) VALUES (7273, '2018-04-04 18:09:29');
-DROP TABLE public.users;
-CREATE TABLE public.users (id SERIAL NOT NULL, firstName TEXT, lastName TEXT, email TEXT, password TEXT, isSuper BOOLEAN, isAdmin BOOLEAN, isDesigner BOOLEAN, lastLogin TIMESTAMP(6) WITH TIME ZONE, createdAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, updatedAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, PRIMARY KEY (id));
-INSERT INTO public.users (id, firstName, lastName, email, password, isSuper, isAdmin, isDesigner, lastLogin, createdAt, updatedAt) VALUES (1, 'Liz', 'Chamas', 'magnoliasoup@gmail.com', 'pbkdf2$10000$b38c4931c3346ce44b32235b4859ca55b01417bc9c4d69972a26eb79cba9bc5642c3ed31b9c0d84e9e311571400334e04c2b423a339ac53c93173db863287558$a5ad0fc8634bb4914c06b13c7b94cba83e9908f1147b3612504f7577084796ad5b1caf4160b338c92e7efa94d08aef20bd3fb1c05c63241606099988e556c091$sha512', true, true, true, '2018-04-03 20:46:00', '2018-03-30 13:46:57', '2018-04-03 20:46:00');
+-- DROP TABLE public.users;
+CREATE TABLE public.users (id SERIAL NOT NULL, firstName TEXT, lastName TEXT, email TEXT, password TEXT, permissions TEXT, lastLogin TIMESTAMP(6) WITH TIME ZONE, logins INTEGER, createdAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, updatedAt TIMESTAMP(6) WITH TIME ZONE NOT NULL, PRIMARY KEY (id));
+INSERT INTO public.users (id, firstName, lastName, email, password, permissions, lastLogin, logins, createdAt, updatedAt) VALUES (1, 'Liz', 'Chamas', 'email', 'pbkdf2$10000$0c850028d11103ea6380fc11cc6ba363c252fe7a79ebacd7ab365fc09430bda39f552a676687b518fb64e9da6b3a7451cad0d7cd5818a8cdb82367d992af04f7$80b06ee953a9b3e806feae8cc0565846a06f1ed2457fd65c325bf4fa6660fb3f06e41635767e02928c1bd4ca1932983d000961aabb53e46a1cf4ae4d81d8f697$sha512', '333', '2018-04-03 20:46:00', 0, '2018-03-30 13:46:57', '2018-04-03 20:46:00');

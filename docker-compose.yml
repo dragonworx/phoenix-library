@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      POSTGRES_DB: ${PHOENIX_DB}
+      POSTGRES_USER: ${PHOENIX_USER}
+      POSTGRES_PASSWORD: ${PHOENIX_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web
+    environment:
+      PHOENIX_DB: ${PHOENIX_DB}
+      PHOENIX_USER: ${PHOENIX_USER}
+      PHOENIX_PASSWORD: ${PHOENIX_PASSWORD}
+      PHOENIX_ENV: ${PHOENIX_ENV}
+      STORAGE_ENDPOINT: ${STORAGE_ENDPOINT}
+      STORAGE_URL: ${STORAGE_URL}
+      STORAGE_KEY: ${STORAGE_KEY}
+      STORAGE_SECRET: ${STORAGE_SECRET}
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+volumes:
+  pgdata:
+
+networks:
+  app-network:
+    driver: bridge

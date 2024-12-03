@@ -1,0 +1,44 @@
+# Use the official Ubuntu 16.04 LTS image
+FROM ubuntu:16.04
+
+# Set environment variables
+ENV NODE_VERSION=9.8.0
+ENV NPM_VERSION=5.6.0
+ENV YARN_VERSION=1.22.10
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y curl xz-utils build-essential python
+
+# Install n package manager
+RUN curl -L https://raw.githubusercontent.com/tj/n/master/bin/n -o n && \
+    bash n $NODE_VERSION && \
+    ln -s /usr/local/bin/node /usr/bin/node && \
+    ln -s /usr/local/bin/npm /usr/bin/npm
+
+# Install specific npm version
+RUN npm install -g npm@${NPM_VERSION}
+
+# Install yarn
+RUN npm install -g yarn@${YARN_VERSION}
+
+# Install libvips dependencies for sharp
+RUN apt-get install -y libvips-dev
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy application files
+COPY . .
+
+# Install app dependencies using yarn
+RUN yarn install
+
+# Build the app
+RUN yarn run build-prod
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# Start the app
+CMD ["node", "./server/index.js"]

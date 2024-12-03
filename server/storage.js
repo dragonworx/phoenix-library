@@ -9,20 +9,25 @@ const IMAGE = {
   PREVIEW: 'preview',
   THUMB: 'thumb',
 };
-const MASSTORAGE_BASE_URL = 'https://masstorage.sgp1.digitaloceanspaces.com/';
-const { MASSTORAGE_KEY_ID, MASSTORAGE_SECRET, PHOENIX_ENV } = env([ 'MASSTORAGE_KEY_ID', 'MASSTORAGE_SECRET', 'PHOENIX_ENV' ]);
+const {
+  STORAGE_ENDPOINT,
+  STORAGE_URL,
+  STORAGE_KEY,
+  STORAGE_SECRET,
+  PHOENIX_ENV,
+} = env(['STORAGE_ENDPOINT', 'STORAGE_KEY', 'STORAGE_SECRET', 'PHOENIX_ENV']);
 
 const storage = new aws.S3({
-  accessKeyId: MASSTORAGE_KEY_ID,
-  secretAccessKey: MASSTORAGE_SECRET,
-  endpoint: new aws.Endpoint("sgp1.digitaloceanspaces.com")
+  accessKeyId: STORAGE_KEY,
+  secretAccessKey: STORAGE_SECRET,
+  endpoint: new aws.Endpoint(STORAGE_ENDPOINT)
 });
 
 module.exports = {
-  imageUrl (exerciseId, type, index = 1) {
-    return `${MASSTORAGE_BASE_URL}${this.imageKey(exerciseId, type, index)}`;
+  imageUrl(exerciseId, type, index = 1) {
+    return `${STORAGE_URL}${this.imageKey(exerciseId, type, index)}`;
   },
-  imageKey (exerciseId, type, index = 1) {
+  imageKey(exerciseId, type, index = 1) {
     return `phoenix_lib/${PHOENIX_ENV}/excelsior/${exerciseId}_${index}_${type}.png`;
   },
   upload(buffer, key) {
@@ -46,7 +51,7 @@ module.exports = {
       });
     });
   },
-  async uploadImage (exerciseId, index, type, buffer, resizeOptions = {}) {
+  async uploadImage(exerciseId, index, type, buffer, resizeOptions = {}) {
     log(`Uploading #${exerciseId}/${index} type: ${type} ${buffer.length} bytes (options: ${JSON.stringify(resizeOptions)})`);
     const image = sharp(buffer);
     const metadata = await image.metadata();
@@ -64,27 +69,27 @@ module.exports = {
     await this.upload(pngBuffer, imageKey);
     return imageKey;
   },
-  deleteImages (exerciseId) {
+  deleteImages(exerciseId) {
     return new Promise((resolve, reject) => {
       const params = {
-        Bucket: 'masstorage', 
+        Bucket: 'masstorage',
         Delete: {
-         Objects: [
+          Objects: [
             { Key: this.imageKey(exerciseId, IMAGE.FULL) },
             { Key: this.imageKey(exerciseId, IMAGE.PREVIEW) },
             { Key: this.imageKey(exerciseId, IMAGE.THUMB) },
-         ], 
-         Quiet: false
+          ],
+          Quiet: false
         }
-       };
-       storage.deleteObjects(params, (err, data) => {
-         if (err) {
-           reject(err);
-         } else {
-           log('delete: ' + JSON.stringify(data), 'green');
-           resolve(data);
-         }
-       });
+      };
+      storage.deleteObjects(params, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          log('delete: ' + JSON.stringify(data), 'green');
+          resolve(data);
+        }
+      });
     });
   }
 };

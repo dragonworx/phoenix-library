@@ -17,7 +17,7 @@ const sql = new Sequelize(
   PHOENIX_USER,
   PHOENIX_PASSWORD,
   {
-    host: '127.0.0.1',
+    host: 'db',
     dialect: 'postgres',
     logging: false,
     freezeTableName: true,
@@ -35,16 +35,16 @@ const sql = new Sequelize(
 
 module.exports = new Promise((resolve, reject) => {
   sql.authenticate()
-  .then(async () => {
-    log(`Database connection esablished successfully: ${PHOENIX_USER}@${PHOENIX_DB}`, 'green');
-    log('Registering Models');
-    await models.load(sql, Sequelize, { force: false });
-    await sql.sync();
-    log('Database sync\'d ' + Object.keys(model), 'green');
-    resolve(sql);
-  })
-  .catch(err => {
-    log('Database connection failed: ' + err, 'red');
-    reject(err);
-  });
+    .then(async () => {
+      log(`Database connection esablished successfully: ${PHOENIX_USER}@${PHOENIX_DB}`, 'green');
+      log('Registering Models');
+      await models.load(sql, Sequelize, { force: false });
+      await sql.sync();
+      log('Database sync\'d ' + Object.keys(model), 'green');
+      resolve(sql);
+    })
+    .catch(err => {
+      log('Database connection failed: ' + err, 'red');
+      reject(err);
+    });
 });
