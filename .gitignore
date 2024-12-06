@@ -42,7 +42,7 @@ lib
 .eslintcache
 
 # Env configuration
-.env
+# .env
 
 # Editor
 .idea

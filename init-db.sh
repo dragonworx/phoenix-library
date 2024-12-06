@@ -6,22 +6,15 @@ if [ -d "/var/lib/postgresql/data/pgdata" ]; then
     echo "Database already initialized."
 else
     echo "Initializing database..."
-    # Run the default entrypoint script to initialize the database
-    /usr/local/bin/docker-entrypoint.sh postgres &
-    pid="$!"
-
-    # Wait for PostgreSQL to start
-    until pg_isready -h localhost; do
+    
+    # More specific pg_isready command with all connection parameters
+    until pg_isready -h "localhost" -p 5432 -U "$POSTGRES_USER"; do
+        echo "Waiting for PostgreSQL to start..."
         sleep 1
     done
 
-    # Run the SQL file to initialize the database
-    psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /docker-entrypoint-initdb.d/remote.sql
-
-    # Stop PostgreSQL
-    kill "$pid"
-    wait "$pid"
+    echo "PostgreSQL is ready. Running initialization SQL..."
+    PGPASSWORD="$POSTGRES_PASSWORD" psql -h localhost -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f /docker-entrypoint-initdb.d/remote.sql
 fi
 
-# Start PostgreSQL
-exec postgres
+# Don't exit - let the script continue to the main postgres process

@@ -1,11 +1,4 @@
-# Use the official PostgreSQL image
 FROM postgres:10.3
 
-# Copy initialization SQL file
-COPY ./backup/remote.sql /docker-entrypoint-initdb.d/remote.sql
-
-# Copy custom entrypoint script
-COPY ./init-db.sh /docker-entrypoint-initdb.d/init-db.sh
-
-# Make the entrypoint script executable
-RUN chmod +x /docker-entrypoint-initdb.d/init-db.sh
+# Just copy the SQL file - that's all we need
+COPY ./backup/remote.sql /docker-entrypoint-initdb.d/

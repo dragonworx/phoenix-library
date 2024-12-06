@@ -3,14 +3,11 @@
 --
 
 -- Dumped from database version 10.3 (Debian 10.3-1.pgdg90+1)
--- Dumped by pg_dump version 17.0
-
--- Started on 2024-12-05 03:15:54 UTC
+-- Dumped by pg_dump version 14.15 (Homebrew)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
-SET transaction_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -19,29 +16,9 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
---
--- TOC entry 6 (class 2615 OID 2200)
--- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
---
-
-CREATE SCHEMA public;
-
-
-ALTER SCHEMA public OWNER TO postgres;
-
---
--- TOC entry 2969 (class 0 OID 0)
--- Dependencies: 6
--- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
---
-
-COMMENT ON SCHEMA public IS 'standard public schema';
-
-
 SET default_tablespace = '';
 
 --
--- TOC entry 210 (class 1259 OID 49009)
 -- Name: classExercises; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -61,7 +38,6 @@ CREATE TABLE public."classExercises" (
 ALTER TABLE public."classExercises" OWNER TO phoenix_lib;
 
 --
--- TOC entry 209 (class 1259 OID 49007)
 -- Name: classExercises_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -74,11 +50,9 @@ CREATE SEQUENCE public."classExercises_id_seq"
     CACHE 1;
 
 
-ALTER SEQUENCE public."classExercises_id_seq" OWNER TO phoenix_lib;
+ALTER TABLE public."classExercises_id_seq" OWNER TO phoenix_lib;
 
 --
--- TOC entry 2971 (class 0 OID 0)
--- Dependencies: 209
 -- Name: classExercises_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -86,7 +60,6 @@ ALTER SEQUENCE public."classExercises_id_seq" OWNED BY public."classExercises".i
 
 
 --
--- TOC entry 208 (class 1259 OID 49004)
 -- Name: classMovementCategories; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -103,7 +76,6 @@ CREATE TABLE public."classMovementCategories" (
 ALTER TABLE public."classMovementCategories" OWNER TO phoenix_lib;
 
 --
--- TOC entry 207 (class 1259 OID 49002)
 -- Name: classMovementCategories_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -116,11 +88,9 @@ CREATE SEQUENCE public."classMovementCategories_id_seq"
     CACHE 1;
 
 
-ALTER SEQUENCE public."classMovementCategories_id_seq" OWNER TO phoenix_lib;
+ALTER TABLE public."classMovementCategories_id_seq" OWNER TO phoenix_lib;
 
 --
--- TOC entry 2972 (class 0 OID 0)
--- Dependencies: 207
 -- Name: classMovementCategories_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -128,7 +98,6 @@ ALTER SEQUENCE public."classMovementCategories_id_seq" OWNED BY public."classMov
 
 
 --
--- TOC entry 212 (class 1259 OID 49020)
 -- Name: classTemplates; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -144,7 +113,6 @@ CREATE TABLE public."classTemplates" (
 ALTER TABLE public."classTemplates" OWNER TO phoenix_lib;
 
 --
--- TOC entry 211 (class 1259 OID 49018)
 -- Name: classTemplates_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -157,11 +125,9 @@ CREATE SEQUENCE public."classTemplates_id_seq"
     CACHE 1;
 
 
-ALTER SEQUENCE public."classTemplates_id_seq" OWNER TO phoenix_lib;
+ALTER TABLE public."classTemplates_id_seq" OWNER TO phoenix_lib;
 
 --
--- TOC entry 2973 (class 0 OID 0)
--- Dependencies: 211
 -- Name: classTemplates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -169,7 +135,6 @@ ALTER SEQUENCE public."classTemplates_id_seq" OWNED BY public."classTemplates".i
 
 
 --
--- TOC entry 213 (class 1259 OID 49026)
 -- Name: classes; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -191,7 +156,6 @@ CREATE TABLE public.classes (
 ALTER TABLE public.classes OWNER TO phoenix_lib;
 
 --
--- TOC entry 206 (class 1259 OID 49000)
 -- Name: classes_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -204,11 +168,9 @@ CREATE SEQUENCE public.classes_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.classes_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.classes_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2974 (class 0 OID 0)
--- Dependencies: 206
 -- Name: classes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -216,7 +178,6 @@ ALTER SEQUENCE public.classes_id_seq OWNED BY public.classes.id;
 
 
 --
--- TOC entry 205 (class 1259 OID 16536)
 -- Name: exercise_labels; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -233,7 +194,6 @@ CREATE TABLE public.exercise_labels (
 ALTER TABLE public.exercise_labels OWNER TO phoenix_lib;
 
 --
--- TOC entry 204 (class 1259 OID 16534)
 -- Name: exercise_labels_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -246,11 +206,9 @@ CREATE SEQUENCE public.exercise_labels_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.exercise_labels_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.exercise_labels_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2975 (class 0 OID 0)
--- Dependencies: 204
 -- Name: exercise_labels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -258,7 +216,6 @@ ALTER SEQUENCE public.exercise_labels_id_seq OWNED BY public.exercise_labels.id;
 
 
 --
--- TOC entry 202 (class 1259 OID 16521)
 -- Name: exercises; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -278,7 +235,6 @@ CREATE TABLE public.exercises (
 ALTER TABLE public.exercises OWNER TO phoenix_lib;
 
 --
--- TOC entry 201 (class 1259 OID 16519)
 -- Name: exercises_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -291,11 +247,9 @@ CREATE SEQUENCE public.exercises_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.exercises_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.exercises_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2976 (class 0 OID 0)
--- Dependencies: 201
 -- Name: exercises_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -303,7 +257,6 @@ ALTER SEQUENCE public.exercises_id_seq OWNED BY public.exercises.id;
 
 
 --
--- TOC entry 203 (class 1259 OID 16527)
 -- Name: labels; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -321,7 +274,6 @@ CREATE TABLE public.labels (
 ALTER TABLE public.labels OWNER TO phoenix_lib;
 
 --
--- TOC entry 200 (class 1259 OID 16517)
 -- Name: labels_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -334,11 +286,9 @@ CREATE SEQUENCE public.labels_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.labels_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.labels_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2977 (class 0 OID 0)
--- Dependencies: 200
 -- Name: labels_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -346,7 +296,6 @@ ALTER SEQUENCE public.labels_id_seq OWNED BY public.labels.id;
 
 
 --
--- TOC entry 197 (class 1259 OID 16506)
 -- Name: ping; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -359,7 +308,6 @@ CREATE TABLE public.ping (
 ALTER TABLE public.ping OWNER TO phoenix_lib;
 
 --
--- TOC entry 196 (class 1259 OID 16504)
 -- Name: ping_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -372,11 +320,9 @@ CREATE SEQUENCE public.ping_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.ping_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.ping_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2978 (class 0 OID 0)
--- Dependencies: 196
 -- Name: ping_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -384,7 +330,6 @@ ALTER SEQUENCE public.ping_id_seq OWNED BY public.ping.id;
 
 
 --
--- TOC entry 215 (class 1259 OID 49042)
 -- Name: templates; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -399,7 +344,6 @@ CREATE TABLE public.templates (
 ALTER TABLE public.templates OWNER TO phoenix_lib;
 
 --
--- TOC entry 214 (class 1259 OID 49030)
 -- Name: templates_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -412,11 +356,9 @@ CREATE SEQUENCE public.templates_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.templates_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.templates_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2979 (class 0 OID 0)
--- Dependencies: 214
 -- Name: templates_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -424,7 +366,6 @@ ALTER SEQUENCE public.templates_id_seq OWNED BY public.templates.id;
 
 
 --
--- TOC entry 199 (class 1259 OID 16514)
 -- Name: users; Type: TABLE; Schema: public; Owner: phoenix_lib
 --
 
@@ -445,7 +386,6 @@ CREATE TABLE public.users (
 ALTER TABLE public.users OWNER TO phoenix_lib;
 
 --
--- TOC entry 198 (class 1259 OID 16512)
 -- Name: users_id_seq; Type: SEQUENCE; Schema: public; Owner: phoenix_lib
 --
 
@@ -458,11 +398,9 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER SEQUENCE public.users_id_seq OWNER TO phoenix_lib;
+ALTER TABLE public.users_id_seq OWNER TO phoenix_lib;
 
 --
--- TOC entry 2980 (class 0 OID 0)
--- Dependencies: 198
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: phoenix_lib
 --
 
@@ -470,7 +408,6 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
--- TOC entry 2794 (class 2604 OID 49012)
 -- Name: classExercises id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -478,7 +415,6 @@ ALTER TABLE ONLY public."classExercises" ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 2793 (class 2604 OID 49029)
 -- Name: classMovementCategories id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -486,7 +422,6 @@ ALTER TABLE ONLY public."classMovementCategories" ALTER COLUMN id SET DEFAULT ne
 
 
 --
--- TOC entry 2797 (class 2604 OID 49023)
 -- Name: classTemplates id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -494,7 +429,6 @@ ALTER TABLE ONLY public."classTemplates" ALTER COLUMN id SET DEFAULT nextval('pu
 
 
 --
--- TOC entry 2798 (class 2604 OID 49032)
 -- Name: classes id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -502,7 +436,6 @@ ALTER TABLE ONLY public.classes ALTER COLUMN id SET DEFAULT nextval('public.clas
 
 
 --
--- TOC entry 2792 (class 2604 OID 16539)
 -- Name: exercise_labels id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -510,7 +443,6 @@ ALTER TABLE ONLY public.exercise_labels ALTER COLUMN id SET DEFAULT nextval('pub
 
 
 --
--- TOC entry 2789 (class 2604 OID 16524)
 -- Name: exercises id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -518,7 +450,6 @@ ALTER TABLE ONLY public.exercises ALTER COLUMN id SET DEFAULT nextval('public.ex
 
 
 --
--- TOC entry 2791 (class 2604 OID 16530)
 -- Name: labels id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -526,7 +457,6 @@ ALTER TABLE ONLY public.labels ALTER COLUMN id SET DEFAULT nextval('public.label
 
 
 --
--- TOC entry 2786 (class 2604 OID 16509)
 -- Name: ping id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -534,7 +464,6 @@ ALTER TABLE ONLY public.ping ALTER COLUMN id SET DEFAULT nextval('public.ping_id
 
 
 --
--- TOC entry 2800 (class 2604 OID 49049)
 -- Name: templates id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -542,7 +471,6 @@ ALTER TABLE ONLY public.templates ALTER COLUMN id SET DEFAULT nextval('public.te
 
 
 --
--- TOC entry 2787 (class 2604 OID 16540)
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: phoenix_lib
 --
 
@@ -550,8 +478,6 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- TOC entry 2958 (class 0 OID 49009)
--- Dependencies: 210
 -- Data for Name: classExercises; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -861,8 +787,6 @@ COPY public."classExercises" (id, "exerciseId", index, "classMovementCategoryId"
 
 
 --
--- TOC entry 2956 (class 0 OID 49004)
--- Dependencies: 208
 -- Data for Name: classMovementCategories; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -956,8 +880,6 @@ COPY public."classMovementCategories" (id, index, "classId", "labelId", "created
 
 
 --
--- TOC entry 2960 (class 0 OID 49020)
--- Dependencies: 212
 -- Data for Name: classTemplates; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -971,8 +893,6 @@ COPY public."classTemplates" (id, "genreId", "templateId", "createdAt", "updated
 
 
 --
--- TOC entry 2961 (class 0 OID 49026)
--- Dependencies: 213
 -- Data for Name: classes; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -991,8 +911,6 @@ COPY public.classes (id, name, status, "genreId", "createdBy", notes, "categoryS
 
 
 --
--- TOC entry 2953 (class 0 OID 16536)
--- Dependencies: 205
 -- Data for Name: exercise_labels; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -2039,8 +1957,6 @@ COPY public.exercise_labels (id, "exerciseId", "genreId", "movementId", "created
 
 
 --
--- TOC entry 2950 (class 0 OID 16521)
--- Dependencies: 202
 -- Data for Name: exercises; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -2479,8 +2395,6 @@ COPY public.exercises (id, name, description, springs, photo, video, "createdAt"
 
 
 --
--- TOC entry 2951 (class 0 OID 16527)
--- Dependencies: 203
 -- Data for Name: labels; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -2504,19 +2418,15 @@ COPY public.labels (id, type, name, description, color, "createdAt", "updatedAt"
 
 
 --
--- TOC entry 2945 (class 0 OID 16506)
--- Dependencies: 197
 -- Data for Name: ping; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
 COPY public.ping (id, "lastPing") FROM stdin;
-126811	2023-08-15 02:18:45.419+00
+127056	2024-12-05 13:13:50.65+00
 \.
 
 
 --
--- TOC entry 2963 (class 0 OID 49042)
--- Dependencies: 215
 -- Data for Name: templates; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
@@ -2527,21 +2437,17 @@ COPY public.templates (id, categories, "createdAt", "updatedAt") FROM stdin;
 
 
 --
--- TOC entry 2947 (class 0 OID 16514)
--- Dependencies: 199
 -- Data for Name: users; Type: TABLE DATA; Schema: public; Owner: phoenix_lib
 --
 
 COPY public.users (id, "firstName", "lastName", email, password, "lastLogin", "createdAt", "updatedAt", permissions, logins) FROM stdin;
 1	Liz	Chamas	magnoliasoup@gmail.com	pbkdf2$10000$b38c4931c3346ce44b32235b4859ca55b01417bc9c4d69972a26eb79cba9bc5642c3ed31b9c0d84e9e311571400334e04c2b423a339ac53c93173db863287558$a5ad0fc8634bb4914c06b13c7b94cba83e9908f1147b3612504f7577084796ad5b1caf4160b338c92e7efa94d08aef20bd3fb1c05c63241606099988e556c091$sha512	2023-04-11 01:19:34.272+00	2018-03-30 02:46:57.012+00	2023-04-11 01:19:34.273+00	333	72
-3	Ali	Chamas	dragonworxau@yahoo.com.au	pbkdf2$10000$3fb9fd131b9e3c4281385e162da4c9287ce77984d3068b55255c9a6fe562e782667f69b2c1e096d4ec1744014b957c7f8c000a67238687a4d56b50ce8aca0658$76b56f93cd3e389d78245424c46f116ac4739cd437fc0109ce6649898e2191aed3f897ce19c0f56d33e67ef44d377df46e9fdff74411a792d44eee2668f59ac0$sha512	2018-06-14 14:26:51.383+00	2018-06-14 14:26:18.012+00	2018-06-14 14:26:51.384+00	333	1
 10	Phoenix	Pilates	info@phoenixpilates.org	pbkdf2$10000$f911b9457cba618e857ed69ea34f1750bcbd914fb55704554b39eb6de5022e8cccffcec3b77668c4de690be046835b3b28d22bdbcc8f9ff90f74bff1567bb601$e5a404d4bfb9044f0dd09a6cf4110a37d8aa25aa52427f63971689640ce4878382ea6ccc6de3a7bb48c3857b0b2d01e18b907fed5e863482d34a288592cee638$sha512	2023-04-11 03:19:10.66+00	2023-04-11 01:21:05.967+00	2023-04-11 03:19:10.661+00	333	3
+3	Ali	Chamas	dragonworxau@yahoo.com.au	pbkdf2$10000$e1d28cf859db3e9a43b1b029ad07d6815ee32090be4415feaae947ccfd502f3c77fc47c0768414f1f97fe9c77d9563a46a9850bb1a52abbdacbaa4a40175f8d1$daa52c5b030ee2e7f210f51c47f7fa1d9000f7d7be9b5b064f32c1cc1631afff07f05add21b153fbc21d155f6dcd8f2cc5b3e0d29c865e49f63187f8fb1bfb3b$sha512	2024-12-05 03:23:37.707+00	2018-06-14 14:26:18.012+00	2024-12-05 03:23:37.709+00	333	2
 \.
 
 
 --
--- TOC entry 2981 (class 0 OID 0)
--- Dependencies: 209
 -- Name: classExercises_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2549,8 +2455,6 @@ SELECT pg_catalog.setval('public."classExercises_id_seq"', 4909, true);
 
 
 --
--- TOC entry 2982 (class 0 OID 0)
--- Dependencies: 207
 -- Name: classMovementCategories_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2558,8 +2462,6 @@ SELECT pg_catalog.setval('public."classMovementCategories_id_seq"', 1291, true);
 
 
 --
--- TOC entry 2983 (class 0 OID 0)
--- Dependencies: 211
 -- Name: classTemplates_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2567,8 +2469,6 @@ SELECT pg_catalog.setval('public."classTemplates_id_seq"', 5, true);
 
 
 --
--- TOC entry 2984 (class 0 OID 0)
--- Dependencies: 206
 -- Name: classes_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2576,8 +2476,6 @@ SELECT pg_catalog.setval('public.classes_id_seq', 19, true);
 
 
 --
--- TOC entry 2985 (class 0 OID 0)
--- Dependencies: 204
 -- Name: exercise_labels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2585,8 +2483,6 @@ SELECT pg_catalog.setval('public.exercise_labels_id_seq', 3144, true);
 
 
 --
--- TOC entry 2986 (class 0 OID 0)
--- Dependencies: 201
 -- Name: exercises_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2594,8 +2490,6 @@ SELECT pg_catalog.setval('public.exercises_id_seq', 439, true);
 
 
 --
--- TOC entry 2987 (class 0 OID 0)
--- Dependencies: 200
 -- Name: labels_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2603,17 +2497,13 @@ SELECT pg_catalog.setval('public.labels_id_seq', 12, true);
 
 
 --
--- TOC entry 2988 (class 0 OID 0)
--- Dependencies: 196
 -- Name: ping_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
-SELECT pg_catalog.setval('public.ping_id_seq', 126811, true);
+SELECT pg_catalog.setval('public.ping_id_seq', 127056, true);
 
 
 --
--- TOC entry 2989 (class 0 OID 0)
--- Dependencies: 214
 -- Name: templates_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2621,8 +2511,6 @@ SELECT pg_catalog.setval('public.templates_id_seq', 2, true);
 
 
 --
--- TOC entry 2990 (class 0 OID 0)
--- Dependencies: 198
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: public; Owner: phoenix_lib
 --
 
@@ -2630,7 +2518,6 @@ SELECT pg_catalog.setval('public.users_id_seq', 10, true);
 
 
 --
--- TOC entry 2815 (class 2606 OID 49037)
 -- Name: classExercises classExercises_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2639,7 +2526,6 @@ ALTER TABLE ONLY public."classExercises"
 
 
 --
--- TOC entry 2813 (class 2606 OID 49040)
 -- Name: classMovementCategories classMovementCategories_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2648,7 +2534,6 @@ ALTER TABLE ONLY public."classMovementCategories"
 
 
 --
--- TOC entry 2817 (class 2606 OID 49046)
 -- Name: classTemplates classTemplates_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2657,7 +2542,6 @@ ALTER TABLE ONLY public."classTemplates"
 
 
 --
--- TOC entry 2820 (class 2606 OID 49044)
 -- Name: classes classes_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2666,7 +2550,6 @@ ALTER TABLE ONLY public.classes
 
 
 --
--- TOC entry 2811 (class 2606 OID 16552)
 -- Name: exercise_labels exercise_labels_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2675,7 +2558,6 @@ ALTER TABLE ONLY public.exercise_labels
 
 
 --
--- TOC entry 2807 (class 2606 OID 16546)
 -- Name: exercises exercises_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2684,7 +2566,6 @@ ALTER TABLE ONLY public.exercises
 
 
 --
--- TOC entry 2809 (class 2606 OID 16550)
 -- Name: labels labels_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2693,7 +2574,6 @@ ALTER TABLE ONLY public.labels
 
 
 --
--- TOC entry 2802 (class 2606 OID 16511)
 -- Name: ping ping_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2702,7 +2582,6 @@ ALTER TABLE ONLY public.ping
 
 
 --
--- TOC entry 2822 (class 2606 OID 49054)
 -- Name: templates templates_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2711,7 +2590,6 @@ ALTER TABLE ONLY public.templates
 
 
 --
--- TOC entry 2804 (class 2606 OID 16548)
 -- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: phoenix_lib
 --
 
@@ -2720,7 +2598,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- TOC entry 2818 (class 1259 OID 49058)
 -- Name: class_id; Type: INDEX; Schema: public; Owner: phoenix_lib
 --
 
@@ -2728,24 +2605,11 @@ CREATE UNIQUE INDEX class_id ON public.classes USING btree (id);
 
 
 --
--- TOC entry 2805 (class 1259 OID 49057)
 -- Name: exercise_id; Type: INDEX; Schema: public; Owner: phoenix_lib
 --
 
 CREATE UNIQUE INDEX exercise_id ON public.exercises USING btree (id);
 
-
---
--- TOC entry 2970 (class 0 OID 0)
--- Dependencies: 6
--- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
---
-
-REVOKE USAGE ON SCHEMA public FROM PUBLIC;
-GRANT ALL ON SCHEMA public TO PUBLIC;
-
-
--- Completed on 2024-12-05 03:15:54 UTC
 
 --
 -- PostgreSQL database dump complete

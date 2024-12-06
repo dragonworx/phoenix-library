@@ -13,7 +13,8 @@
     "dbadmin": "node ./scripts/db-admin.js",
     "adduser": "node ./scripts/adduser.js",
     "test-api": "node ./scripts/api.js",
-    "start": "yarn build-dev & yarn server-dev"
+    "start": "yarn build-dev & yarn server-dev",
+    "docker:clean": "docker-compose down -v"
   },
   "dependencies": {
     "@devexpress/dx-react-core": "^1.1.0",
